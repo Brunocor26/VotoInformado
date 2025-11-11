@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "974572230591",
+    "project_id": "votoinformado-2dbde",
+    "storage_bucket": "votoinformado-2dbde.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:974572230591:android:96e04cbec50052ec9f730a",
+        "android_client_info": {
+          "package_name": "pt.ubi.pdm.votoinformado"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "974572230591-qfqtf97jhnuhforpqm95vr832g686hf0.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "pt.ubi.pdm.votoinformado",
+            "certificate_hash": "ce56b01ec3081109f8c18c15bce44dce314bb704"
+          }
+        },
+        {
+          "client_id": "974572230591-ri6nq2an7jvojkkihj0oqid3fredloht.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD91scbsmZnSnyy4lSXk9yj2cyM1g3n8qI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "974572230591-ri6nq2an7jvojkkihj0oqid3fredloht.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,4 +1,4 @@
-package pt.ubi.pdm.votoinformado;
+package pt.ubi.pdm.votoinformado.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -24,6 +24,8 @@ import com.google.firebase.auth.GoogleAuthProvider;
 
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
+
+import pt.ubi.pdm.votoinformado.R;
 
 public class LoginActivity extends AppCompatActivity {
 

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/nav_home"
+        android:icon="@drawable/baseline_person_24"
+        android:title="Home" />
+    <item
+        android:id="@+id/nav_candidatos"
+        android:icon="@drawable/baseline_groups_24"
+        android:title="Candidatos" />
+    <item
+        android:id="@+id/nav_sondagens"
+        android:icon="@drawable/baseline_campaign_24"
+        android:title="Eventos" />
+    <item
+        android:id="@+id/nav_noticias"
+        android:icon="@drawable/baseline_newspaper_24"
+        android:title="Notícias" />
+</menu>

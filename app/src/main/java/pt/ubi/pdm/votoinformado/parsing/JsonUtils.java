@@ -32,11 +32,13 @@ public class JsonUtils {
     private static class LocalDateAdapter extends TypeAdapter<LocalDate> {
         private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ISO_LOCAL_DATE;
 
-        // 1. Validação de segurança
-        if (context == null) {
-
-            Log.e(TAG, "Contexto é nulo. Não é possível carregar candidatos.");
-            return new ArrayList<>();
+        @Override
+        public void write(JsonWriter out, LocalDate value) throws IOException {
+            if (value == null) {
+                out.nullValue();
+            } else {
+                out.value(FORMATTER.format(value));
+            }
         }
 
         @Override
@@ -56,17 +58,25 @@ public class JsonUtils {
     }
 
     public static List<Candidato> loadCandidatos(Context context) {
+        if (context == null) {
+            Log.e(TAG, "Contexto é nulo. Não é possível carregar candidatos.");
+            return new ArrayList<>();
+        }
+
         try {
             InputStream inputStream = context.getResources().openRawResource(R.raw.candidatos);
             InputStreamReader reader = new InputStreamReader(inputStream);
             Type listType = new TypeToken<ArrayList<Candidato>>() {}.getType();
             
-            List<Candidato> candidatos = new Gson().fromJson(reader, listType);
+            List<Candidato> candidatos = createGson().fromJson(reader, listType);
 
-            for (Candidato c : candidatos) {
-                c.cacheFotoId(context);
+            if (candidatos != null) {
+                for (Candidato c : candidatos) {
+                    c.cacheFotoId(context);
+                }
+                return candidatos;
             }
-            return candidatos;
+            return new ArrayList<>();
 
         } catch (Exception e) {
             Log.e(TAG, "Erro ao carregar candidatos.json", e);
@@ -75,12 +85,18 @@ public class JsonUtils {
     }
 
     public static List<Sondagem> loadSondagens(Context context) {
+        if (context == null) {
+            Log.e(TAG, "Contexto é nulo. Não é possível carregar sondagens.");
+            return new ArrayList<>();
+        }
+        
         try {
             InputStream inputStream = context.getResources().openRawResource(R.raw.sondagens);
             InputStreamReader reader = new InputStreamReader(inputStream);
             Type listType = new TypeToken<ArrayList<Sondagem>>() {}.getType();
             
-            return createGson().fromJson(reader, listType);
+            List<Sondagem> sondagens = createGson().fromJson(reader, listType);
+            return sondagens != null ? sondagens : new ArrayList<>();
 
         } catch (Exception e) {
             Log.e(TAG, "Erro ao carregar sondagens.json", e);

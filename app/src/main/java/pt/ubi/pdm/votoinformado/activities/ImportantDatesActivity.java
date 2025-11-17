@@ -44,7 +44,7 @@ public class ImportantDatesActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         // --- carregar candidatos ---
-        List<Candidato> candidatos = JsonUtils.carregarCandidatos(this);
+        List<Candidato> candidatos = JsonUtils.loadCandidatos(this);
         Map<String, Candidato> mapaCandidatos = new HashMap<>();
         for (Candidato c : candidatos) mapaCandidatos.put(c.getId(), c);
 

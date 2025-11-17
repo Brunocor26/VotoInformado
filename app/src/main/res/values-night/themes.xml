@@ -1,7 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
+    <!-- Base application theme for night mode. -->
     <style name="Base.Theme.VotoInformado" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your dark theme here. -->
-        <!-- <item name="colorPrimary">@color/my_dark_primary</item> -->
+        
+        <!-- Cores Primárias -->
+        <item name="colorPrimary">@color/app_green</item>
+        <item name="colorOnPrimary">@color/white</item>
+
+        <!-- Cores de Superfície -->
+        <item name="colorSurface">@color/app_paper_white</item> 
+        <item name="colorOnSurface">@color/app_graphite</item>
+        <item name="colorSurfaceContainer">#202020</item> <!-- Cor ligeiramente mais clara para os cartões -->
+
+        <!-- Cores de Contorno e Erro -->
+        <item name="colorOutline">#424242</item> <!-- Cinza escuro para divisórias -->
+        <item name="colorError">@color/app_red</item>
+        <item name="colorOnError">@color/white</item>
+
+        <!-- Cor de Fundo da Janela -->
+        <item name="android:windowBackground">?attr/colorSurface</item>
+
     </style>
 </resources>

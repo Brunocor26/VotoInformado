@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Cores para o Modo Escuro -->
+    <color name="app_green">#409151</color>
+    <color name="app_red">#D42C2B</color>
+    <color name="app_orange">#F7A01B</color>
+
+    <!-- Cor de fundo para o tema escuro -->
+    <color name="app_paper_white">#121212</color>
+    <!-- Cor do texto principal para o tema escuro -->
+    <color name="app_graphite">#E0E0E0</color>
+
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
+</resources>

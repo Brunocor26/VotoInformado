@@ -1,13 +1,12 @@
 package pt.ubi.pdm.votoinformado.activities;
 
-import static pt.ubi.pdm.votoinformado.parsing.JsonUtils.carregarCandidatos;
+import static pt.ubi.pdm.votoinformado.parsing.JsonUtils.loadCandidatos;
 
 import android.os.Bundle;
-import android.view.View;
-import android.widget.ImageView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import com.google.android.material.appbar.MaterialToolbar;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +14,6 @@ import java.util.List;
 import pt.ubi.pdm.votoinformado.R;
 import pt.ubi.pdm.votoinformado.adapters.CandidatoAdapter;
 import pt.ubi.pdm.votoinformado.classes.Candidato;
-import pt.ubi.pdm.votoinformado.parsing.*;
 
 public class CandidatosActivity extends AppCompatActivity {
 
@@ -28,13 +26,9 @@ public class CandidatosActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_candidatos);
 
-        ImageView backButton = findViewById(R.id.button_back);
-        backButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
+        // Configura a nova Toolbar para o botão de voltar
+        MaterialToolbar toolbar = findViewById(R.id.toolbar_candidatos);
+        toolbar.setNavigationOnClickListener(v -> finish());
 
         // Initialize RecyclerView
         recyclerView = findViewById(R.id.recycler_view_candidatos);
@@ -42,7 +36,7 @@ public class CandidatosActivity extends AppCompatActivity {
 
         // Create sample data
         candidatoList = new ArrayList<>();
-        candidatoList= carregarCandidatos(this);
+        candidatoList = loadCandidatos(this);
 
         // Initialize and set adapter
         candidatoAdapter = new CandidatoAdapter(candidatoList);

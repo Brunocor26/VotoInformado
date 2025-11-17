@@ -4,15 +4,20 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp"
+    android:background="?attr/colorSurface"
+    android:padding="24dp"
     tools:context=".activities.HomeActivity">
 
-    <ImageView
+    <!-- Header -->
+    <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/profile_image"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:src="@drawable/ic_launcher_foreground"
-        android:contentDescription="Perfil do Utilizador"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:src="@drawable/logo"
+        android:scaleType="centerCrop"
+        app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.Full"
+        app:strokeColor="?attr/colorPrimary"
+        app:strokeWidth="2dp"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
@@ -21,58 +26,160 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="Bem-vindo!"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        android:gravity="center"
+        style="@style/TextAppearance.Material3.HeadlineSmall"
+        android:textColor="?attr/colorOnSurface"
         android:layout_marginStart="16dp"
         app:layout_constraintTop_toTopOf="@id/profile_image"
         app:layout_constraintBottom_toBottomOf="@id/profile_image"
         app:layout_constraintStart_toEndOf="@id/profile_image"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <Button
-        android:id="@+id/button_candidatos"
+    <!-- Menu Grid -->
+    <GridLayout
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="Candidatos"
-        android:layout_marginTop="32dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="40dp"
+        android:columnCount="2"
+        android:rowCount="2"
+        android:alignmentMode="alignMargins"
+        android:columnOrderPreserved="false"
         app:layout_constraintTop_toBottomOf="@id/profile_image"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/button_debates"
-        app:layout_constraintVertical_chainStyle="packed"/>
+        app:layout_constraintEnd_toEndOf="parent">
 
-    <Button
-        android:id="@+id/button_debates"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="Debates"
-        android:layout_marginTop="16dp"
-        app:layout_constraintTop_toBottomOf="@id/button_candidatos"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/button_sondagens" />
+        <!-- Candidatos Card -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/button_candidatos"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_columnWeight="1"
+            android:layout_rowWeight="1"
+            android:layout_margin="8dp"
+            app:cardBackgroundColor="?attr/colorSurfaceContainer"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="2dp"
+            app:contentPadding="16dp">
 
-    <Button
-        android:id="@+id/button_sondagens"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="Sondagens"
-        android:layout_marginTop="16dp"
-        app:layout_constraintTop_toBottomOf="@id/button_debates"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/button_noticias" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:gravity="center">
 
-    <Button
-        android:id="@+id/button_noticias"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="Notícias"
-        android:layout_marginTop="16dp"
-        app:layout_constraintTop_toBottomOf="@id/button_sondagens"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent" />
+                <ImageView
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:src="@drawable/baseline_groups_24"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Candidatos"
+                    android:textSize="16sp"
+                    android:layout_marginTop="8dp"
+                    android:textColor="?attr/colorOnSurface"/>
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <!-- Debates Card -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/button_debates"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_columnWeight="1"
+            android:layout_rowWeight="1"
+            android:layout_margin="8dp"
+            app:cardBackgroundColor="?attr/colorSurfaceContainer"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="2dp"
+            app:contentPadding="16dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:gravity="center">
+
+                <ImageView
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:src="@drawable/baseline_campaign_24"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Debates"
+                    android:textSize="16sp"
+                    android:layout_marginTop="8dp"
+                    android:textColor="?attr/colorOnSurface"/>
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Sondagens Card -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/button_sondagens"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_columnWeight="1"
+            android:layout_rowWeight="1"
+            android:layout_margin="8dp"
+            app:cardBackgroundColor="?attr/colorSurfaceContainer"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="2dp"
+            app:contentPadding="16dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:gravity="center">
+
+                <ImageView
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:src="@drawable/ballot"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Sondagens"
+                    android:textSize="16sp"
+                    android:layout_marginTop="8dp"
+                    android:textColor="?attr/colorOnSurface"/>
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Notícias Card -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/button_noticias"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_columnWeight="1"
+            android:layout_rowWeight="1"
+            android:layout_margin="8dp"
+            app:cardBackgroundColor="?attr/colorSurfaceContainer"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="2dp"
+            app:contentPadding="16dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:gravity="center">
+
+                <ImageView
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:src="@drawable/baseline_newspaper_24"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Notícias"
+                    android:textSize="16sp"
+                    android:layout_marginTop="8dp"
+                    android:textColor="?attr/colorOnSurface"/>
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+    </GridLayout>
+
+ </androidx.constraintlayout.widget.ConstraintLayout>

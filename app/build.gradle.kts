@@ -39,6 +39,7 @@ dependencies {
     implementation(libs.constraintlayout)
     implementation(libs.firebase.auth)
     implementation(libs.googleid)
+    implementation(libs.firebase.storage)
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
@@ -53,4 +54,13 @@ dependencies {
 
     //para json
     implementation("com.google.code.gson:gson:2.10.1")
+
+    // Retrofit (para fazer os pedidos de rede)
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    // Conversor Gson (para o Retrofit usar o Gson)
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+    implementation("de.hdodenhof:circleimageview:3.1.0")
+
+    // Biblioteca de Gráficos
+    implementation("com.github.PhilJay:MPAndroidChart:v3.1.0")
 }

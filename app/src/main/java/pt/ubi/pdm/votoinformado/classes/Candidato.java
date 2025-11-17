@@ -4,10 +4,11 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.util.Log;
 import pt.ubi.pdm.votoinformado.R;
+import java.io.Serializable;
 
-public class Candidato {
+public class Candidato implements Serializable {
 
-    // 1. CAMPOS LIDOS DIRETAMENTE DO JSON
+    // CAMPOS LIDOS DIRETAMENTE DO JSON
     private String id;
     private String nome;
     private String partido;

@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="?attr/colorSurface"
-    tools:context=".activities.CandidatosActivity">
+    tools:context=".activities.SondagensActivity">
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
@@ -14,21 +14,21 @@
         android:background="?attr/colorSurface">
 
         <com.google.android.material.appbar.MaterialToolbar
-            android:id="@+id/toolbar_candidatos"
+            android:id="@+id/toolbar_sondagens"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            app:title="Candidatos"
+            app:title="Sondagens"
             app:navigationIcon="@drawable/baseline_arrow_back_ios_new_24" />
 
     </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recycler_view_candidatos"
+        android:id="@+id/recycler_view_sondagens"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
         android:clipToPadding="false"
         android:padding="12dp"
-        tools:listitem="@layout/item_candidato" />
+        tools:listitem="@layout/item_sondagem" />
 
 </LinearLayout>

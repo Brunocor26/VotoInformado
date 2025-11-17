@@ -15,6 +15,7 @@ import androidx.credentials.CredentialManagerCallback;
 import androidx.credentials.GetCredentialRequest;
 import androidx.credentials.GetCredentialResponse;
 import androidx.credentials.exceptions.GetCredentialException;
+import androidx.credentials.exceptions.NoCredentialException;
 
 import com.google.android.libraries.identity.googleid.GetGoogleIdOption;
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential;
@@ -116,14 +117,21 @@ public class LoginActivity extends AppCompatActivity {
                                     firebaseAuthWithGoogle(credential.getIdToken());
                                 } catch (Exception e) {
                                     Log.e(TAG, "Error creating GoogleIdTokenCredential", e);
-                                    Toast.makeText(LoginActivity.this, "Erro ao processar credenciais.", Toast.LENGTH_SHORT).show();
+                                    runOnUiThread(() -> Toast.makeText(LoginActivity.this, "Erro ao processar credenciais.", Toast.LENGTH_SHORT).show());
                                 }
                             }
 
                             @Override
                             public void onError(@NonNull GetCredentialException e) {
-                                Log.e(TAG, "GetCredentialException", e);
-                                Toast.makeText(LoginActivity.this, "Falha no login com Google.", Toast.LENGTH_SHORT).show();
+                                runOnUiThread(() -> {
+                                    if (e instanceof NoCredentialException) {
+                                        Log.w(TAG, "No Google accounts found on the device.", e);
+                                        Toast.makeText(LoginActivity.this, "Nenhuma conta Google encontrada para fazer login.", Toast.LENGTH_LONG).show();
+                                    } else {
+                                        Log.e(TAG, "GetCredentialException", e);
+                                        Toast.makeText(LoginActivity.this, "Falha no login com Google.", Toast.LENGTH_SHORT).show();
+                                    }
+                                });
                             }
                         }
                 );

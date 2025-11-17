@@ -32,6 +32,7 @@ public class JsonUtils {
 
         // 1. Validação de segurança
         if (context == null) {
+
             Log.e(TAG, "Contexto é nulo. Não é possível carregar candidatos.");
             return new ArrayList<>();
         }

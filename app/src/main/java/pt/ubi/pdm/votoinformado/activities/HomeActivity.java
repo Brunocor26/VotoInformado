@@ -6,7 +6,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import androidx.appcompat.app.AppCompatActivity;
-
 import pt.ubi.pdm.votoinformado.R;
 
 public class HomeActivity extends AppCompatActivity {
@@ -23,6 +22,7 @@ public class HomeActivity extends AppCompatActivity {
         Button candidatosButton = findViewById(R.id.button_candidatos);
 
         profileImage.setOnClickListener(new View.OnClickListener() {
+
             @Override
             public void onClick(View v) {
                 // Intent to open PerfilActivity
@@ -42,11 +42,11 @@ public class HomeActivity extends AppCompatActivity {
         debatesButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Intent to open DebatesActivity
-                //Intent intent = new Intent(HomeActivity.this, DebatesActivity.class);
-                //startActivity(intent);
+                Intent i = new Intent(HomeActivity.this, ChooseEventTypeActivity.class);
+                startActivity(i);
             }
         });
+
 
         sondagensButton.setOnClickListener(new View.OnClickListener() {
             @Override

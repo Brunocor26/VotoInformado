@@ -6,7 +6,6 @@ import android.view.View;
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.imageview.ShapeableImageView;
 import androidx.appcompat.app.AppCompatActivity;
-
 import pt.ubi.pdm.votoinformado.R;
 
 public class HomeActivity extends AppCompatActivity {
@@ -23,6 +22,7 @@ public class HomeActivity extends AppCompatActivity {
         MaterialCardView candidatosButton = findViewById(R.id.button_candidatos);
 
         profileImage.setOnClickListener(new View.OnClickListener() {
+
             @Override
             public void onClick(View v) {
                 // Intent to open PerfilActivity
@@ -43,10 +43,11 @@ public class HomeActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 // Intent to open DebatesActivity
-                //Intent intent = new Intent(HomeActivity.this, DatasImportantesActivity.class);
-                //startActivity(intent);
+                Intent intent = new Intent(HomeActivity.this, DatasImportantesActivity.class);
+                startActivity(intent);
             }
         });
+
 
         sondagensButton.setOnClickListener(new View.OnClickListener() {
             @Override

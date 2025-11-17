@@ -32,13 +32,11 @@ public class JsonUtils {
     private static class LocalDateAdapter extends TypeAdapter<LocalDate> {
         private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ISO_LOCAL_DATE;
 
-        @Override
-        public void write(JsonWriter out, LocalDate value) throws IOException {
-            if (value == null) {
-                out.nullValue();
-            } else {
-                out.value(value.format(FORMATTER));
-            }
+        // 1. Validação de segurança
+        if (context == null) {
+
+            Log.e(TAG, "Contexto é nulo. Não é possível carregar candidatos.");
+            return new ArrayList<>();
         }
 
         @Override

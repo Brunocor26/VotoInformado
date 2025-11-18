@@ -14,6 +14,7 @@ import pt.ubi.pdm.votoinformado.fragments.CandidatosFragment;
 import pt.ubi.pdm.votoinformado.fragments.ChooseEventTypeFragment;
 import pt.ubi.pdm.votoinformado.fragments.HomeFragment;
 import pt.ubi.pdm.votoinformado.fragments.NoticiasFragment;
+import pt.ubi.pdm.votoinformado.fragments.SondagensFragment;
 
 public class HomeActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener {
 
@@ -48,8 +49,10 @@ public class HomeActivity extends AppCompatActivity implements BottomNavigationV
             fragment = new HomeFragment();
         } else if (itemId == R.id.nav_candidatos) {
             fragment = new CandidatosFragment();
-        } else if (itemId == R.id.nav_sondagens) {
+        } else if (itemId == R.id.nav_eventos) {
             fragment = new ChooseEventTypeFragment();
+        } else if (itemId == R.id.nav_sondagens) {
+            fragment = new SondagensFragment();
         } else if (itemId == R.id.nav_noticias) {
             fragment = new NoticiasFragment();
         }

@@ -35,6 +35,14 @@
             android:name=".activities.CandidatosActivity"
             android:exported="true">
         </activity>
+        <activity
+            android:name=".activities.MenuNoticiasActivity"
+            android:exported="true">
+        </activity>
+        <activity
+            android:name=".activities.NoticiaDetalheActivity"
+            android:exported="true">
+        </activity>
 
     </application>
 

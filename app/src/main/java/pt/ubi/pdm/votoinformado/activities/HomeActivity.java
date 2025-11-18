@@ -57,13 +57,10 @@ public class HomeActivity extends AppCompatActivity {
             }
         });
 
-        noticiasButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Intent to open NoticiasActivity
-                //Intent intent = new Intent(HomeActivity.this, NoticiasActivity.class);
-                //startActivity(intent);
-            }
+        noticiasButton.setOnClickListener(v -> {
+            // Intent para abrir NoticiasActivity
+            Intent intent = new Intent(HomeActivity.this, MenuNoticiasActivity.class);
+            startActivity(intent);
         });
     }
 }

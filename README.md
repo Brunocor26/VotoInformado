@@ -238,8 +238,10 @@ Contribuições são bem-vindas! Para contribuir:
 ## 👥 Autores
 
 - **Bruno** - [Brunocor26](https://github.com/Brunocor26)
-
----
+- **Alexandre** - [AlexandreMinhoto](https://github.com/AlexandreMinhoto)
+- **Daniel** - [DanielBasilioFerreira](https://github.com/DanielBasilioFerreira)
+- **Vasco** - [Vascorc](https://github.com/Vascorc)
+- **Henrique** - [henriquelaia](https://github.com/henriquelaia)
 
 ## 📄 Licença
 

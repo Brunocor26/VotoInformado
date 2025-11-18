@@ -1,6 +1,8 @@
 package pt.ubi.pdm.votoinformado.activities;
 
 import android.os.Bundle;
+import android.widget.Toast;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -28,18 +30,14 @@ public class MenuNoticiasActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu_noticias);
 
-        // 1. Encontra o RecyclerView no layout
         recyclerView = findViewById(R.id.recyclerViewNoticias);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        // 2. Prepara a lista e o adapter
         listaNoticias = new ArrayList<>();
-        adapter = new NoticiasAdapter(listaNoticias); // <- Entrega a lista ao adapter
+        adapter = new NoticiasAdapter(listaNoticias); // entregamos a lista ao adapter
 
-        // 3. Liga o RecyclerView ao Adapter
         recyclerView.setAdapter(adapter);
 
-        // 4. Manda buscar as notícias
         buscarNoticias();
     }
 
@@ -56,9 +54,9 @@ public class MenuNoticiasActivity extends AppCompatActivity {
                 if (noticias != null) {
                     listaNoticias.clear();
                     listaNoticias.addAll(noticias);
-                    adapter.notifyDataSetChanged(); // Avisa o adapter que os dados mudaram
+                    adapter.notifyDataSetChanged();
                 } else {
-                    // Opcional: Mostrar uma mensagem de erro
+                    Toast.makeText(this, "Erro ao carregar notícias. Tenta novamente.", Toast.LENGTH_SHORT).show();
                 }
             });
         }).start();

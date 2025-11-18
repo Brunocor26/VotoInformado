@@ -42,7 +42,6 @@ public class NoticiasAdapter extends RecyclerView.Adapter<NoticiasAdapter.VH> {
         holder.titulo.setText(n.getTitulo());
         holder.data.setText(n.getData());
 
-        // URL da imagem já corrigida
         String urlImg = n.getImagem();
         if (urlImg != null) urlImg = urlImg.replace("&amp;", "&");
 
@@ -51,7 +50,6 @@ public class NoticiasAdapter extends RecyclerView.Adapter<NoticiasAdapter.VH> {
 
         String finalUrl = urlImg;
 
-        // Carregamento da imagem numa Thread
         new Thread(() -> {
             try {
                 if (finalUrl != null && !finalUrl.isEmpty()) {
@@ -66,7 +64,6 @@ public class NoticiasAdapter extends RecyclerView.Adapter<NoticiasAdapter.VH> {
             }
         }).start();
 
-        // Navegar para detalhes
         holder.itemView.setOnClickListener(v -> {
             Intent i = new Intent(v.getContext(), NoticiaDetalheActivity.class);
             i.putExtra("titulo", n.getTitulo());

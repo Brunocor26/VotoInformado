@@ -65,6 +65,10 @@ public class HomeActivity extends AppCompatActivity implements BottomNavigationV
             fragment = new NoticiasFragment();
         }
 
-        return loadFragment(fragment);
+        noticiasButton.setOnClickListener(v -> {
+            // Intent para abrir NoticiasActivity
+            Intent intent = new Intent(HomeActivity.this, MenuNoticiasActivity.class);
+            startActivity(intent);
+        });
     }
 }

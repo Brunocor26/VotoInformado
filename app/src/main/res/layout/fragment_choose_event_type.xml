@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:padding="32dp"
+    android:background="@color/app_paper_white">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="O que deseja consultar?"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        android:textColor="@color/app_graphite"
+        android:paddingBottom="20dp"/>
+
+    <Button
+        android:id="@+id/btnDebates"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Debates"
+        android:backgroundTint="@color/app_graphite"
+        android:textColor="@color/white"
+        android:padding="12dp"
+        android:layout_marginBottom="16dp"/>
+
+    <Button
+        android:id="@+id/btnEntrevistas"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Entrevistas"
+        android:backgroundTint="@color/app_graphite"
+        android:textColor="@color/white"
+        android:padding="12dp"
+        android:layout_marginBottom="16dp"/>
+
+    <Button
+        android:id="@+id/btnDiasVotar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Dias para Votar"
+        android.backgroundTint="@color/app_graphite"
+        android:textColor="@color/white"
+        android:padding="12dp"
+        android:layout_marginBottom="16dp"/>
+
+</LinearLayout>

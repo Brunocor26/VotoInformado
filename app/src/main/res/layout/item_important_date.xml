@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="14dp"
+    app:cardCornerRadius="18dp"
+    app:cardElevation="6dp"
+    app:strokeWidth="0dp"
+    app:cardBackgroundColor="@color/app_graphite">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="18dp">
+
+        <TextView
+            android:id="@+id/txtTituloEvento"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Título do Evento"
+            android:textColor="@color/white"
+            android:textStyle="bold"
+            android:textSize="18sp"
+            android:fontFamily="sans-serif-medium"
+            android:paddingBottom="6dp"/>
+        <!-- FOTOS DOS DOIS CANDIDATOS -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp">
+
+            <ImageView
+                android:id="@+id/imgCandidato1"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:scaleType="centerCrop"
+                android:background="@drawable/circle_mask"
+                android:clipToOutline="true"
+                android:layout_marginEnd="16dp"/>
+
+            <ImageView
+                android:id="@+id/imgCandidato2"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:scaleType="centerCrop"
+                android:background="@drawable/circle_mask"
+                android:clipToOutline="true"
+                android:layout_marginStart="16dp"/>
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/txtDataHora"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="12 Nov 2025 · 21:00"
+            android:textColor="@color/white"
+            android:textSize="14sp"
+            android:fontFamily="sans-serif-light"
+            android:alpha="0.9"/>
+
+        <TextView
+            android:id="@+id/txtCategoria"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Categoria"
+            android:textColor="@color/white"
+            android:textStyle="italic"
+            android:fontFamily="sans-serif-light"
+            android:textSize="13sp"
+            android:alpha="0.8"
+            android:paddingTop="4dp"/>
+    </LinearLayout>
+</com.google.android.material.card.MaterialCardView>

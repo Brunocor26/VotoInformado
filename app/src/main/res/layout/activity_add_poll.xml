@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Adicionar Manualmente"
+            android:textAppearance="@style/TextAppearance.Material3.TitleMedium"
+            android:layout_marginBottom="8dp"/>
+
+        <EditText
+            android:id="@+id/edit_poll_entity"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Entidade" />
+
+        <EditText
+            android:id="@+id/edit_poll_sample_size"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Tamanho da Amostra" />
+
+        <EditText
+            android:id="@+id/edit_poll_start_date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Data de Início (YYYY-MM-DD)" />
+
+        <EditText
+            android:id="@+id/edit_poll_end_date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Data de Fim (YYYY-MM-DD)" />
+
+        <EditText
+            android:id="@+id/edit_poll_methodology"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Metodologia" />
+
+        <EditText
+            android:id="@+id/edit_poll_universe"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Universo" />
+
+        <EditText
+            android:id="@+id/edit_poll_margin_error"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Margem de Erro" />
+
+        <EditText
+            android:id="@+id/edit_poll_confidence_level"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Nível de Confiança" />
+
+        <EditText
+            android:id="@+id/edit_poll_results"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Resultados (JSON format)" />
+
+        <EditText
+            android:id="@+id/edit_poll_distributed_results"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Resultados Dist. (JSON format)" />
+
+        <Button
+            android:id="@+id/btn_save_poll"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="Save Poll" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="?attr/colorOutline"
+            android:layout_marginVertical="24dp"/>
+
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Importar JSON"
+        android:textAppearance="@style/TextAppearance.Material3.TitleMedium"
+        android:layout_marginBottom="8dp"/>
+
+    <EditText
+        android:id="@+id/edit_poll_json"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Cole o JSON aqui"
+        android:minLines="5"
+        android:gravity="top|start"
+        android:inputType="textMultiLine"/>
+
+    <Button
+        android:id="@+id/btn_submit_poll_json"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:text="Importar JSON" />
+
+    </LinearLayout>
+</ScrollView>

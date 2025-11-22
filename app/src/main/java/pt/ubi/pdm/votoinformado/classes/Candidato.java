@@ -3,11 +3,16 @@ package pt.ubi.pdm.votoinformado.classes;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.util.Log;
+
+import com.google.firebase.firestore.Exclude;
+import com.google.firebase.firestore.PropertyName;
+
+import java.io.Serializable;
+
 import pt.ubi.pdm.votoinformado.R;
 
-public class Candidato {
+public class Candidato implements Serializable {
 
-    // 1. CAMPOS LIDOS DIRETAMENTE DO JSON
     private String id;
     private String nome;
     private String partido;
@@ -17,89 +22,54 @@ public class Candidato {
     private String biografiaCurta;
     private String siteOficial;
 
-    // 2. CAMPO PARA CACHE
-    private transient int fotoResourceId = 0;
-
-    /**
-     * Construtor vazio.
-     */
     public Candidato() {
+        // Construtor vazio necessário para o Firestore
     }
 
-    // 3. GETTERS PARA TODOS OS CAMPOS
+    // Getters and Setters with PropertyName annotations
 
-    public String getId() {
-        return id;
-    }
+    public String getId() { return id; }
+    public void setId(String id) { this.id = id; }
 
-    public String getNome() {
-        return nome;
-    }
+    public String getNome() { return nome; }
+    public void setNome(String nome) { this.nome = nome; }
 
-    public String getPartido() {
-        return partido;
-    }
+    public String getPartido() { return partido; }
+    public void setPartido(String partido) { this.partido = partido; }
 
-    public String getFotoNome() {
-        return fotoNome;
-    }
+    @PropertyName("fotoId")
+    public String getFotoUrl() { return fotoNome; }
+    @PropertyName("fotoId")
+    public void setFotoUrl(String fotoUrl) { this.fotoNome = fotoUrl; }
 
-    public String getProfissao() {
-        return profissao;
-    }
+    public String getFotoNome() { return fotoNome; }
+    public void setFotoNome(String fotoNome) { this.fotoNome = fotoNome; }
 
-    public String getCargosPrincipais() {
-        return cargosPrincipais;
-    }
+    public String getProfissao() { return profissao; }
+    public void setProfissao(String profissao) { this.profissao = profissao; }
 
-    public String getBiografiaCurta() {
-        return biografiaCurta;
-    }
+    public String getCargosPrincipais() { return cargosPrincipais; }
+    public void setCargosPrincipais(String cargosPrincipais) { this.cargosPrincipais = cargosPrincipais; }
 
-    public String getSiteOficial() {
-        return siteOficial;
-    }
+    public String getBiografiaCurta() { return biografiaCurta; }
+    public void setBiografiaCurta(String biografiaCurta) { this.biografiaCurta = biografiaCurta; }
 
-    /**
-     * A "função cíclica" que converte a String em 'int'.
-     * É chamada pelo JsonUtils UMA VEZ.
-     */
+    public String getSiteOficial() { return siteOficial; }
+    public void setSiteOficial(String siteOficial) { this.siteOficial = siteOficial; }
+
     @SuppressLint("DiscouragedApi")
-    public void cacheFotoId(Context context) {
-        // Só executa se ainda não tiver sido calculado
-        if (this.fotoResourceId == 0 && this.fotoNome != null && context != null) {
-            try {
-                this.fotoResourceId = context.getResources().getIdentifier(
-                        this.fotoNome,
-                        "drawable",
-                        context.getPackageName()
-                );
-
-                // Aviso caso a imagem não seja encontrada
-                if (this.fotoResourceId == 0) {
-                    Log.w("Candidato", "Imagem não encontrada para fotoNome: " + this.fotoNome + ". Usará a genérica.");
-                }
-
-            } catch (Exception e) {
-                Log.e("Candidato", "Erro ao fazer cache do fotoId para: " + this.fotoNome, e);
-                this.fotoResourceId = 0; // Garante que fica a 0 em caso de erro
-            }
-        }
-        // Se fotoNome for nulo no JSON, fotoResourceId permanece 0.
-    }
-
-    /**
-     * O getter RÁPIDO.
-     * É usado pelo seu Adapter e é tão rápido como um 'switch'.
-     */
-    public int getFotoId() {
-        if (this.fotoResourceId != 0) {
-            // Encontrou a foto específica
-            return this.fotoResourceId;
-        } else {
-            // Não encontrou a foto, ou o 'fotoNome' era nulo no JSON.
-            // Devolve a imagem genérica.
+    @Exclude
+    public int getFotoId(Context context) {
+        if (this.id == null || context == null) {
             return R.drawable.candidato_generico;
         }
+        
+        int resourceId = context.getResources().getIdentifier(
+            this.id, 
+            "drawable", 
+            context.getPackageName()
+        );
+        
+        return resourceId != 0 ? resourceId : R.drawable.candidato_generico;
     }
 }

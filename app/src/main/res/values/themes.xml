@@ -1,12 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
     <style name="Base.Theme.VotoInformado" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+        
+        <!-- Cores Primárias -->
+        <item name="colorPrimary">@color/app_green</item>
+        <item name="colorOnPrimary">@color/white</item>
+
+        <!-- Cores de Superfície -->
+        <item name="colorSurface">@color/app_paper_white</item> <!-- Fundo principal -->
+        <item name="colorOnSurface">@color/app_graphite</item> <!-- Texto principal -->
+        <item name="colorSurfaceContainer">@color/white</item> <!-- Fundo dos cartões -->
+
+        <!-- Cores de Contorno e Erro -->
+        <item name="colorOutline">#D3D3D3</item> <!-- Cinza claro para divisórias -->
+        <item name="colorError">@color/app_red</item>
+        <item name="colorOnError">@color/white</item>
+
+        <!-- Cor de Fundo da Janela -->
+        <item name="android:windowBackground">?attr/colorSurface</item>
+
     </style>
 
     <style name="Theme.VotoInformado" parent="Base.Theme.VotoInformado" />
+
     <style name="App.Button.NoTint" parent="Widget.Material3.Button">
         <item name="backgroundTint">@null</item>
     </style>
+
+    <style name="ShapeAppearance.CandidatoCard" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">20dp</item>
+    </style>
+
 </resources>

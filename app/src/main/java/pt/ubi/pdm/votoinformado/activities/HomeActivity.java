@@ -2,60 +2,68 @@ package pt.ubi.pdm.votoinformado.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.Button;
-import android.widget.ImageView;
+import android.view.MenuItem;
+
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import pt.ubi.pdm.votoinformado.R;
+import pt.ubi.pdm.votoinformado.fragments.CandidatosFragment;
+import pt.ubi.pdm.votoinformado.fragments.ChooseEventTypeFragment;
+import pt.ubi.pdm.votoinformado.fragments.HomeFragment;
+import pt.ubi.pdm.votoinformado.fragments.NoticiasFragment;
+import pt.ubi.pdm.votoinformado.fragments.SondagensFragment;
 
-public class HomeActivity extends AppCompatActivity {
+public class HomeActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        if (com.google.firebase.auth.FirebaseAuth.getInstance().getCurrentUser() == null) {
+            startActivity(new Intent(this, LoginActivity.class));
+            finish();
+            return;
+        }
+
         setContentView(R.layout.activity_home);
 
-        ImageView profileImage = findViewById(R.id.profile_image);
-        Button debatesButton = findViewById(R.id.button_debates);
-        Button sondagensButton = findViewById(R.id.button_sondagens);
-        Button noticiasButton = findViewById(R.id.button_noticias);
-        Button candidatosButton = findViewById(R.id.button_candidatos);
+        BottomNavigationView bottomNav = findViewById(R.id.bottom_navigation);
+        bottomNav.setOnNavigationItemSelectedListener(this);
 
-        profileImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Intent to open PerfilActivity
-                //Intent intent = new Intent(HomeActivity.this, PerfilActivity.class);
-                //startActivity(intent);
-            }
-        });
+        // Load the default fragment
+        loadFragment(new HomeFragment());
+    }
 
-        candidatosButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(HomeActivity.this, CandidatosActivity.class);
-                startActivity(intent);
-            }
-        });
+    private boolean loadFragment(Fragment fragment) {
+        if (fragment != null) {
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_container, fragment)
+                    .commit();
+            return true;
+        }
+        return false;
+    }
 
-        debatesButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Intent to open DebatesActivity
-                //Intent intent = new Intent(HomeActivity.this, DebatesActivity.class);
-                //startActivity(intent);
-            }
-        });
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        Fragment fragment = null;
 
-        sondagensButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Intent to open SondagensActivity
-                //Intent intent = new Intent(HomeActivity.this, SondagensActivity.class);
-                //startActivity(intent);
-            }
-        });
+        int itemId = item.getItemId();
+        if (itemId == R.id.nav_home) {
+            fragment = new HomeFragment();
+        } else if (itemId == R.id.nav_candidatos) {
+            fragment = new CandidatosFragment();
+        } else if (itemId == R.id.nav_eventos) {
+            fragment = new ChooseEventTypeFragment();
+        } else if (itemId == R.id.nav_sondagens) {
+            fragment = new SondagensFragment();
+        } else if (itemId == R.id.nav_noticias) {
+            fragment = new NoticiasFragment();
+        }
 
         noticiasButton.setOnClickListener(v -> {
             // Intent para abrir NoticiasActivity

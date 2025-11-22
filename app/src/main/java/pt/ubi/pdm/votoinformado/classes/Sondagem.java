@@ -22,6 +22,10 @@ public class Sondagem implements Serializable {
     private Map<String, Double> resultados;
     private Map<String, Double> resultado_dist_indecisos;
 
+    public Sondagem() {
+        // Construtor vazio necessário para o Firestore
+    }
+
     public Sondagem(String entidade, Integer tam_amostra, String data_inicio_recolha, String data_fim_recolha, String metodologia, String universo, Double margem_erro, Double nivel_confianca, Map<String, Double> resultados, Map<String, Double> resultado_dist_indecisos) {
         this.entidade = entidade;
         this.tam_amostra = tam_amostra;

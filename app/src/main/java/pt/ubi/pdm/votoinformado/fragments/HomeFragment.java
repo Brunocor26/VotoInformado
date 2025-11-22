@@ -77,6 +77,7 @@ public class HomeFragment extends Fragment {
                         }
 
                         sondagens.stream()
+                                .filter(s -> s.getDataFimRecolha() != null)
                                 .max(Comparator.comparing(Sondagem::getDataFimRecolha))
                                 .ifPresent(ultimaSondagem -> {
                                     Sondagem.ResultadoPrincipal vencedor = ultimaSondagem.getResultadoPrincipal();

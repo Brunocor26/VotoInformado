@@ -10,7 +10,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import pt.ubi.pdm.votoinformado.R;
 import pt.ubi.pdm.votoinformado.classes.ImportantDate;
-import pt.ubi.pdm.votoinformado.utils.FirebaseUtils;
+import pt.ubi.pdm.votoinformado.utils.DatabaseHelper;
 
 public class AddDateActivity extends AppCompatActivity {
 
@@ -21,8 +21,6 @@ public class AddDateActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_date);
 
-
-
         editTitle = findViewById(R.id.edit_date_title);
         editDate = findViewById(R.id.edit_date_date);
         editTime = findViewById(R.id.edit_date_time);
@@ -32,8 +30,6 @@ public class AddDateActivity extends AppCompatActivity {
         editCandidate2 = findViewById(R.id.edit_date_candidate2);
 
         Button btnSave = findViewById(R.id.btn_save_date);
-        btnSave.setOnClickListener(v -> saveDate());
-
         btnSave.setOnClickListener(v -> saveDate());
     }
 
@@ -54,10 +50,8 @@ public class AddDateActivity extends AppCompatActivity {
                 getStringOrNull(editCandidate2)
         );
 
-        FirebaseUtils.saveDate(importantDate, AddDateActivity.this);
+        DatabaseHelper.saveDate(importantDate, AddDateActivity.this);
     }
-
-
 
     private String getStringOrNull(EditText editText) {
         String text = editText.getText().toString().trim();

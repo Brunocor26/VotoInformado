@@ -17,7 +17,7 @@ import pt.ubi.pdm.votoinformado.R;
 import pt.ubi.pdm.votoinformado.adapters.ResultadoSondagemAdapter;
 import pt.ubi.pdm.votoinformado.classes.Candidato;
 import pt.ubi.pdm.votoinformado.classes.Sondagem;
-import pt.ubi.pdm.votoinformado.utils.FirebaseUtils;
+import pt.ubi.pdm.votoinformado.utils.DatabaseHelper;
 
 public class SondagemDetailActivity extends AppCompatActivity {
 
@@ -37,7 +37,7 @@ public class SondagemDetailActivity extends AppCompatActivity {
             return;
         }
 
-        FirebaseUtils.getCandidates(this, new FirebaseUtils.DataCallback<Map<String, Candidato>>() {
+        DatabaseHelper.getCandidates(this, new DatabaseHelper.DataCallback<Map<String, Candidato>>() {
             @Override
             public void onCallback(Map<String, Candidato> candidatesMap) {
                 setupViews(sondagem);

@@ -1,3 +1,4 @@
+
 plugins {
     alias(libs.plugins.android.application)
     id("com.google.gms.google-services")
@@ -5,7 +6,7 @@ plugins {
 
 android {
     namespace = "pt.ubi.pdm.votoinformado"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "pt.ubi.pdm.votoinformado"

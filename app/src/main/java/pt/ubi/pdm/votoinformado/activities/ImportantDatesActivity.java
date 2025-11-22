@@ -18,12 +18,13 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import pt.ubi.pdm.votoinformado.R;
 import pt.ubi.pdm.votoinformado.adapters.ImportantDateAdapter;
 import pt.ubi.pdm.votoinformado.classes.Candidato;
 import pt.ubi.pdm.votoinformado.classes.ImportantDate;
-import pt.ubi.pdm.votoinformado.utils.FirebaseUtils;
+import pt.ubi.pdm.votoinformado.utils.DatabaseHelper;
 
 public class ImportantDatesActivity extends AppCompatActivity {
 
@@ -53,13 +54,17 @@ public class ImportantDatesActivity extends AppCompatActivity {
     }
 
     private void loadFirebaseData() {
-        FirebaseUtils.getCandidates(this, new FirebaseUtils.DataCallback<Map<String, Candidato>>() {
+        DatabaseHelper.getCandidates(this, new DatabaseHelper.DataCallback<Map<String, Candidato>>() {
             @Override
             public void onCallback(Map<String, Candidato> candidatesMap) {
-                FirebaseUtils.getImportantDates(new FirebaseUtils.DataCallback<List<ImportantDate>>() {
+                DatabaseHelper.getImportantDates(new DatabaseHelper.DataCallback<List<ImportantDate>>() {
                     @Override
                     public void onCallback(List<ImportantDate> dates) {
-                        eventosOriginais.addAll(dates);
+                        List<ImportantDate> filteredDates = dates.stream()
+                                .filter(d -> d.getLocalDate() != null)
+                                .collect(Collectors.toList());
+
+                        eventosOriginais.addAll(filteredDates);
                         Collections.sort(eventosOriginais, Comparator.comparing(ImportantDate::getLocalDate));
                         
                         adapter = new ImportantDateAdapter(ImportantDatesActivity.this, new ArrayList<>(eventosOriginais), candidatesMap);

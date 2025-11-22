@@ -54,7 +54,7 @@ public class ResultadoSondagemAdapter extends RecyclerView.Adapter<ResultadoSond
 
         if (candidato != null) {
             // É um candidato conhecido
-            holder.foto.setImageResource(candidato.getFotoId());
+            holder.foto.setImageResource(candidato.getFotoId(context));
             holder.nome.setText(candidato.getNome());
 
             // Adiciona o listener de clique para abrir o detalhe do candidato

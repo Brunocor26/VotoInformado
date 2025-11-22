@@ -6,16 +6,16 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import pt.ubi.pdm.votoinformado.R;
@@ -26,15 +26,24 @@ import pt.ubi.pdm.votoinformado.classes.Sondagem;
 
 public class SondagemAdapter extends RecyclerView.Adapter<SondagemAdapter.SondagemViewHolder> {
 
-    private final List<Sondagem> sondagemList;
-    private final Map<String, Candidato> candidatoMap;
+    private List<Sondagem> sondagemList;
+    private Map<String, Candidato> candidatoMap;
     private final Context context;
     private final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+    private final DateTimeFormatter firebaseFormatter = DateTimeFormatter.ISO_LOCAL_DATE;
 
-    public SondagemAdapter(Context context, List<Sondagem> sondagemList, List<Candidato> candidatoList) {
+    public SondagemAdapter(Context context, List<Sondagem> sondagemList, Map<String, Candidato> candidatoMap) {
         this.context = context;
-        this.sondagemList = sondagemList;
-        this.candidatoMap = candidatoList.stream().collect(Collectors.toMap(Candidato::getId, c -> c));
+        this.sondagemList = new ArrayList<>(sondagemList);
+        this.candidatoMap = candidatoMap;
+    }
+
+    public void updateData(List<Sondagem> newSondagemList, Map<String, Candidato> newCandidatoMap) {
+        this.sondagemList.clear();
+        this.sondagemList.addAll(newSondagemList);
+        this.candidatoMap.clear();
+        this.candidatoMap.putAll(newCandidatoMap);
+        notifyDataSetChanged();
     }
 
     @NonNull
@@ -48,46 +57,51 @@ public class SondagemAdapter extends RecyclerView.Adapter<SondagemAdapter.Sondag
     public void onBindViewHolder(@NonNull SondagemViewHolder holder, int position) {
         Sondagem sondagem = sondagemList.get(position);
 
-        // --- Preenche os dados da sondagem com verificação de nulos ---
         holder.entidade.setText(sondagem.getEntidade() != null ? sondagem.getEntidade() : "N/A");
 
         String datasStr = "N/A";
-        if (sondagem.getDataInicioRecolha() != null && sondagem.getDataFimRecolha() != null) {
-            try {
-                String dataInicio = java.time.LocalDate.parse(sondagem.getDataInicioRecolha()).format(dateFormatter);
-                String dataFim = java.time.LocalDate.parse(sondagem.getDataFimRecolha()).format(dateFormatter);
-                datasStr = String.format("%s - %s", dataInicio, dataFim);
-            } catch (Exception e) {
-                datasStr = String.format("%s - %s", sondagem.getDataInicioRecolha(), sondagem.getDataFimRecolha());
+        try {
+            if (sondagem.getDataInicioRecolha() != null && sondagem.getDataFimRecolha() != null) {
+                LocalDate dateInicio = LocalDate.parse(sondagem.getDataInicioRecolha().toString(), firebaseFormatter);
+                LocalDate dateFim = LocalDate.parse(sondagem.getDataFimRecolha().toString(), firebaseFormatter);
+                String dataInicioFormatted = dateInicio.format(dateFormatter);
+                String dataFimFormatted = dateFim.format(dateFormatter);
+                datasStr = String.format("%s - %s", dataInicioFormatted, dataFimFormatted);
+            } else if (sondagem.getDataFimRecolha() != null) {
+                LocalDate dateFim = LocalDate.parse(sondagem.getDataFimRecolha().toString(), firebaseFormatter);
+                datasStr = dateFim.format(dateFormatter);
             }
-        } else if (sondagem.getDataFimRecolha() != null) {
-            try {
-                datasStr = java.time.LocalDate.parse(sondagem.getDataFimRecolha()).format(dateFormatter);
-            } catch (Exception e) {
-                datasStr = sondagem.getDataFimRecolha();
-            }
+        } catch (Exception e) {
+            Log.e("SondagemAdapter", "Error parsing date from Firebase", e);
         }
-        holder.datas.setText(datasStr);
 
+        holder.datas.setText(datasStr);
         holder.amostra.setText(sondagem.getTamAmostra() != null ? String.format("Amostra: %d", sondagem.getTamAmostra()) : "Amostra: N/A");
 
-        // Lógica para o candidato em primeiro
         Sondagem.ResultadoPrincipal lider = sondagem.getResultadoPrincipal();
-        Candidato candidatoLider = candidatoMap.get(lider.idCandidato);
 
-        if (candidatoLider != null) {
-            holder.liderFoto.setImageResource(candidatoLider.getFotoId());
-            String liderText = String.format(Locale.US, "%s: %.1f%%", candidatoLider.getNome(), lider.percentagem);
-            holder.liderNome.setText(liderText);
-            holder.liderFoto.setOnClickListener(v -> {
-                Intent intent = new Intent(context, CandidatoDetailActivity.class);
-                intent.putExtra(CandidatoDetailActivity.EXTRA_CANDIDATO, candidatoLider);
-                context.startActivity(intent);
-            });
+        if (lider != null && lider.idCandidato != null) {
+            Candidato candidatoLider = candidatoMap.get(lider.idCandidato);
+
+            if (candidatoLider != null) {
+                holder.liderFoto.setImageResource(candidatoLider.getFotoId(this.context));
+                String liderText = String.format(Locale.US, "%s: %.1f%%", candidatoLider.getNome(), lider.percentagem);
+                holder.liderNome.setText(liderText);
+                holder.liderFoto.setOnClickListener(v -> {
+                    Intent intent = new Intent(context, CandidatoDetailActivity.class);
+                    intent.putExtra(CandidatoDetailActivity.EXTRA_CANDIDATO, candidatoLider);
+                    context.startActivity(intent);
+                });
+            } else {
+                Log.d("SondagemAdapter", "Candidato líder com ID '" + lider.idCandidato + "' não foi encontrado.");
+                Log.d("SondagemAdapter", "Candidatos disponíveis: " + candidatoMap.keySet());
+                holder.liderFoto.setImageResource(R.drawable.candidato_generico);
+                holder.liderNome.setText("Líder não disponível");
+                holder.liderFoto.setOnClickListener(null);
+            }
         } else {
-            Log.d("SondagemAdapter", "Candidato líder com ID '" + lider.idCandidato + "' não foi encontrado.");
             holder.liderFoto.setImageResource(R.drawable.candidato_generico);
-            holder.liderNome.setText("Líder não disponível");
+            holder.liderNome.setText("Resultado indisponível");
             holder.liderFoto.setOnClickListener(null);
         }
 

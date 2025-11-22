@@ -89,5 +89,30 @@
             android:background="?attr/colorOutline"
             android:layout_marginVertical="24dp"/>
 
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Importar JSON"
+        android:textAppearance="@style/TextAppearance.Material3.TitleMedium"
+        android:layout_marginBottom="8dp"/>
+
+    <EditText
+        android:id="@+id/edit_poll_json"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Cole o JSON aqui"
+        android:minLines="5"
+        android:gravity="top|start"
+        android:inputType="textMultiLine"/>
+
+    <Button
+        android:id="@+id/btn_submit_poll_json"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:text="Importar JSON" />
+
     </LinearLayout>
 </ScrollView>

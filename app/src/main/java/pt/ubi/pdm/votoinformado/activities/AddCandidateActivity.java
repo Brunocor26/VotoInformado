@@ -10,7 +10,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import pt.ubi.pdm.votoinformado.R;
 import pt.ubi.pdm.votoinformado.classes.Candidato;
-import pt.ubi.pdm.votoinformado.utils.FirebaseUtils;
+
+import pt.ubi.pdm.votoinformado.utils.DatabaseHelper;
 
 public class AddCandidateActivity extends AppCompatActivity {
 
@@ -45,18 +46,17 @@ public class AddCandidateActivity extends AppCompatActivity {
             return;
         }
 
-        Candidato candidato = new Candidato(
-                id,
-                getStringOrNull(editName),
-                getStringOrNull(editParty),
-                getStringOrNull(editPhotoName),
-                getStringOrNull(editProfession),
-                getStringOrNull(editMainRoles),
-                getStringOrNull(editBio),
-                getStringOrNull(editWebsite)
-        );
+        Candidato candidato = new Candidato();
+        candidato.setId(id);
+        candidato.setNome(getStringOrNull(editName));
+        candidato.setPartido(getStringOrNull(editParty));
+        candidato.setFotoUrl(getStringOrNull(editPhotoName));
+        candidato.setProfissao(getStringOrNull(editProfession));
+        candidato.setCargosPrincipais(getStringOrNull(editMainRoles));
+        candidato.setBiografiaCurta(getStringOrNull(editBio));
+        candidato.setSiteOficial(getStringOrNull(editWebsite));
 
-        FirebaseUtils.saveCandidate(candidato, AddCandidateActivity.this);
+        DatabaseHelper.saveCandidate(candidato, AddCandidateActivity.this);
     }
 
 

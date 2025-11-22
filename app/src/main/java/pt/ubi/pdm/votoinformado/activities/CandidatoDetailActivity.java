@@ -38,9 +38,6 @@ public class CandidatoDetailActivity extends AppCompatActivity {
             return;
         }
 
-        // Corrige o problema da imagem perdida
-        candidato.cacheFotoId(this);
-
         CollapsingToolbarLayout collapsingToolbar = findViewById(R.id.collapsing_toolbar);
         ImageView candidatoImageView = findViewById(R.id.image_candidato_detail);
         TextView partidoTextView = findViewById(R.id.text_partido_detail);
@@ -50,7 +47,7 @@ public class CandidatoDetailActivity extends AppCompatActivity {
         FloatingActionButton fabSite = findViewById(R.id.fab_site);
 
         collapsingToolbar.setTitle(candidato.getNome());
-        candidatoImageView.setImageResource(candidato.getFotoId());
+        candidatoImageView.setImageResource(candidato.getFotoId(this));
 
         partidoTextView.setText(candidato.getPartido());
         profissaoTextView.setText("Profissão: " + candidato.getProfissao());

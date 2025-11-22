@@ -19,7 +19,7 @@ import java.util.Map;
 import pt.ubi.pdm.votoinformado.R;
 import pt.ubi.pdm.votoinformado.adapters.CandidatoAdapter;
 import pt.ubi.pdm.votoinformado.classes.Candidato;
-import pt.ubi.pdm.votoinformado.utils.FirebaseUtils;
+import pt.ubi.pdm.votoinformado.utils.DatabaseHelper;
 
 public class CandidatosFragment extends Fragment {
 
@@ -44,7 +44,7 @@ public class CandidatosFragment extends Fragment {
     }
 
     private void loadFirebaseData() {
-        FirebaseUtils.getCandidates(getContext(), new FirebaseUtils.DataCallback<Map<String, Candidato>>() {
+        DatabaseHelper.getCandidates(getContext(), new DatabaseHelper.DataCallback<Map<String, Candidato>>() {
             @Override
             public void onCallback(Map<String, Candidato> candidatesMap) {
                 candidatoList.addAll(candidatesMap.values());

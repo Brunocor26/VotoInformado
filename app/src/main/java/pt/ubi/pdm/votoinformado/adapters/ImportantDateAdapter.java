@@ -53,7 +53,7 @@ public class ImportantDateAdapter extends RecyclerView.Adapter<ImportantDateAdap
                 Candidato entrevistado = d.getCandidato();
                 if (entrevistado != null) {
                     h.categoria.setText("Entrevista: " + entrevistado.getNome());
-                    h.img1.setImageResource(entrevistado.getFotoId());
+                    h.img1.setImageResource(entrevistado.getFotoId(context));
                     h.img1.setVisibility(View.VISIBLE);
                     h.img2.setVisibility(View.GONE);
                 }
@@ -66,8 +66,8 @@ public class ImportantDateAdapter extends RecyclerView.Adapter<ImportantDateAdap
                     h.categoria.setText("Debate: " + debatedor1.getNome() + " vs " + debatedor2.getNome());
                     h.img1.setVisibility(View.VISIBLE);
                     h.img2.setVisibility(View.VISIBLE);
-                    h.img1.setImageResource(debatedor1.getFotoId());
-                    h.img2.setImageResource(debatedor2.getFotoId());
+                    h.img1.setImageResource(debatedor1.getFotoId(context));
+                    h.img2.setImageResource(debatedor2.getFotoId(context));
                 } else {
                      h.img1.setVisibility(View.GONE);
                      h.img2.setVisibility(View.GONE);

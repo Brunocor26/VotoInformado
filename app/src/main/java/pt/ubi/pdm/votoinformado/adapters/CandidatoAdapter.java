@@ -39,7 +39,7 @@ public class CandidatoAdapter extends RecyclerView.Adapter<CandidatoAdapter.Cand
         Candidato candidato = candidatoList.get(position);
         holder.nomeCandidato.setText(candidato.getNome());
         holder.partidoCandidato.setText(candidato.getPartido());
-        holder.fotoCandidato.setImageResource(candidato.getFotoId());
+        holder.fotoCandidato.setImageResource(candidato.getFotoId(context)); // Corrected call
 
         // Animação
         Animation anim = AnimationUtils.loadAnimation(holder.itemView.getContext(), R.anim.fade_in_slip_up);

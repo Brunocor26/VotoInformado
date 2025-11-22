@@ -10,20 +10,20 @@ import com.google.android.material.appbar.MaterialToolbar;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import pt.ubi.pdm.votoinformado.R;
 import pt.ubi.pdm.votoinformado.adapters.SondagemAdapter;
 import pt.ubi.pdm.votoinformado.classes.Candidato;
 import pt.ubi.pdm.votoinformado.classes.Sondagem;
-import pt.ubi.pdm.votoinformado.utils.FirebaseUtils;
+import pt.ubi.pdm.votoinformado.utils.DatabaseHelper;
 
 public class SondagensActivity extends AppCompatActivity {
 
     private SondagemAdapter adapter;
-    private List<Sondagem> sondagemList = new ArrayList<>();
-    private List<Candidato> candidatoList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,23 +36,25 @@ public class SondagensActivity extends AppCompatActivity {
         RecyclerView recyclerView = findViewById(R.id.recycler_view_sondagens);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        adapter = new SondagemAdapter(this, sondagemList, candidatoList);
+        adapter = new SondagemAdapter(this, new ArrayList<>(), new HashMap<>());
         recyclerView.setAdapter(adapter);
 
         loadFirebaseData();
     }
 
     private void loadFirebaseData() {
-        FirebaseUtils.getCandidates(this, new FirebaseUtils.DataCallback<Map<String, Candidato>>() {
+        DatabaseHelper.getCandidates(this, new DatabaseHelper.DataCallback<Map<String, Candidato>>() {
             @Override
             public void onCallback(Map<String, Candidato> candidatesMap) {
-                candidatoList.addAll(candidatesMap.values());
-                FirebaseUtils.getSondagens(new FirebaseUtils.DataCallback<List<Sondagem>>() {
+                DatabaseHelper.getSondagens(new DatabaseHelper.DataCallback<List<Sondagem>>() {
                     @Override
                     public void onCallback(List<Sondagem> sondagens) {
-                        sondagemList.addAll(sondagens);
-                        sondagemList.sort(Comparator.comparing(Sondagem::getDataFimRecolha).reversed());
-                        adapter.notifyDataSetChanged();
+                        List<Sondagem> filteredSondagens = sondagens.stream()
+                                .filter(s -> s.getDataFimRecolha() != null)
+                                .collect(Collectors.toList());
+                        
+                        filteredSondagens.sort(Comparator.comparing(Sondagem::getDataFimRecolha).reversed());
+                        adapter.updateData(filteredSondagens, candidatesMap);
                     }
 
                     @Override

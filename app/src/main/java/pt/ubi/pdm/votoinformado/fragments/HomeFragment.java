@@ -20,13 +20,14 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import pt.ubi.pdm.votoinformado.R;
 import pt.ubi.pdm.votoinformado.activities.SettingsActivity;
 import pt.ubi.pdm.votoinformado.classes.Candidato;
 import pt.ubi.pdm.votoinformado.classes.Sondagem;
-import pt.ubi.pdm.votoinformado.utils.FirebaseUtils;
+import pt.ubi.pdm.votoinformado.utils.DatabaseHelper;
 
 public class HomeFragment extends Fragment {
 
@@ -64,10 +65,10 @@ public class HomeFragment extends Fragment {
         TextView sondagemDestaquePercentagem = view.findViewById(R.id.sondagem_destaque_percentagem);
         CircleImageView sondagemDestaqueImage = view.findViewById(R.id.sondagem_destaque_image);
 
-        FirebaseUtils.getCandidates(getContext(), new FirebaseUtils.DataCallback<Map<String, Candidato>>() {
+        DatabaseHelper.getCandidates(getContext(), new DatabaseHelper.DataCallback<Map<String, Candidato>>() {
             @Override
             public void onCallback(Map<String, Candidato> candidatesMap) {
-                FirebaseUtils.getSondagens(new FirebaseUtils.DataCallback<List<Sondagem>>() {
+                DatabaseHelper.getSondagens(new DatabaseHelper.DataCallback<List<Sondagem>>() {
                     @Override
                     public void onCallback(List<Sondagem> sondagens) {
                         if (sondagens.isEmpty() || candidatesMap.isEmpty()) {
@@ -77,21 +78,23 @@ public class HomeFragment extends Fragment {
                         }
 
                         sondagens.stream()
-                                .filter(s -> s.getDataFimRecolha() != null)
-                                .max(Comparator.comparing(Sondagem::getDataFimRecolha))
+                                .max((s1, s2) -> {
+                                    String d1 = s1.getDataFimRecolha();
+                                    String d2 = s2.getDataFimRecolha();
+                                    if (d1 == null && d2 == null) return 0;
+                                    if (d1 == null) return -1;
+                                    if (d2 == null) return 1;
+                                    return d1.compareTo(d2);
+                                })
                                 .ifPresent(ultimaSondagem -> {
-                                    Sondagem.ResultadoPrincipal vencedor = ultimaSondagem.getResultadoPrincipal();
+                                    Sondagem.ResultadoPrincipal vencedor = ultimaSondagem.getCalculatedResultadoPrincipal();
                                     if (vencedor != null) {
                                         Candidato candidatoVencedor = candidatesMap.get(vencedor.idCandidato);
 
                                         if (candidatoVencedor != null) {
                                             sondagemDestaqueNome.setText(candidatoVencedor.getNome());
                                             sondagemDestaquePercentagem.setText(String.format(Locale.US, "%.1f%%", vencedor.percentagem));
-                                            if (candidatoVencedor.getFotoId() != 0) {
-                                                sondagemDestaqueImage.setImageResource(candidatoVencedor.getFotoId());
-                                            } else {
-                                                sondagemDestaqueImage.setImageResource(R.drawable.candidato_generico);
-                                            }
+                                            sondagemDestaqueImage.setImageResource(candidatoVencedor.getFotoId(getContext()));
                                         } else {
                                             sondagemDestaqueNome.setText("Líder não encontrado");
                                             sondagemDestaquePercentagem.setText("");

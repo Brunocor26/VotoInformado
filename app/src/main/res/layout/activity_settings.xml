@@ -128,9 +128,9 @@
                 android:checked="true"/>
         </LinearLayout>
 
-        <!-- Item de Linguagem -->
+        <!-- Item de Developer Options -->
         <LinearLayout
-            android:id="@+id/language_button"
+            android:id="@+id/dev_options_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
@@ -142,8 +142,7 @@
 
             <ImageView
                 android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:src="@drawable/baseline_language_24"/>
+                android:layout_height="24dp" />
 
             <TextView
                 style="@style/TextAppearance.Material3.BodyLarge"
@@ -151,7 +150,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_weight="1"
-                android:text="Linguagem"
+                android:text="Developer Options"
                 android:textColor="?attr/colorOnSurface"/>
 
             <ImageView

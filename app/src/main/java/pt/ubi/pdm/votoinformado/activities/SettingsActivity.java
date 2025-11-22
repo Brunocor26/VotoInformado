@@ -1,5 +1,6 @@
 package pt.ubi.pdm.votoinformado.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
@@ -14,7 +15,7 @@ public class SettingsActivity extends AppCompatActivity {
     private SwitchMaterial darkModeSwitch;
     private SwitchMaterial notificationsSwitch;
     private LinearLayout profileSection;
-    private LinearLayout languageButton;
+    private LinearLayout devOptionsButton;
     private LinearLayout logoutButton;
 
     @Override
@@ -32,7 +33,7 @@ public class SettingsActivity extends AppCompatActivity {
         darkModeSwitch = findViewById(R.id.darkModeSwitch);
         notificationsSwitch = findViewById(R.id.notifications_switch);
         profileSection = findViewById(R.id.profile_section);
-        languageButton = findViewById(R.id.language_button);
+        devOptionsButton = findViewById(R.id.dev_options_button);
         logoutButton = findViewById(R.id.logout_button);
         
         setDarkModeSwitch();
@@ -62,8 +63,8 @@ public class SettingsActivity extends AppCompatActivity {
             Toast.makeText(this, "Notificações " + status, Toast.LENGTH_SHORT).show();
         });
 
-        languageButton.setOnClickListener(v -> {
-            Toast.makeText(this, "Mudar Linguagem Clicado", Toast.LENGTH_SHORT).show();
+        devOptionsButton.setOnClickListener(v -> {
+            startActivity(new Intent(this, DevActivity.class));
         });
 
         logoutButton.setOnClickListener(v -> {

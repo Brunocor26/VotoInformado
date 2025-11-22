@@ -1,7 +1,7 @@
 package pt.ubi.pdm.votoinformado.classes;
 
 import java.io.Serializable;
-import java.time.LocalDate;
+
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -13,14 +13,27 @@ public class Sondagem implements Serializable {
     // --- Campos (com tipos que permitem valores nulos) ---
     private String entidade;
     private Integer tam_amostra;
-    private LocalDate data_inicio_recolha;
-    private LocalDate data_fim_recolha;
+    private String data_inicio_recolha;
+    private String data_fim_recolha;
     private String metodologia;
     private String universo;
     private Double margem_erro;
     private Double nivel_confianca;
     private Map<String, Double> resultados;
     private Map<String, Double> resultado_dist_indecisos;
+
+    public Sondagem(String entidade, Integer tam_amostra, String data_inicio_recolha, String data_fim_recolha, String metodologia, String universo, Double margem_erro, Double nivel_confianca, Map<String, Double> resultados, Map<String, Double> resultado_dist_indecisos) {
+        this.entidade = entidade;
+        this.tam_amostra = tam_amostra;
+        this.data_inicio_recolha = data_inicio_recolha;
+        this.data_fim_recolha = data_fim_recolha;
+        this.metodologia = metodologia;
+        this.universo = universo;
+        this.margem_erro = margem_erro;
+        this.nivel_confianca = nivel_confianca;
+        this.resultados = resultados;
+        this.resultado_dist_indecisos = resultado_dist_indecisos;
+    }
 
     // --- Classe interna para guardar o resultado principal ---
     public static class ResultadoPrincipal implements Serializable {
@@ -36,8 +49,8 @@ public class Sondagem implements Serializable {
     // --- Métodos Get ---
     public String getEntidade() { return entidade; }
     public Integer getTamAmostra() { return tam_amostra; }
-    public LocalDate getDataInicioRecolha() { return data_inicio_recolha; }
-    public LocalDate getDataFimRecolha() { return data_fim_recolha; }
+    public String getDataInicioRecolha() { return data_inicio_recolha; }
+    public String getDataFimRecolha() { return data_fim_recolha; }
     public String getMetodologia() { return metodologia; }
     public String getUniverso() { return universo; }
     public Double getMargemErro() { return margem_erro; }

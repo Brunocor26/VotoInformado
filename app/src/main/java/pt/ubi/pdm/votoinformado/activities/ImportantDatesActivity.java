@@ -1,8 +1,8 @@
 package pt.ubi.pdm.votoinformado.activities;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.Button;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -16,24 +16,20 @@ import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
-
 import java.util.Map;
 
 import pt.ubi.pdm.votoinformado.R;
 import pt.ubi.pdm.votoinformado.adapters.ImportantDateAdapter;
 import pt.ubi.pdm.votoinformado.classes.Candidato;
 import pt.ubi.pdm.votoinformado.classes.ImportantDate;
-import pt.ubi.pdm.votoinformado.parsing.JsonUtils;
-import pt.ubi.pdm.votoinformado.parsing.JsonUtilsDatas;
+import pt.ubi.pdm.votoinformado.utils.FirebaseUtils;
 
 public class ImportantDatesActivity extends AppCompatActivity {
 
     private RecyclerView recyclerView;
     private ImportantDateAdapter adapter;
-
-    private List<ImportantDate> eventosOriginais; // lista completa
+    private List<ImportantDate> eventosOriginais = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,47 +39,65 @@ public class ImportantDatesActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.recyclerDates);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        // --- carregar candidatos ---
-        List<Candidato> candidatos = JsonUtils.loadCandidatos(this);
-        Map<String, Candidato> mapaCandidatos = new HashMap<>();
-        for (Candidato c : candidatos) mapaCandidatos.put(c.getId(), c);
+        loadFirebaseData();
 
-        // --- carregar datas ---
-        eventosOriginais = JsonUtilsDatas.carregarDatas(this, mapaCandidatos);
+        Button btnFiltro = findViewById(R.id.btnFiltroData);
+        btnFiltro.setOnClickListener(v -> abrirCalendario());
 
-        // ordenar
-        Collections.sort(eventosOriginais, Comparator.comparing(ImportantDate::getLocalDate));
+        Button btnLimpar = findViewById(R.id.btnLimparFiltro);
+        btnLimpar.setOnClickListener(v -> {
+            if (adapter != null) {
+                adapter.updateList(new ArrayList<>(eventosOriginais));
+            }
+        });
+    }
 
-        // mostrar todos
-        adapter = new ImportantDateAdapter(this, new ArrayList<>(eventosOriginais));
-        recyclerView.setAdapter(adapter);
+    private void loadFirebaseData() {
+        FirebaseUtils.getCandidates(this, new FirebaseUtils.DataCallback<Map<String, Candidato>>() {
+            @Override
+            public void onCallback(Map<String, Candidato> candidatesMap) {
+                FirebaseUtils.getImportantDates(new FirebaseUtils.DataCallback<List<ImportantDate>>() {
+                    @Override
+                    public void onCallback(List<ImportantDate> dates) {
+                        eventosOriginais.addAll(dates);
+                        Collections.sort(eventosOriginais, Comparator.comparing(ImportantDate::getLocalDate));
+                        
+                        adapter = new ImportantDateAdapter(ImportantDatesActivity.this, new ArrayList<>(eventosOriginais), candidatesMap);
+                        recyclerView.setAdapter(adapter);
+                        
+                        applyFilter();
+                    }
+
+                    @Override
+                    public void onError(String message) {
+                        Toast.makeText(ImportantDatesActivity.this, "Failed to load dates: " + message, Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+
+            @Override
+            public void onError(String message) {
+                Toast.makeText(ImportantDatesActivity.this, "Failed to load candidates: " + message, Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void applyFilter() {
         String filtro = getIntent().getStringExtra("filtro_categoria");
         if (filtro != null && !filtro.equals("Todos")) {
-
             List<ImportantDate> filtrados = new ArrayList<>();
-
             for (ImportantDate e : eventosOriginais) {
-
                 if (filtro.equals("DiasVotar")) {
                     if (e.getCategory().equalsIgnoreCase("Voto antecipado") ||
                             e.getCategory().equalsIgnoreCase("Eleições")) {
                         filtrados.add(e);
                     }
-                }
-                else if (e.getCategory().equalsIgnoreCase(filtro)) {
+                } else if (e.getCategory().equalsIgnoreCase(filtro)) {
                     filtrados.add(e);
                 }
             }
-
             adapter.updateList(filtrados);
         }
-        // --- botão filtrar por data ---
-        Button btnFiltro = findViewById(R.id.btnFiltroData);
-        btnFiltro.setOnClickListener(v -> abrirCalendario());
-
-        // --- botão limpar ---
-        Button btnLimpar = findViewById(R.id.btnLimparFiltro);
-        btnLimpar.setOnClickListener(v -> adapter.updateList(new ArrayList<>(eventosOriginais)));
     }
 
     private void abrirCalendario() {
@@ -101,18 +115,17 @@ public class ImportantDatesActivity extends AppCompatActivity {
 
             filtrarPorData(data);
         });
-
     }
 
     private void filtrarPorData(LocalDate data) {
         List<ImportantDate> filtrados = new ArrayList<>();
-
         for (ImportantDate e : eventosOriginais) {
             if (e.getLocalDate().isEqual(data)) {
                 filtrados.add(e);
             }
         }
-
-        adapter.updateList(filtrados);
+        if(adapter != null) {
+            adapter.updateList(filtrados);
+        }
     }
 }

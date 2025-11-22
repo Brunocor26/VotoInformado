@@ -11,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
+import java.util.Map;
 
 import pt.ubi.pdm.votoinformado.R;
 import pt.ubi.pdm.votoinformado.classes.Candidato;
@@ -19,60 +20,57 @@ import pt.ubi.pdm.votoinformado.classes.ImportantDate;
 public class ImportantDateAdapter extends RecyclerView.Adapter<ImportantDateAdapter.Holder> {
 
     private final Context context;
-    private final List<ImportantDate> lista;
+    private List<ImportantDate> lista;
+    private final Map<String, Candidato> candidatoMap;
 
-    public ImportantDateAdapter(Context context, List<ImportantDate> lista) {
+    public ImportantDateAdapter(Context context, List<ImportantDate> lista, Map<String, Candidato> candidatoMap) {
         this.context = context;
         this.lista = lista;
+        this.candidatoMap = candidatoMap;
     }
 
-    // 🚀 MÉTODO QUE TE FALTAVA!
     public void updateList(List<ImportantDate> novaLista) {
-        lista.clear();
-        lista.addAll(novaLista);
+        this.lista = novaLista;
         notifyDataSetChanged();
     }
 
     @NonNull
     @Override
     public Holder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(context).inflate(
-                R.layout.item_important_date,
-                parent,
-                false
-        );
+        View v = LayoutInflater.from(context).inflate(R.layout.item_important_date, parent, false);
         return new Holder(v);
     }
 
     @Override
     public void onBindViewHolder(@NonNull Holder h, int position) {
-
         ImportantDate d = lista.get(position);
 
         h.titulo.setText(d.getTitle());
         h.dataHora.setText(d.getDate() + " · " + d.getTime());
 
         switch (d.getCategory()) {
-
             case "Entrevista":
-                if (d.getCandidato() != null) {
-                    h.categoria.setText("Entrevista: " + d.getCandidato().getNome());
-                    h.img1.setImageResource(d.getCandidato().getFotoId());
+                Candidato entrevistado = d.getCandidato();
+                if (entrevistado != null) {
+                    h.categoria.setText("Entrevista: " + entrevistado.getNome());
+                    h.img1.setImageResource(entrevistado.getFotoId());
                     h.img1.setVisibility(View.VISIBLE);
                     h.img2.setVisibility(View.GONE);
                 }
                 break;
 
             case "Debate":
-                if (d.getCandidato1() != null && d.getCandidato2() != null) {
-                    h.categoria.setText("Debate: " + d.getCandidato1().getNome()
-                            + " vs " + d.getCandidato2().getNome());
-
+                Candidato debatedor1 = d.getCandidato1();
+                Candidato debatedor2 = d.getCandidato2();
+                if (debatedor1 != null && debatedor2 != null) {
+                    h.categoria.setText("Debate: " + debatedor1.getNome() + " vs " + debatedor2.getNome());
                     h.img1.setVisibility(View.VISIBLE);
                     h.img2.setVisibility(View.VISIBLE);
-
-                    h.img1.setImageResource(d.getCandidato1().getFotoId());
-                    h.img2.setImageResource(d.getCandidato2().getFotoId());
+                    h.img1.setImageResource(debatedor1.getFotoId());
+                    h.img2.setImageResource(debatedor2.getFotoId());
+                } else {
+                     h.img1.setVisibility(View.GONE);
+                     h.img2.setVisibility(View.GONE);
                 }
                 break;
 
@@ -90,17 +88,14 @@ public class ImportantDateAdapter extends RecyclerView.Adapter<ImportantDateAdap
     }
 
     static class Holder extends RecyclerView.ViewHolder {
-
         TextView titulo, dataHora, categoria;
         ImageView img1, img2;
 
         Holder(@NonNull View itemView) {
             super(itemView);
-
             titulo = itemView.findViewById(R.id.txtTituloEvento);
             dataHora = itemView.findViewById(R.id.txtDataHora);
             categoria = itemView.findViewById(R.id.txtCategoria);
-
             img1 = itemView.findViewById(R.id.imgCandidato1);
             img2 = itemView.findViewById(R.id.imgCandidato2);
         }

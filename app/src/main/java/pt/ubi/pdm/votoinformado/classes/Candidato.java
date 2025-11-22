@@ -27,10 +27,25 @@ public class Candidato implements Serializable {
     public Candidato() {
     }
 
+    public Candidato(String id, String nome, String partido, String fotoNome, String profissao, String cargosPrincipais, String biografiaCurta, String siteOficial) {
+        this.id = id;
+        this.nome = nome;
+        this.partido = partido;
+        this.fotoNome = fotoNome;
+        this.profissao = profissao;
+        this.cargosPrincipais = cargosPrincipais;
+        this.biografiaCurta = biografiaCurta;
+        this.siteOficial = siteOficial;
+    }
+
     // 3. GETTERS PARA TODOS OS CAMPOS
 
     public String getId() {
         return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getNome() {

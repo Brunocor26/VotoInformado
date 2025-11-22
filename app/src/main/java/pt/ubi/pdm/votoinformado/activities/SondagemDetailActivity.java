@@ -10,16 +10,14 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.time.format.DateTimeFormatter;
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import pt.ubi.pdm.votoinformado.R;
 import pt.ubi.pdm.votoinformado.adapters.ResultadoSondagemAdapter;
 import pt.ubi.pdm.votoinformado.classes.Candidato;
 import pt.ubi.pdm.votoinformado.classes.Sondagem;
-import pt.ubi.pdm.votoinformado.parsing.JsonUtils;
+import pt.ubi.pdm.votoinformado.utils.FirebaseUtils;
 
 public class SondagemDetailActivity extends AppCompatActivity {
 
@@ -39,15 +37,18 @@ public class SondagemDetailActivity extends AppCompatActivity {
             return;
         }
 
-        // Carrega a lista de candidatos para obter os nomes e fotos
-        List<Candidato> allCandidatos = JsonUtils.loadCandidatos(this);
-        Map<String, Candidato> candidatoMap = allCandidatos.stream().collect(Collectors.toMap(Candidato::getId, c -> c));
+        FirebaseUtils.getCandidates(this, new FirebaseUtils.DataCallback<Map<String, Candidato>>() {
+            @Override
+            public void onCallback(Map<String, Candidato> candidatesMap) {
+                setupViews(sondagem);
+                setupResultadosList(sondagem, candidatesMap);
+            }
 
-        // --- Configuração dos Componentes de Texto ---
-        setupViews(sondagem);
-
-        // --- Configuração da Lista de Resultados ---
-        setupResultadosList(sondagem, candidatoMap);
+            @Override
+            public void onError(String message) {
+                Toast.makeText(SondagemDetailActivity.this, "Failed to load candidate data: " + message, Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void setupViews(Sondagem sondagem) {
@@ -62,25 +63,33 @@ public class SondagemDetailActivity extends AppCompatActivity {
         backButton.setOnClickListener(v -> finish());
 
         entidadeTextView.setText(sondagem.getEntidade() != null ? sondagem.getEntidade() : "N/A");
-        
+
         String datasStr = "N/A";
         if (sondagem.getDataInicioRecolha() != null && sondagem.getDataFimRecolha() != null) {
-            String dataInicio = sondagem.getDataInicioRecolha().format(dateFormatter);
-            String dataFim = sondagem.getDataFimRecolha().format(dateFormatter);
-            datasStr = String.format("Recolha: %s a %s", dataInicio, dataFim);
+            try {
+                String dataInicio = java.time.LocalDate.parse(sondagem.getDataInicioRecolha()).format(dateFormatter);
+                String dataFim = java.time.LocalDate.parse(sondagem.getDataFimRecolha()).format(dateFormatter);
+                datasStr = String.format("Recolha: %s a %s", dataInicio, dataFim);
+            } catch (Exception e) {
+                datasStr = String.format("Recolha: %s a %s", sondagem.getDataInicioRecolha(), sondagem.getDataFimRecolha());
+            }
         } else if (sondagem.getDataFimRecolha() != null) {
-            datasStr = "Recolha até: " + sondagem.getDataFimRecolha().format(dateFormatter);
+            try {
+                datasStr = "Recolha até: " + java.time.LocalDate.parse(sondagem.getDataFimRecolha()).format(dateFormatter);
+            } catch (Exception e) {
+                datasStr = "Recolha até: " + sondagem.getDataFimRecolha();
+            }
         }
         datasTextView.setText(datasStr);
 
         metodologiaTextView.setText(sondagem.getMetodologia() != null ? "Metodologia: " + sondagem.getMetodologia() : "Metodologia: N/A");
         universoTextView.setText(sondagem.getUniverso() != null ? "Universo: " + sondagem.getUniverso() : "Universo: N/A");
         amostraTextView.setText(sondagem.getTamAmostra() != null ? "Amostra: " + sondagem.getTamAmostra() : "Amostra: N/A");
-        
+
         String margemErroStr = "Margem de Erro: N/A";
         if (sondagem.getMargemErro() != null && sondagem.getNivelConfianca() != null) {
-             margemErroStr = String.format(Locale.US, "Margem de Erro: ±%.1f%% (%d%% de confiança)",
-                sondagem.getMargemErro(), (int) (sondagem.getNivelConfianca() * 100));
+            margemErroStr = String.format(Locale.US, "Margem de Erro: ±%.1f%% (%d%% de confiança)",
+                    sondagem.getMargemErro(), (int) (sondagem.getNivelConfianca() * 100));
         }
         margemErroTextView.setText(margemErroStr);
     }

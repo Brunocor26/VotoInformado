@@ -53,11 +53,19 @@ public class SondagemAdapter extends RecyclerView.Adapter<SondagemAdapter.Sondag
 
         String datasStr = "N/A";
         if (sondagem.getDataInicioRecolha() != null && sondagem.getDataFimRecolha() != null) {
-            String dataInicio = sondagem.getDataInicioRecolha().format(dateFormatter);
-            String dataFim = sondagem.getDataFimRecolha().format(dateFormatter);
-            datasStr = String.format("%s - %s", dataInicio, dataFim);
+            try {
+                String dataInicio = java.time.LocalDate.parse(sondagem.getDataInicioRecolha()).format(dateFormatter);
+                String dataFim = java.time.LocalDate.parse(sondagem.getDataFimRecolha()).format(dateFormatter);
+                datasStr = String.format("%s - %s", dataInicio, dataFim);
+            } catch (Exception e) {
+                datasStr = String.format("%s - %s", sondagem.getDataInicioRecolha(), sondagem.getDataFimRecolha());
+            }
         } else if (sondagem.getDataFimRecolha() != null) {
-            datasStr = sondagem.getDataFimRecolha().format(dateFormatter);
+            try {
+                datasStr = java.time.LocalDate.parse(sondagem.getDataFimRecolha()).format(dateFormatter);
+            } catch (Exception e) {
+                datasStr = sondagem.getDataFimRecolha();
+            }
         }
         holder.datas.setText(datasStr);
 

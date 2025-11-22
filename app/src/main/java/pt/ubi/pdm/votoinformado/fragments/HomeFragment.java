@@ -6,6 +6,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -18,14 +20,13 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import pt.ubi.pdm.votoinformado.R;
 import pt.ubi.pdm.votoinformado.activities.SettingsActivity;
 import pt.ubi.pdm.votoinformado.classes.Candidato;
 import pt.ubi.pdm.votoinformado.classes.Sondagem;
-import pt.ubi.pdm.votoinformado.parsing.JsonUtils;
+import pt.ubi.pdm.votoinformado.utils.FirebaseUtils;
 
 public class HomeFragment extends Fragment {
 
@@ -35,12 +36,12 @@ public class HomeFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
 
         updateUI(view);
+        loadFirebaseData(view);
 
         return view;
     }
 
     private void updateUI(View view) {
-        // Greeting
         TextView greetingText = view.findViewById(R.id.greeting_text);
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
         if (currentUser != null) {
@@ -48,7 +49,6 @@ public class HomeFragment extends Fragment {
             greetingText.setText(String.format("Bom Dia, %s!", userName != null ? userName : "Utilizador"));
         }
 
-        // Profile Image
         CircleImageView profileImage = view.findViewById(R.id.profile_image_home);
         profileImage.setOnClickListener(v -> startActivity(new Intent(getActivity(), SettingsActivity.class)));
 
@@ -57,49 +57,64 @@ public class HomeFragment extends Fragment {
         } else {
             profileImage.setImageResource(R.drawable.candidato_generico);
         }
+    }
 
-        // Last poll winner
+    private void loadFirebaseData(View view) {
         TextView sondagemDestaqueNome = view.findViewById(R.id.sondagem_destaque_nome);
         TextView sondagemDestaquePercentagem = view.findViewById(R.id.sondagem_destaque_percentagem);
         CircleImageView sondagemDestaqueImage = view.findViewById(R.id.sondagem_destaque_image);
 
-        List<Sondagem> sondagens = JsonUtils.loadSondagens(requireContext());
-        List<Candidato> candidatos = JsonUtils.loadCandidatos(requireContext());
-
-        if (sondagens == null || sondagens.isEmpty() || candidatos == null || candidatos.isEmpty()) {
-            sondagemDestaqueNome.setText("Sem dados de sondagens");
-            sondagemDestaquePercentagem.setText("");
-            return;
-        }
-
-        Map<String, Candidato> candidatoMap = candidatos.stream()
-                .collect(Collectors.toMap(Candidato::getId, c -> c));
-
-        sondagens.stream()
-                .max(Comparator.comparing(Sondagem::getDataFimRecolha))
-                .ifPresent(ultimaSondagem -> {
-                    Sondagem.ResultadoPrincipal vencedor = ultimaSondagem.getResultadoPrincipal();
-                    if (vencedor != null) {
-                        Candidato candidatoVencedor = candidatoMap.get(vencedor.idCandidato);
-
-                        if (candidatoVencedor != null) {
-                            sondagemDestaqueNome.setText(candidatoVencedor.getNome());
-                            sondagemDestaquePercentagem.setText(String.format(Locale.US, "%.1f%%", vencedor.percentagem));
-                            if (candidatoVencedor.getFotoId() != 0) {
-                                sondagemDestaqueImage.setImageResource(candidatoVencedor.getFotoId());
-                            } else {
-                                sondagemDestaqueImage.setImageResource(R.drawable.candidato_generico);
-                            }
-                        } else {
-                            sondagemDestaqueNome.setText("Líder não encontrado");
+        FirebaseUtils.getCandidates(getContext(), new FirebaseUtils.DataCallback<Map<String, Candidato>>() {
+            @Override
+            public void onCallback(Map<String, Candidato> candidatesMap) {
+                FirebaseUtils.getSondagens(new FirebaseUtils.DataCallback<List<Sondagem>>() {
+                    @Override
+                    public void onCallback(List<Sondagem> sondagens) {
+                        if (sondagens.isEmpty() || candidatesMap.isEmpty()) {
+                            sondagemDestaqueNome.setText("Sem dados de sondagens");
                             sondagemDestaquePercentagem.setText("");
-                            sondagemDestaqueImage.setImageResource(R.drawable.candidato_generico);
+                            return;
                         }
-                    } else {
-                        sondagemDestaqueNome.setText("Resultado indisponível");
-                        sondagemDestaquePercentagem.setText("");
-                        sondagemDestaqueImage.setImageResource(R.drawable.candidato_generico);
+
+                        sondagens.stream()
+                                .max(Comparator.comparing(Sondagem::getDataFimRecolha))
+                                .ifPresent(ultimaSondagem -> {
+                                    Sondagem.ResultadoPrincipal vencedor = ultimaSondagem.getResultadoPrincipal();
+                                    if (vencedor != null) {
+                                        Candidato candidatoVencedor = candidatesMap.get(vencedor.idCandidato);
+
+                                        if (candidatoVencedor != null) {
+                                            sondagemDestaqueNome.setText(candidatoVencedor.getNome());
+                                            sondagemDestaquePercentagem.setText(String.format(Locale.US, "%.1f%%", vencedor.percentagem));
+                                            if (candidatoVencedor.getFotoId() != 0) {
+                                                sondagemDestaqueImage.setImageResource(candidatoVencedor.getFotoId());
+                                            } else {
+                                                sondagemDestaqueImage.setImageResource(R.drawable.candidato_generico);
+                                            }
+                                        } else {
+                                            sondagemDestaqueNome.setText("Líder não encontrado");
+                                            sondagemDestaquePercentagem.setText("");
+                                            sondagemDestaqueImage.setImageResource(R.drawable.candidato_generico);
+                                        }
+                                    } else {
+                                        sondagemDestaqueNome.setText("Resultado indisponível");
+                                        sondagemDestaquePercentagem.setText("");
+                                        sondagemDestaqueImage.setImageResource(R.drawable.candidato_generico);
+                                    }
+                                });
+                    }
+
+                    @Override
+                    public void onError(String message) {
+                        Toast.makeText(getContext(), "Failed to load polls: " + message, Toast.LENGTH_SHORT).show();
                     }
                 });
+            }
+
+            @Override
+            public void onError(String message) {
+                Toast.makeText(getContext(), "Failed to load candidates: " + message, Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }

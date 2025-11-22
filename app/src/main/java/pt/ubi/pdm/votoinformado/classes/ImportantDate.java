@@ -9,36 +9,49 @@ public class ImportantDate {
     private String time;
     private String category;
 
-    private Candidato candidato;
-    private Candidato candidato1;
-    private Candidato candidato2;
+    private String idCandidato;
+    private String idCandidato1;
+    private String idCandidato2;
 
-    // NOVO: data convertida
-    private LocalDate localDate;
+    private transient LocalDate localDate;
+
+    public ImportantDate() {
+        // Required for Firebase/Gson
+    }
 
     public ImportantDate(String title, String date, String time, String category,
-                         Candidato candidato, Candidato candidato1, Candidato candidato2) {
+                         String idCandidato, String idCandidato1, String idCandidato2) {
 
         this.title = title;
         this.date = date;
         this.time = time;
         this.category = category;
 
-        this.candidato = candidato;
-        this.candidato1 = candidato1;
-        this.candidato2 = candidato2;
+        this.idCandidato = idCandidato;
+        this.idCandidato1 = idCandidato1;
+        this.idCandidato2 = idCandidato2;
 
-        // Conversão automática YYYY-MM-DD → LocalDate
-        this.localDate = LocalDate.parse(date);
+        if (date != null) {
+            this.localDate = LocalDate.parse(date);
+        }
     }
 
     public String getTitle() { return title; }
     public String getDate() { return date; }
     public String getTime() { return time; }
     public String getCategory() { return category; }
-    public Candidato getCandidato() { return candidato; }
-    public Candidato getCandidato1() { return candidato1; }
-    public Candidato getCandidato2() { return candidato2; }
+    public Candidato getCandidato() { return null; } // Needs to be updated to fetch from DB
+    public Candidato getCandidato1() { return null; } // Needs to be updated to fetch from DB
+    public Candidato getCandidato2() { return null; } // Needs to be updated to fetch from DB
 
-    public LocalDate getLocalDate() { return localDate; }
+    public String getIdCandidato() { return idCandidato; }
+    public String getIdCandidato1() { return idCandidato1; }
+    public String getIdCandidato2() { return idCandidato2; }
+
+    public LocalDate getLocalDate() {
+        if (localDate == null && date != null) {
+            localDate = LocalDate.parse(date);
+        }
+        return localDate;
+    }
 }

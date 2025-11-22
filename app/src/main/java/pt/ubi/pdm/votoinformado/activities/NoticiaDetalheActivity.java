@@ -35,11 +35,7 @@ public class NoticiaDetalheActivity extends AppCompatActivity {
 
         // Recebe dados do Intent
         String url = getIntent().getStringExtra("link");
-        String titulo = getIntent().getStringExtra("titulo");
 
-        if (getSupportActionBar() != null && titulo != null) {
-            getSupportActionBar().setTitle(titulo);
-        }
 
         // Configura WebView
         webView.getSettings().setJavaScriptEnabled(true);

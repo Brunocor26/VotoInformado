@@ -1,6 +1,7 @@
 package pt.ubi.pdm.votoinformado.activities;
 
 import android.os.Bundle;
+import android.widget.SearchView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -15,46 +16,69 @@ import pt.ubi.pdm.votoinformado.classes.Noticia;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Esta é a Activity. A sua responsabilidade é gerir o ecrã,
- * ir buscar os dados e "contratar" o Adapter para os mostrar.
- */
 public class MenuNoticiasActivity extends AppCompatActivity {
 
     private RecyclerView recyclerView;
-    private NoticiasAdapter adapter; // <- O nosso adapter externo
+    private NoticiasAdapter adapter;
     private List<Noticia> listaNoticias;
+    private SearchView searchView;   // <-- ADICIONADO
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu_noticias);
 
+        // Ligação ao layout
         recyclerView = findViewById(R.id.recyclerViewNoticias);
+        searchView = findViewById(R.id.searchViewNoticias); // <-- ADICIONADO
+
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
+        // Inicializar lista e adapter
         listaNoticias = new ArrayList<>();
-        adapter = new NoticiasAdapter(listaNoticias); // entregamos a lista ao adapter
+        adapter = new NoticiasAdapter(listaNoticias);
 
         recyclerView.setAdapter(adapter);
 
+        configurarPesquisa();
+
+        // Carregar notícias
         buscarNoticias();
     }
 
+
+    /**
+     * Barra de pesquisa: filtra enquanto o utilizador escreve
+     */
+    private void configurarPesquisa() {
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                adapter.filtrar(query);
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                adapter.filtrar(newText);
+                return true;
+            }
+        });
+    }
+
+
     /**
      * Vai buscar as notícias numa Thread de background
-     * e atualiza o adapter na Main Thread.
      */
     private void buscarNoticias() {
         new Thread(() -> {
-            // Corre em Background
             List<Noticia> noticias = NoticiasFetcher.buscarNoticias();
 
             runOnUiThread(() -> {
-                if (noticias != null) {
-                    listaNoticias.clear();
-                    listaNoticias.addAll(noticias);
-                    adapter.notifyDataSetChanged();
+                if (noticias != null && !noticias.isEmpty()) {
+                    // Passamos a lista diretamente para o Adapter
+                    adapter.setListaOriginal(noticias);
                 } else {
                     Toast.makeText(this, "Erro ao carregar notícias. Tenta novamente.", Toast.LENGTH_SHORT).show();
                 }

@@ -17,14 +17,17 @@ import pt.ubi.pdm.votoinformado.activities.NoticiaDetalheActivity;
 import pt.ubi.pdm.votoinformado.classes.Noticia;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 
 public class NoticiasAdapter extends RecyclerView.Adapter<NoticiasAdapter.VH> {
 
-    private List<Noticia> lista;
+    private List<Noticia> listaNoticias;
+    private List<Noticia> listaOriginal;  // lista completa para pesquisa
 
     public NoticiasAdapter(List<Noticia> lista) {
-        this.lista = lista;
+        this.listaNoticias = new ArrayList<>(lista);
+        this.listaOriginal = new ArrayList<>(lista);
     }
 
     @NonNull
@@ -37,7 +40,7 @@ public class NoticiasAdapter extends RecyclerView.Adapter<NoticiasAdapter.VH> {
 
     @Override
     public void onBindViewHolder(@NonNull VH holder, int position) {
-        Noticia n = lista.get(position);
+        Noticia n = listaNoticias.get(position);
 
         holder.titulo.setText(n.getTitulo());
         holder.data.setText(n.getData());
@@ -45,8 +48,8 @@ public class NoticiasAdapter extends RecyclerView.Adapter<NoticiasAdapter.VH> {
         String urlImg = n.getImagem();
         if (urlImg != null) urlImg = urlImg.replace("&amp;", "&");
 
-        // Coloca placeholder enquanto carrega
-        holder.img.setImageResource(R.drawable.placeholder);
+        // Limpa a imagem antiga
+        holder.img.setImageDrawable(null);
 
         String finalUrl = urlImg;
 
@@ -54,7 +57,6 @@ public class NoticiasAdapter extends RecyclerView.Adapter<NoticiasAdapter.VH> {
             try {
                 if (finalUrl != null && !finalUrl.isEmpty()) {
                     Bitmap bmp = BitmapFactory.decodeStream(new URL(finalUrl).openStream());
-
                     holder.img.post(() -> holder.img.setImageBitmap(bmp));
                 } else {
                     holder.img.post(() -> holder.img.setImageResource(R.drawable.erro));
@@ -76,11 +78,41 @@ public class NoticiasAdapter extends RecyclerView.Adapter<NoticiasAdapter.VH> {
 
     @Override
     public int getItemCount() {
-        return lista.size();
+        return listaNoticias.size();
+    }
+
+    public void filtrar(String texto) {
+        listaNoticias.clear();
+
+        if (texto.isEmpty()) {
+            listaNoticias.addAll(listaOriginal);
+        } else {
+            String filtro = texto.toLowerCase();
+            for (Noticia n : listaOriginal) {
+                if (n.getTitulo() != null && n.getTitulo().toLowerCase().contains(filtro)) {
+                    listaNoticias.add(n);
+                }
+            }
+        }
+
+        notifyDataSetChanged();
+        //metodo do RecyclerView que informa o adapter de que os dados da lista mudaram,
+        //e que ele precisa atualizar toda a RecyclerView.
+    }
+
+    // Atualiza a lista original quando carregas novas notícias
+    public void setListaOriginal(List<Noticia> noticias) {
+        // Atualiza a lista de backup (usada na pesquisa)
+        this.listaOriginal = new ArrayList<>(noticias);
+
+        // Atualiza também a lista visível imediatamente
+        this.listaNoticias = new ArrayList<>(noticias);
+
+        // Notifica a RecyclerView que os dados mudaram
+        notifyDataSetChanged();
     }
 
     static class VH extends RecyclerView.ViewHolder {
-
         TextView titulo, data;
         ImageView img;
 

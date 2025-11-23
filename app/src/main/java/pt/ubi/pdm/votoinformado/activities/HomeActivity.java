@@ -35,7 +35,9 @@ public class HomeActivity extends AppCompatActivity implements BottomNavigationV
         bottomNav.setOnNavigationItemSelectedListener(this);
 
         // Load the default fragment
-        loadFragment(new HomeFragment());
+        if (savedInstanceState == null) {
+            loadFragment(new HomeFragment());
+        }
     }
 
     private boolean loadFragment(Fragment fragment) {
@@ -65,10 +67,6 @@ public class HomeActivity extends AppCompatActivity implements BottomNavigationV
             fragment = new NoticiasFragment();
         }
 
-        noticiasButton.setOnClickListener(v -> {
-            // Intent para abrir NoticiasActivity
-            Intent intent = new Intent(HomeActivity.this, MenuNoticiasActivity.class);
-            startActivity(intent);
-        });
+        return loadFragment(fragment);
     }
 }

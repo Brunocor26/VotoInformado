@@ -11,6 +11,7 @@ import java.util.Map;
 
 import pt.ubi.pdm.votoinformado.classes.Candidato;
 import pt.ubi.pdm.votoinformado.classes.ImportantDate;
+import pt.ubi.pdm.votoinformado.classes.Noticia;
 import pt.ubi.pdm.votoinformado.classes.Sondagem;
 
 public class DatabaseHelper {
@@ -82,6 +83,22 @@ public class DatabaseHelper {
                         for (QueryDocumentSnapshot document : task.getResult()) {
                             Sondagem s = document.toObject(Sondagem.class);
                             list.add(s);
+                        }
+                        callback.onCallback(list);
+                    } else {
+                        callback.onError(task.getException() != null ? task.getException().getMessage() : "Unknown error");
+                    }
+                });
+    }
+
+    public static void getNoticias(DataCallback<List<Noticia>> callback) {
+        getFirestoreInstance().collection("noticias").get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        java.util.ArrayList<Noticia> list = new java.util.ArrayList<>();
+                        for (QueryDocumentSnapshot document : task.getResult()) {
+                            Noticia n = document.toObject(Noticia.class);
+                            list.add(n);
                         }
                         callback.onCallback(list);
                     } else {

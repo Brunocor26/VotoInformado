@@ -1,4 +1,4 @@
-package pt.ubi.pdm.votoinformado.activities.noticia;
+package pt.ubi.pdm.votoinformado.adapters;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -16,7 +16,6 @@ import pt.ubi.pdm.votoinformado.R;
 import pt.ubi.pdm.votoinformado.activities.NoticiaDetalheActivity;
 import pt.ubi.pdm.votoinformado.classes.Noticia;
 
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -51,20 +50,16 @@ public class NoticiasAdapter extends RecyclerView.Adapter<NoticiasAdapter.VH> {
         // Limpa a imagem antiga
         holder.img.setImageDrawable(null);
 
-        String finalUrl = urlImg;
-
-        new Thread(() -> {
-            try {
-                if (finalUrl != null && !finalUrl.isEmpty()) {
-                    Bitmap bmp = BitmapFactory.decodeStream(new URL(finalUrl).openStream());
-                    holder.img.post(() -> holder.img.setImageBitmap(bmp));
-                } else {
-                    holder.img.post(() -> holder.img.setImageResource(R.drawable.erro));
-                }
-            } catch (Exception e) {
-                holder.img.post(() -> holder.img.setImageResource(R.drawable.erro));
-            }
-        }).start();
+        // Carregamento de imagem com Picasso
+        if (urlImg != null && !urlImg.isEmpty()) {
+            com.squareup.picasso.Picasso.get()
+                    .load(urlImg)
+                    .placeholder(R.drawable.erro) // Imagem de loading ou placeholder se quiseres
+                    .error(R.drawable.erro)
+                    .into(holder.img);
+        } else {
+            holder.img.setImageResource(R.drawable.erro);
+        }
 
         holder.itemView.setOnClickListener(v -> {
             Intent i = new Intent(v.getContext(), NoticiaDetalheActivity.class);

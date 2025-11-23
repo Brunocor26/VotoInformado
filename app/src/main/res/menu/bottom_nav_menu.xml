@@ -10,7 +10,7 @@
         android:title="Candidatos" />
     <item
         android:id="@+id/nav_eventos"
-        android:icon="@drawable/baseline_campaign_24"
+        android:icon="@drawable/calendar"
         android:title="Eventos" />
     <item
         android:id="@+id/nav_sondagens"

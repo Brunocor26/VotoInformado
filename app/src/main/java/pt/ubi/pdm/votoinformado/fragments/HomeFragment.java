@@ -38,6 +38,7 @@ public class HomeFragment extends Fragment {
 
         updateUI(view);
         loadFirebaseData(view);
+        loadLatestNews(view);
 
         return view;
     }
@@ -120,5 +121,43 @@ public class HomeFragment extends Fragment {
                 Toast.makeText(getContext(), "Failed to load candidates: " + message, Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    private void loadLatestNews(View view) {
+        TextView titulo = view.findViewById(R.id.noticia_destaque_titulo);
+        TextView data = view.findViewById(R.id.noticia_destaque_data);
+        android.widget.ImageView imagem = view.findViewById(R.id.noticia_destaque_image);
+        View card = view.findViewById(R.id.noticia_destaque_card);
+
+        new Thread(() -> {
+            List<pt.ubi.pdm.votoinformado.classes.Noticia> noticias = pt.ubi.pdm.votoinformado.activities.noticia.NoticiasFetcher.buscarNoticias();
+            if (getActivity() != null) {
+                getActivity().runOnUiThread(() -> {
+                    if (noticias != null && !noticias.isEmpty()) {
+                        pt.ubi.pdm.votoinformado.classes.Noticia ultimaNoticia = noticias.get(0);
+                        titulo.setText(ultimaNoticia.getTitulo());
+                        data.setText(ultimaNoticia.getData());
+
+                        String urlImg = ultimaNoticia.getImagem();
+                        if (urlImg != null && !urlImg.isEmpty()) {
+                            Picasso.get().load(urlImg).placeholder(R.drawable.candidato_generico).into(imagem);
+                        } else {
+                            imagem.setImageResource(R.drawable.candidato_generico);
+                        }
+                        
+                        card.setOnClickListener(v -> {
+                            Intent i = new Intent(getActivity(), pt.ubi.pdm.votoinformado.activities.NoticiaDetalheActivity.class);
+                            i.putExtra("titulo", ultimaNoticia.getTitulo());
+                            i.putExtra("data", ultimaNoticia.getData());
+                            i.putExtra("link", ultimaNoticia.getLink());
+                            i.putExtra("imagem", ultimaNoticia.getImagem());
+                            startActivity(i);
+                        });
+                    } else {
+                        card.setVisibility(View.GONE);
+                    }
+                });
+            }
+        }).start();
     }
 }

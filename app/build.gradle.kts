@@ -5,12 +5,12 @@ plugins {
 
 android {
     namespace = "pt.ubi.pdm.votoinformado"
-    compileSdk = 34
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "pt.ubi.pdm.votoinformado"
-        minSdk = 33
-        targetSdk = 34
+        minSdk = 35
+        targetSdk = 36
         versionCode = 1
         versionName = "1.0"
 
@@ -63,4 +63,5 @@ dependencies {
 
     // Biblioteca de Gráficos
     implementation("com.github.PhilJay:MPAndroidChart:3.1.0")
+
 }

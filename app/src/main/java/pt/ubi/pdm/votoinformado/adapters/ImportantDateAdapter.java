@@ -15,6 +15,8 @@ import java.util.Map;
 
 import pt.ubi.pdm.votoinformado.R;
 import pt.ubi.pdm.votoinformado.classes.Candidato;
+import pt.ubi.pdm.votoinformado.classes.Debate;
+import pt.ubi.pdm.votoinformado.classes.Entrevista;
 import pt.ubi.pdm.votoinformado.classes.ImportantDate;
 
 public class ImportantDateAdapter extends RecyclerView.Adapter<ImportantDateAdapter.Holder> {
@@ -45,41 +47,46 @@ public class ImportantDateAdapter extends RecyclerView.Adapter<ImportantDateAdap
     public void onBindViewHolder(@NonNull Holder h, int position) {
         ImportantDate d = lista.get(position);
 
+        // Dados comuns a todas as classes
         h.titulo.setText(d.getTitle());
         h.dataHora.setText(d.getDate() + " · " + d.getTime());
+        h.categoria.setText(d.getCategory());
 
-        switch (d.getCategory()) {
-            case "Entrevista":
-                Candidato entrevistado = d.getCandidato();
-                if (entrevistado != null) {
-                    h.categoria.setText("Entrevista: " + entrevistado.getNome());
-                    h.img1.setImageResource(entrevistado.getFotoId());
-                    h.img1.setVisibility(View.VISIBLE);
-                    h.img2.setVisibility(View.GONE);
-                }
-                break;
+        // Resetar visibilidade (importante para o RecyclerView não baralhar as views)
+        h.img1.setVisibility(View.GONE);
+        h.img2.setVisibility(View.GONE);
 
-            case "Debate":
-                Candidato debatedor1 = d.getCandidato1();
-                Candidato debatedor2 = d.getCandidato2();
-                if (debatedor1 != null && debatedor2 != null) {
-                    h.categoria.setText("Debate: " + debatedor1.getNome() + " vs " + debatedor2.getNome());
-                    h.img1.setVisibility(View.VISIBLE);
-                    h.img2.setVisibility(View.VISIBLE);
-                    h.img1.setImageResource(debatedor1.getFotoId());
-                    h.img2.setImageResource(debatedor2.getFotoId());
-                } else {
-                     h.img1.setVisibility(View.GONE);
-                     h.img2.setVisibility(View.GONE);
-                }
-                break;
+        // Lógica específica por Tipo de Classe
+        if (d instanceof Entrevista) {
+            // Se é entrevista, convertemos (Cast) para aceder ao getIdCandidato()
+            Entrevista entrevista = (Entrevista) d;
+            String id = entrevista.getIdCandidato();
 
-            default:
-                h.categoria.setText(d.getCategory());
-                h.img1.setVisibility(View.GONE);
-                h.img2.setVisibility(View.GONE);
-                break;
+            if (id != null && candidatoMap.containsKey(id)) {
+                Candidato c = candidatoMap.get(id);
+                h.categoria.setText("Entrevista: " + c.getNome());
+                h.img1.setImageResource(c.getFotoId());
+                h.img1.setVisibility(View.VISIBLE);
+            }
+
+        } else if (d instanceof Debate) {
+            // Se é debate, convertemos para aceder aos 2 IDs
+            Debate debate = (Debate) d;
+            String id1 = debate.getIdCandidato1();
+            String id2 = debate.getIdCandidato2();
+
+            Candidato c1 = candidatoMap.get(id1);
+            Candidato c2 = candidatoMap.get(id2);
+
+            if (c1 != null && c2 != null) {
+                h.categoria.setText("Debate: " + c1.getNome() + " vs " + c2.getNome());
+                h.img1.setImageResource(c1.getFotoId());
+                h.img2.setImageResource(c2.getFotoId());
+                h.img1.setVisibility(View.VISIBLE);
+                h.img2.setVisibility(View.VISIBLE);
+            }
         }
+        // Se for "Eleições" ou genérico, cai aqui e só mostra o texto (já definido no início)
     }
 
     @Override

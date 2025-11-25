@@ -29,6 +29,9 @@ public class HomeActivity extends AppCompatActivity implements BottomNavigationV
             return;
         }
 
+
+
+
         setContentView(R.layout.activity_home);
 
         BottomNavigationView bottomNav = findViewById(R.id.bottom_navigation);

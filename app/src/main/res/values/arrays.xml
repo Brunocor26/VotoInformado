@@ -1,0 +1,8 @@
+<resources>
+    <string-array name="sort_options_peticoes">
+        <item>Mais Votadas</item>
+        <item>Menos Votadas</item>
+        <item>Mais Recentes</item>
+        <item>Mais Antigas</item>
+    </string-array>
+</resources>

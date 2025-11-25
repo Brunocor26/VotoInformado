@@ -55,6 +55,13 @@
             android:name=".activities.ImportantDatesActivity"
             android:parentActivityName=".activities.HomeActivity" />
 
+        <activity
+            android:name=".activities.CreatePeticaoActivity"
+            android:parentActivityName=".activities.HomeActivity" />
+        <activity
+            android:name=".activities.PeticaoDetailActivity"
+            android:parentActivityName=".activities.HomeActivity" />
+
     </application>
 
 </manifest>

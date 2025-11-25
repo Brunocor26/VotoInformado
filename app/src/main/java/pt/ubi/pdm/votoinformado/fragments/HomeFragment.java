@@ -20,7 +20,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import pt.ubi.pdm.votoinformado.R;
@@ -79,14 +78,7 @@ public class HomeFragment extends Fragment {
                         }
 
                         sondagens.stream()
-                                .max((s1, s2) -> {
-                                    String d1 = s1.getDataFimRecolha();
-                                    String d2 = s2.getDataFimRecolha();
-                                    if (d1 == null && d2 == null) return 0;
-                                    if (d1 == null) return -1;
-                                    if (d2 == null) return 1;
-                                    return d1.compareTo(d2);
-                                })
+                                .max(Comparator.comparing(Sondagem::getDataFimRecolha))
                                 .ifPresent(ultimaSondagem -> {
                                     Sondagem.ResultadoPrincipal vencedor = ultimaSondagem.getCalculatedResultadoPrincipal();
                                     if (vencedor != null) {
@@ -95,7 +87,13 @@ public class HomeFragment extends Fragment {
                                         if (candidatoVencedor != null) {
                                             sondagemDestaqueNome.setText(candidatoVencedor.getNome());
                                             sondagemDestaquePercentagem.setText(String.format(Locale.US, "%.1f%%", vencedor.percentagem));
-                                            sondagemDestaqueImage.setImageResource(candidatoVencedor.getFotoId(getContext()));
+                                            
+                                            int fotoId = candidatoVencedor.getFotoId(getContext());
+                                            if (fotoId != 0) {
+                                                sondagemDestaqueImage.setImageResource(fotoId);
+                                            } else {
+                                                sondagemDestaqueImage.setImageResource(R.drawable.candidato_generico);
+                                            }
                                         } else {
                                             sondagemDestaqueNome.setText("Líder não encontrado");
                                             sondagemDestaquePercentagem.setText("");
@@ -111,14 +109,18 @@ public class HomeFragment extends Fragment {
 
                     @Override
                     public void onError(String message) {
-                        Toast.makeText(getContext(), "Failed to load polls: " + message, Toast.LENGTH_SHORT).show();
+                        if (isAdded()) {
+                           Toast.makeText(getContext(), "Failed to load polls: " + message, Toast.LENGTH_SHORT).show();
+                        }
                     }
                 });
             }
 
             @Override
             public void onError(String message) {
-                Toast.makeText(getContext(), "Failed to load candidates: " + message, Toast.LENGTH_SHORT).show();
+                if (isAdded()) {
+                    Toast.makeText(getContext(), "Failed to load candidates: " + message, Toast.LENGTH_SHORT).show();
+                }
             }
         });
     }
@@ -131,7 +133,7 @@ public class HomeFragment extends Fragment {
 
         new Thread(() -> {
             List<pt.ubi.pdm.votoinformado.classes.Noticia> noticias = pt.ubi.pdm.votoinformado.activities.noticia.NoticiasFetcher.buscarNoticias();
-            if (getActivity() != null) {
+            if (getActivity() != null && isAdded()) {
                 getActivity().runOnUiThread(() -> {
                     if (noticias != null && !noticias.isEmpty()) {
                         pt.ubi.pdm.votoinformado.classes.Noticia ultimaNoticia = noticias.get(0);

@@ -2,78 +2,103 @@
 <com.google.android.material.card.MaterialCardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="14dp"
-    app:cardCornerRadius="18dp"
-    app:cardElevation="6dp"
+    android:layout_marginBottom="16dp"
+    app:cardCornerRadius="20dp"
+    app:cardElevation="4dp"
     app:strokeWidth="0dp"
-    app:cardBackgroundColor="@color/app_graphite">
+    app:cardBackgroundColor="?attr/colorSurfaceContainerHigh">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="18dp">
+        android:padding="20dp">
 
+        <!-- Título do Evento -->
         <TextView
             android:id="@+id/txtTituloEvento"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Título do Evento"
-            android:textColor="@color/white"
-            android:textStyle="bold"
-            android:textSize="18sp"
-            android:fontFamily="sans-serif-medium"
-            android:paddingBottom="6dp"/>
-        <!-- FOTOS DOS DOIS CANDIDATOS -->
+            tools:text="Debate Presidencial RTP"
+            android:textAppearance="?attr/textAppearanceTitleMedium"
+            android:textColor="?attr/colorOnSurface"
+            android:paddingBottom="4dp"/>
+
+        <!-- Informação de Data e Hora -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:gravity="center"
-            android:paddingTop="8dp"
-            android:paddingBottom="8dp">
+            android:gravity="center_vertical"
+            android:layout_marginTop="8dp">
 
             <ImageView
-                android:id="@+id/imgCandidato1"
-                android:layout_width="60dp"
-                android:layout_height="60dp"
-                android:scaleType="centerCrop"
-                android:background="@drawable/circle_mask"
-                android:clipToOutline="true"
-                android:layout_marginEnd="16dp"/>
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                android:src="@drawable/ic_calendar"
+                app:tint="?attr/colorOnSurfaceVariant"/>
 
-            <ImageView
-                android:id="@+id/imgCandidato2"
-                android:layout_width="60dp"
-                android:layout_height="60dp"
-                android:scaleType="centerCrop"
-                android:background="@drawable/circle_mask"
-                android:clipToOutline="true"
-                android:layout_marginStart="16dp"/>
+            <TextView
+                android:id="@+id/txtDataHora"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="12 Nov 2025 · 21:00"
+                android:textAppearance="?attr/textAppearanceBodyMedium"
+                android:textColor="?attr/colorOnSurfaceVariant"
+                android:layout_marginStart="8dp"/>
         </LinearLayout>
 
-        <TextView
-            android:id="@+id/txtDataHora"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="12 Nov 2025 · 21:00"
-            android:textColor="@color/white"
-            android:textSize="14sp"
-            android:fontFamily="sans-serif-light"
-            android:alpha="0.9"/>
-
+        <!-- Categoria/Canal -->
         <TextView
             android:id="@+id/txtCategoria"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Categoria"
-            android:textColor="@color/white"
-            android:textStyle="italic"
-            android:fontFamily="sans-serif-light"
-            android:textSize="13sp"
-            android:alpha="0.8"
-            android:paddingTop="4dp"/>
+            tools:text="RTP 1"
+            android:textAppearance="?attr/textAppearanceLabelMedium"
+            android:textColor="?attr/colorOnSurfaceVariant"
+            android:layout_marginTop="4dp"/>
+
+
+        <!-- FOTOS DOS CANDIDATOS -->
+        <LinearLayout
+            android:id="@+id/layoutFotos"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:paddingTop="16dp"
+            android:paddingBottom="8dp">
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/imgCandidato1"
+                android:layout_width="72dp"
+                android:layout_height="72dp"
+                tools:src="@drawable/candidato_generico"
+                app:civ_border_width="2dp"
+                app:civ_border_color="?attr/colorPrimary"/>
+
+            <TextView
+                android:id="@+id/versus_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="VS"
+                android:textAppearance="?attr/textAppearanceTitleSmall"
+                android:textColor="?attr/colorOnSurfaceVariant"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"/>
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/imgCandidato2"
+                android:layout_width="72dp"
+                android:layout_height="72dp"
+                tools:src="@drawable/candidato_generico"
+                app:civ_border_width="2dp"
+                app:civ_border_color="?attr/colorPrimary"/>
+
+        </LinearLayout>
+
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>

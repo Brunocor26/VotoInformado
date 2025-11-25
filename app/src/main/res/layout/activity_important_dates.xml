@@ -1,82 +1,112 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="24dp"
-    android:background="@color/app_paper_white">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="?attr/colorSurface">
 
-    <!-- Cabeçalho -->
-    <LinearLayout
+    <!-- AppBar com elevação e shape arredondado -->
+    <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:gravity="center_horizontal"
-        android:paddingBottom="20dp">
+        android:background="@android:color/transparent"
+        app:elevation="0dp">
 
-        <TextView
-            android:id="@+id/txtTitulo"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Datas Importantes"
-            android:textColor="@color/app_graphite"
-            android:textStyle="bold"
-            android:textSize="26sp"
-            android:fontFamily="sans-serif-medium"
-            android:letterSpacing="0.02"
-            android:paddingBottom="6dp"/>
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            app:title="Datas Importantes"
+            app:titleCentered="true"
 
-        <Button
-            android:id="@+id/btnFiltroData"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Filtrar por data"
-            android:layout_gravity="center_horizontal"
-            android:padding="12dp"
-            android:backgroundTint="@color/app_graphite"
-            android:textColor="@color/white"
-            android:layout_marginBottom="10dp"/>
+            style="@style/Widget.Material3.Toolbar.Surface" />
+    </com.google.android.material.appbar.AppBarLayout>
 
-        <Button
-            android:id="@+id/btnLimparFiltro"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Limpar filtro"
-            android:layout_gravity="center_horizontal"
-            android:backgroundTint="@color/app_green"
-            android:textColor="@color/white"
-            android:padding="10dp"
-            android:layout_marginBottom="15dp"/>
-
-        <View
-            android:layout_width="60dp"
-            android:layout_height="3dp"
-            android:background="@color/app_graphite"
-            android:layout_marginTop="4dp"
-            android:layout_marginBottom="10dp"
-            android:alpha="0.9"/>
-
-        <TextView
-            android:id="@+id/txtSubtitulo"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Debates, entrevistas, prazos de voto antecipado e o dia da eleição"
-            android:textColor="@color/app_graphite"
-            android:textSize="15sp"
-            android:fontFamily="sans-serif-light"
-            android:alpha="0.8"
-            android:lineSpacingExtra="3dp"
-            android:gravity="center"
-            android:textAlignment="center"/>
-    </LinearLayout>
-
-    <!-- Lista -->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerDates"
+    <!-- Conteúdo -->
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
         android:clipToPadding="false"
-        android:paddingBottom="16dp"/>
-</LinearLayout>
+        android:paddingHorizontal="16dp"
+        android:paddingTop="8dp"
+        android:paddingBottom="24dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!-- Card de filtros -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="2dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <!-- Botões principais -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center">
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnFiltroData"
+                            style="@style/Widget.Material3.Button.TonalButton"
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="wrap_content"
+                            android:text="Filtrar por data" />
+
+                        <Space
+                            android:layout_width="8dp"
+                            android:layout_height="1dp" />
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnLimparFiltro"
+                            style="@style/Widget.Material3.Button.OutlinedButton"
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="wrap_content"
+                            android:text="Limpar" />
+                    </LinearLayout>
+
+                    <!-- Chips de candidatos (visível só em debates) -->
+                    <HorizontalScrollView
+                        android:id="@+id/chipsScroll"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:scrollbars="none"
+                        android:layout_marginTop="12dp">
+
+                        <com.google.android.material.chip.ChipGroup
+                            android:id="@+id/chipGroupCandidatos"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            app:singleSelection="true"
+                            app:chipSpacingHorizontal="8dp" />
+                    </HorizontalScrollView>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Lista -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerDates"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:nestedScrollingEnabled="false"
+                android:clipToPadding="false"
+                android:paddingBottom="8dp"
+                tools:listitem="@layout/item_data" />
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

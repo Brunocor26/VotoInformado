@@ -36,6 +36,9 @@ public class ImportantDate {
         }
     }
 
+    public ImportantDate(String title, String date, String time, String category) {
+    }
+
     public String getTitle() { return title; }
     public String getDate() { return date; }
     public String getTime() { return time; }

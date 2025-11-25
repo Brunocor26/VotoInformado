@@ -1,0 +1,144 @@
+\chapter{Funcionalidades} \label{chap:funcionalidades}
+
+A aplicação VotoInformado oferece um conjunto de funcionalidades desenhadas para informar o eleitor.
+
+\section{Autenticação e Perfil} \label{sec:func_auth}
+A segurança e personalização são garantidas através de um sistema de autenticação robusto.
+
+% [TODO: Inserir Screenshot Login]
+\begin{figure}[H]
+    \centering
+    % \includegraphics[width=0.4\textwidth]{images/screenshot_login.png}
+    \fbox{\begin{minipage}{0.4\textwidth}
+        \centering
+        \vspace{4cm}
+        \textbf{[PLACEHOLDER: Screenshot Login]} \\
+        (images/screenshot\_login.png)
+        \vspace{4cm}
+    \end{minipage}}
+    \caption{Ecrã de Login da aplicação.}
+    \label{fig:login}
+\end{figure}
+
+\begin{itemize}
+    \item \textbf{Login e Registo}: Os utilizadores podem criar conta com email e password ou utilizar a sua conta Google para um acesso mais rápido.
+    \item \textbf{Gestão de Sessão}: A aplicação mantém a sessão do utilizador ativa, permitindo acesso direto sem necessidade de login constante.
+\end{itemize}
+
+\section{Requisitos Funcionais} \label{sec:func_requisitos}
+A tabela abaixo resume as principais funcionalidades implementadas.
+
+% [TODO: Tabela de Requisitos]
+\begin{table}[H]
+    \centering
+    \caption{Requisitos Funcionais do VotoInformado.}
+    \begin{tabular}{|c|l|p{8cm}|}
+        \hline
+        \textbf{ID} & \textbf{Funcionalidade} & \textbf{Descrição} \\
+        \hline
+        RF01 & Autenticação & Permitir login e registo via Email/Password e Google. \\
+        \hline
+        RF02 & Listar Candidatos & Visualizar lista de candidatos com foto e partido. \\
+        \hline
+        RF03 & Detalhe Candidato & Ver biografia, propostas e cargos de um candidato. \\
+        \hline
+        RF04 & Feed Notícias & Ler notícias políticas atualizadas via RSS. \\
+        \hline
+        RF05 & Sondagens & Visualizar gráficos de intenção de voto. \\
+        \hline
+    \end{tabular}
+    \label{tab:requisitos}
+\end{table}
+
+% [TODO: Inserir Diagrama de Casos de Uso]
+\begin{figure}[H]
+    \centering
+    % \includegraphics[width=0.8\textwidth]{images/diagrama_casos_uso.png}
+    \fbox{\begin{minipage}{0.8\textwidth}
+        \centering
+        \vspace{3cm}
+        \textbf{[PLACEHOLDER: Diagrama de Casos de Uso]} \\
+        (Atores: Eleitor, Admin; Casos: Ver Candidatos, Votar, Ler Notícias)
+        \vspace{3cm}
+    \end{minipage}}
+    \caption{Diagrama de Casos de Uso do sistema.}
+    \label{fig:use_cases}
+\end{figure}
+
+\section{Consulta de Candidatos} \label{sec:func_candidatos}
+Esta é uma das funcionalidades centrais da aplicação.
+
+% [TODO: Inserir Screenshot Lista Candidatos]
+\begin{figure}[H]
+    \centering
+    % \includegraphics[width=0.4\textwidth]{images/screenshot_candidatos.png}
+    \fbox{\begin{minipage}{0.4\textwidth}
+        \centering
+        \vspace{4cm}
+        \textbf{[PLACEHOLDER: Screenshot Candidatos]} \\
+        (images/screenshot\_candidatos.png)
+        \vspace{4cm}
+    \end{minipage}}
+    \caption{Lista de candidatos apresentada ao utilizador.}
+    \label{fig:candidatos}
+\end{figure}
+
+\begin{itemize}
+    \item \textbf{Listagem}: Apresenta uma lista de todos os candidatos registados na base de dados.
+    \item \textbf{Detalhes}: Ao selecionar um candidato, o utilizador tem acesso a uma ficha detalhada que inclui:
+    \begin{itemize}
+        \item Biografia e dados pessoais (idade, profissão).
+        \item Partido político e cargos desempenhados.
+        \item Lista de propostas eleitorais principais.
+    \end{itemize}
+\end{itemize}
+
+\section{Notícias em Tempo Real} \label{sec:func_noticias}
+Para manter o utilizador atualizado sobre a atualidade política:
+
+% [TODO: Inserir Screenshot Notícias]
+\begin{figure}[H]
+    \centering
+    % \includegraphics[width=0.4\textwidth]{images/screenshot_noticias.png}
+    \fbox{\begin{minipage}{0.4\textwidth}
+        \centering
+        \vspace{4cm}
+        \textbf{[PLACEHOLDER: Screenshot Notícias]} \\
+        (images/screenshot\_noticias.png)
+        \vspace{4cm}
+    \end{minipage}}
+    \caption{Feed de notícias políticas.}
+    \label{fig:noticias}
+\end{figure}
+
+\begin{itemize}
+    \item \textbf{Feed RSS}: Integração com o feed de política da RTP Notícias.
+    \item \textbf{Pesquisa}: Barra de pesquisa que permite filtrar notícias por palavras-chave em tempo real.
+    \item \textbf{Visualização}: Abertura da notícia completa num navegador interno ou externo.
+\end{itemize}
+
+\section{Sondagens e Estatísticas} \label{sec:func_sondagens}
+A secção de sondagens permite visualizar as tendências de voto.
+
+% [TODO: Inserir Screenshot Sondagem]
+\begin{figure}[h!]
+    \centering
+    % \includegraphics[width=0.4\textwidth]{images/screenshot_sondagem.png}
+    \fbox{\begin{minipage}{0.4\textwidth}
+        \centering
+        \vspace{4cm}
+        \textbf{[PLACEHOLDER: Screenshot Sondagem]} \\
+        (images/screenshot\_sondagem.png)
+        \vspace{4cm}
+    \end{minipage}}
+    \caption{Visualização gráfica dos resultados de uma sondagem.}
+    \label{fig:sondagem}
+\end{figure}
+
+\begin{itemize}
+    \item \textbf{Gráficos}: Visualização clara dos resultados através de gráficos de barras.
+    \item \textbf{Ficha Técnica}: Informação sobre a amostra, margem de erro e empresa responsável pela sondagem.
+\end{itemize}
+
+\section{Datas Importantes} \label{sec:func_datas}
+Um calendário eleitoral que lista eventos cruciais como debates, dias de reflexão e o dia das eleições, garantindo que o eleitor não perde prazos importantes.

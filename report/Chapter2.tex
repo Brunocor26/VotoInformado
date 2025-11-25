@@ -1,0 +1,85 @@
+\chapter{Arquitetura e Tecnologias} \label{chap:arquitetura}
+
+Este capítulo descreve a arquitetura de software adotada para o desenvolvimento da aplicação VotoInformado, bem como as tecnologias e bibliotecas utilizadas.
+
+\section{Arquitetura do Sistema} \label{sec:arq_sistema}
+A aplicação foi desenvolvida para o sistema operativo Android, utilizando a linguagem Java. A estrutura do projeto segue os padrões recomendados pela Google, organizando o código em componentes lógicos para facilitar a manutenção e escalabilidade.
+
+% [TODO: Inserir Diagrama de Arquitetura aqui]
+% Sugestão: Um diagrama mostrando a App Android <-> Firebase (Auth, Firestore, Storage) <-> RSS Feed
+\begin{figure}[H]
+    \centering
+    % \includegraphics[width=0.8\textwidth]{images/arquitetura_sistema.png}
+    \fbox{\begin{minipage}{0.8\textwidth}
+        \centering
+        \vspace{2cm}
+        \textbf{[PLACEHOLDER: Diagrama de Arquitetura]} \\
+        (Colocar imagem: images/arquitetura\_sistema.png)
+        \vspace{2cm}
+    \end{minipage}}
+    \caption{Arquitetura de alto nível do sistema VotoInformado.}
+    \label{fig:arquitetura}
+\end{figure}
+
+A arquitetura baseia-se na separação de responsabilidades:
+\begin{itemize}
+    \item \textbf{Activities e Fragments}: Responsáveis pela interface de utilizador (UI) e interação com o utilizador. Exemplos incluem \texttt{HomeActivity}, \texttt{NoticiasFragment} e \texttt{CandidatosFragment}.
+    \item \textbf{Adapters}: Fazem a ponte entre os dados e os componentes de visualização de listas (\texttt{RecyclerView}).
+    \item \textbf{Modelos (Classes)}: Representam as entidades de dados, como \texttt{Candidato}, \texttt{Noticia} e \texttt{Sondagem}.
+    \item \textbf{Utils/Helpers}: Classes utilitárias para acesso a dados e operações comuns.
+\end{itemize}
+
+% [TODO: Inserir Diagrama de Classes UML aqui]
+\begin{figure}[H]
+    \centering
+    % \includegraphics[width=0.9\textwidth]{images/diagrama_classes.png}
+    \fbox{\begin{minipage}{0.9\textwidth}
+        \centering
+        \vspace{3cm}
+        \textbf{[PLACEHOLDER: Diagrama de Classes UML]} \\
+        (Mostrar relações entre Activities, Fragments e Modelos)
+        \vspace{3cm}
+    \end{minipage}}
+    \caption{Diagrama de Classes simplificado da aplicação.}
+    \label{fig:uml_classes}
+\end{figure}
+
+\section{Tecnologias Utilizadas} \label{sec:arq_tecnologias}
+
+\subsection{Firebase}
+O backend da aplicação é suportado inteiramente pela plataforma Firebase, tirando partido dos seus serviços \textit{serverless}:
+\begin{itemize}
+    \item \textbf{Firebase Authentication}: Gere a autenticação de utilizadores, suportando login por email/password e integração com a conta Google.
+    \item \textbf{Cloud Firestore}: Base de dados NoSQL flexível e escalável, utilizada para armazenar toda a informação da aplicação (candidatos, sondagens, datas).
+    \item \textbf{Firebase Storage}: Utilizado para o armazenamento e distribuição de ficheiros multimédia, como as fotografias dos candidatos.
+\end{itemize}
+
+\subsection{Bibliotecas Externas}
+Para enriquecer a funcionalidade da aplicação, foram integradas diversas bibliotecas \textit{open-source}:
+
+% [TODO: Tabela de Bibliotecas]
+\begin{table}[H]
+    \centering
+    \caption{Bibliotecas externas utilizadas no projeto.}
+    \begin{tabular}{|l|l|}
+        \hline
+        \textbf{Biblioteca} & \textbf{Propósito} \\
+        \hline
+        Picasso & Carregamento e cache de imagens assíncrono. \\
+        \hline
+        MPAndroidChart & Criação de gráficos para visualização de sondagens. \\
+        \hline
+        CircleImageView & Exibição de imagens de perfil circulares. \\
+        \hline
+        Retrofit/Gson & (Legado) Parsing de dados JSON. \\
+        \hline
+    \end{tabular}
+    \label{tab:bibliotecas}
+\end{table}
+
+\begin{itemize}
+    \item \textbf{Picasso}: Biblioteca poderosa para o carregamento e cache de imagens em Android. Resolve problemas complexos de gestão de memória e reciclagem de vistas em listas.
+    \item \textbf{MPAndroidChart}: Utilizada para a criação de gráficos interativos e visualmente apelativos na secção de sondagens.
+    \item \textbf{CircleImageView}: Permite a exibição de imagens de perfil com formato circular de forma simples e eficiente.
+    \item \textbf{Retrofit/Gson} (Legado): Inicialmente utilizadas para parsing JSON, foram substituídas pela integração direta com o Firestore, mas fizeram parte do processo de desenvolvimento.
+\end{itemize}

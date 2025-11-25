@@ -1,0 +1,60 @@
+\chapter{Implementação} \label{chap:implementacao}
+
+Este capítulo aborda os desafios técnicos e as soluções de implementação adotadas durante o desenvolvimento.
+
+\section{Integração com Firestore} \label{sec:impl_firestore}
+A migração de dados locais para a nuvem foi um passo fundamental. A implementação utiliza \texttt{CollectionReference} para aceder às coleções de ``candidatos'' e ``sondagens''. O uso de \textit{listeners} assíncronos permite que a interface seja atualizada automaticamente assim que os dados são recebidos, sem bloquear a \textit{Main Thread}.
+
+% [TODO: Inserir Modelo de Dados]
+\begin{figure}[H]
+    \centering
+    % \includegraphics[width=0.7\textwidth]{images/modelo_dados_firestore.png}
+    \fbox{\begin{minipage}{0.7\textwidth}
+        \centering
+        \vspace{3cm}
+        \textbf{[PLACEHOLDER: Modelo de Dados Firestore]} \\
+        (Screenshot do Firebase Console ou Diagrama ER)
+        \vspace{3cm}
+    \end{minipage}}
+    \caption{Estrutura das coleções no Cloud Firestore.}
+    \label{fig:firestore_model}
+\end{figure}
+
+\begin{lstlisting}[language=Java, caption=Exemplo de leitura do Firestore]
+db.collection("candidatos")
+    .get()
+    .addOnCompleteListener(task -> {
+        if (task.isSuccessful()) {
+            for (QueryDocumentSnapshot document : task.getResult()) {
+                Candidato candidato = document.toObject(Candidato.class);
+                listaCandidatos.add(candidato);
+            }
+            adapter.notifyDataSetChanged();
+        }
+    });
+\end{lstlisting}
+
+\section{Parsing de Notícias (RSS)} \label{sec:impl_rss}
+Para obter as notícias, foi implementada a classe \texttt{NoticiasFetcher}. Esta classe realiza uma requisição HTTP ao feed RSS da RTP e faz o parsing do XML resultante utilizando \texttt{DocumentBuilder}.
+Um desafio interessante foi a extração de imagens, que não vinham num campo explícito, mas sim embutidas na descrição HTML. Foi utilizada uma expressão regular (Regex) para extrair o atributo \texttt{src} das tags \texttt{<img>}.
+
+% [TODO: Inserir Diagrama de Sequência]
+\begin{figure}[H]
+    \centering
+    % \includegraphics[width=0.8\textwidth]{images/diagrama_sequencia_noticias.png}
+    \fbox{\begin{minipage}{0.8\textwidth}
+        \centering
+        \vspace{3cm}
+        \textbf{[PLACEHOLDER: Diagrama de Sequência]} \\
+        (Fluxo: Fragment -> Fetcher -> HTTP Request -> XML Parsing -> Return List)
+        \vspace{3cm}
+    \end{minipage}}
+    \caption{Diagrama de sequência do processo de obtenção de notícias.}
+    \label{fig:seq_noticias}
+\end{figure}
+
+\section{Gestão de Imagens} \label{sec:impl_imagens}
+O carregamento de imagens remotas em listas (\texttt{RecyclerView}) pode causar problemas de desempenho e consumo excessivo de memória. A biblioteca Picasso foi utilizada para mitigar estes problemas, gerindo automaticamente o download, cache e redimensionamento das imagens.
+
+\section{Adapters e RecyclerViews} \label{sec:impl_adapters}
+A exibição de listas eficientes foi conseguida através da implementação de \texttt{RecyclerView.Adapter} personalizados. O padrão \textit{ViewHolder} é utilizado para reciclar as vistas, garantindo uma rolagem suave mesmo com listas longas de candidatos ou notícias.

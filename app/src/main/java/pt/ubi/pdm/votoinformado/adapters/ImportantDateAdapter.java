@@ -13,8 +13,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
 import java.util.Map;
 
+import de.hdodenhof.circleimageview.CircleImageView;
 import pt.ubi.pdm.votoinformado.R;
 import pt.ubi.pdm.votoinformado.classes.Candidato;
+import pt.ubi.pdm.votoinformado.classes.Debate;
+import pt.ubi.pdm.votoinformado.classes.Entrevista;
 import pt.ubi.pdm.votoinformado.classes.ImportantDate;
 
 public class ImportantDateAdapter extends RecyclerView.Adapter<ImportantDateAdapter.Holder> {
@@ -47,38 +50,59 @@ public class ImportantDateAdapter extends RecyclerView.Adapter<ImportantDateAdap
 
         h.titulo.setText(d.getTitle());
         h.dataHora.setText(d.getDate() + " · " + d.getTime());
+        h.categoria.setText(d.getCategory());
 
-        switch (d.getCategory()) {
-            case "Entrevista":
-                Candidato entrevistado = d.getCandidato();
-                if (entrevistado != null) {
-                    h.categoria.setText("Entrevista: " + entrevistado.getNome());
-                    h.img1.setImageResource(entrevistado.getFotoId(context));
-                    h.img1.setVisibility(View.VISIBLE);
-                    h.img2.setVisibility(View.GONE);
-                }
-                break;
+        // Reset visibilities
+        h.layoutFotos.setVisibility(View.GONE);
+        h.img1.setVisibility(View.GONE);
+        h.img2.setVisibility(View.GONE);
+        h.versusText.setVisibility(View.GONE);
 
-            case "Debate":
-                Candidato debatedor1 = d.getCandidato1();
-                Candidato debatedor2 = d.getCandidato2();
-                if (debatedor1 != null && debatedor2 != null) {
-                    h.categoria.setText("Debate: " + debatedor1.getNome() + " vs " + debatedor2.getNome());
-                    h.img1.setVisibility(View.VISIBLE);
-                    h.img2.setVisibility(View.VISIBLE);
-                    h.img1.setImageResource(debatedor1.getFotoId(context));
-                    h.img2.setImageResource(debatedor2.getFotoId(context));
+        if (d instanceof Entrevista) {
+            Entrevista entrevista = (Entrevista) d;
+            String id = entrevista.getIdCandidato();
+            Candidato c = candidatoMap.get(id);
+
+            if (c != null) {
+                h.categoria.setText("Entrevista: " + c.getNome());
+                int fotoId = c.getFotoId(context);
+                if (fotoId != 0) {
+                    h.img1.setImageResource(fotoId);
                 } else {
-                     h.img1.setVisibility(View.GONE);
-                     h.img2.setVisibility(View.GONE);
+                    h.img1.setImageResource(R.drawable.candidato_generico);
                 }
-                break;
+                h.layoutFotos.setVisibility(View.VISIBLE);
+                h.img1.setVisibility(View.VISIBLE);
+            }
 
-            default:
-                h.categoria.setText(d.getCategory());
-                h.img1.setVisibility(View.GONE);
-                h.img2.setVisibility(View.GONE);
-                break;
+        } else if (d instanceof Debate) {
+            Debate debate = (Debate) d;
+            String id1 = debate.getIdCandidato1();
+            String id2 = debate.getIdCandidato2();
+            Candidato c1 = candidatoMap.get(id1);
+            Candidato c2 = candidatoMap.get(id2);
+
+            if (c1 != null && c2 != null) {
+                h.categoria.setText("Debate");
+                int fotoId1 = c1.getFotoId(context);
+                if (fotoId1 != 0) {
+                    h.img1.setImageResource(fotoId1);
+                } else {
+                    h.img1.setImageResource(R.drawable.candidato_generico);
+                }
+
+                int fotoId2 = c2.getFotoId(context);
+                if (fotoId2 != 0) {
+                    h.img2.setImageResource(fotoId2);
+                } else {
+                    h.img2.setImageResource(R.drawable.candidato_generico);
+                }
+
+                h.layoutFotos.setVisibility(View.VISIBLE);
+                h.img1.setVisibility(View.VISIBLE);
+                h.img2.setVisibility(View.VISIBLE);
+                h.versusText.setVisibility(View.VISIBLE);
+            }
         }
     }
 
@@ -88,8 +112,9 @@ public class ImportantDateAdapter extends RecyclerView.Adapter<ImportantDateAdap
     }
 
     static class Holder extends RecyclerView.ViewHolder {
-        TextView titulo, dataHora, categoria;
-        ImageView img1, img2;
+        TextView titulo, dataHora, categoria, versusText;
+        CircleImageView img1, img2;
+        View layoutFotos;
 
         Holder(@NonNull View itemView) {
             super(itemView);
@@ -98,6 +123,8 @@ public class ImportantDateAdapter extends RecyclerView.Adapter<ImportantDateAdap
             categoria = itemView.findViewById(R.id.txtCategoria);
             img1 = itemView.findViewById(R.id.imgCandidato1);
             img2 = itemView.findViewById(R.id.imgCandidato2);
+            versusText = itemView.findViewById(R.id.versus_text);
+            layoutFotos = itemView.findViewById(R.id.layoutFotos);
         }
     }
 }

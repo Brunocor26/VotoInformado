@@ -1,0 +1,40 @@
+\chapter{Resultados e Testes} \label{chap:resultados}
+
+\section{Estado Atual do Projeto} \label{sec:res_estado}
+A aplicação encontra-se num estado funcional estável, com todas as funcionalidades principais implementadas e operacionais. A navegação entre ecrãs é fluida e a integração com o Firebase responde com latência reduzida.
+
+\section{Testes Realizados} \label{sec:res_testes}
+Para garantir a qualidade do software, foram realizadas várias etapas de verificação:
+
+\subsection{Testes Manuais}
+Foram realizados testes exaustivos em emuladores e dispositivos físicos para validar:
+\begin{itemize}
+    \item O fluxo de registo e login.
+    \item A correta visualização dos dados dos candidatos.
+    \item A resiliência da aplicação a falhas de rede (tratamento de erros no carregamento de notícias).
+    \item A adaptação da interface ao Modo Escuro.
+\end{itemize}
+
+% [TODO: Tabela de Casos de Teste]
+\begin{table}[H]
+    \centering
+    \caption{Exemplo de casos de teste executados.}
+    \begin{tabular}{|c|p{5cm}|p{5cm}|c|}
+        \hline
+        \textbf{ID} & \textbf{Ação} & \textbf{Resultado Esperado} & \textbf{Estado} \\
+        \hline
+        CT01 & Login com credenciais inválidas & Exibir mensagem de erro & Passou \\
+        \hline
+        CT02 & Carregar lista de notícias & Exibir lista com títulos e imagens & Passou \\
+        \hline
+        CT03 & Clicar em candidato & Abrir detalhe do candidato & Passou \\
+        \hline
+    \end{tabular}
+    \label{tab:testes}
+\end{table}
+
+\subsection{Testes Unitários e Instrumentados}
+O projeto inclui uma estrutura para testes unitários (JUnit) e testes de interface (Espresso), permitindo a verificação automática de componentes críticos e fluxos de utilizador.
+
+\section{Análise de Desempenho} \label{sec:res_desempenho}
+A utilização do \textit{Android Profiler} permitiu identificar e corrigir fugas de memória, especialmente no carregamento de imagens, confirmando a eficácia da introdução da biblioteca Picasso.

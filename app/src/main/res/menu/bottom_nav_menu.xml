@@ -20,4 +20,8 @@
         android:id="@+id/nav_noticias"
         android:icon="@drawable/baseline_newspaper_24"
         android:title="Notícias" />
+    <item
+        android:id="@+id/nav_peticoes"
+        android:icon="@drawable/baseline_groups_24"
+        android:title="Petições" />
 </menu>

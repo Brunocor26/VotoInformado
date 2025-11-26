@@ -56,6 +56,11 @@
             android:parentActivityName=".activities.HomeActivity" />
 
         <activity
+            android:name=".activities.CreatePeticaoActivity"
+            android:parentActivityName=".activities.HomeActivity" />
+        <activity
+            android:name=".activities.PeticaoDetailActivity"
+            android:parentActivityName=".activities.HomeActivity" />
             android:name=".activities.PoliticalCompassActivity"
             android:parentActivityName=".activities.HomeActivity" />
 

@@ -58,6 +58,11 @@ public class HomeFragment extends Fragment {
         } else {
             profileImage.setImageResource(R.drawable.candidato_generico);
         }
+
+        View politicalCompassBtn = view.findViewById(R.id.btn_political_compass);
+        if (politicalCompassBtn != null) {
+            politicalCompassBtn.setOnClickListener(v -> startActivity(new Intent(getActivity(), pt.ubi.pdm.votoinformado.activities.PoliticalCompassActivity.class)));
+        }
     }
 
     private void loadFirebaseData(View view) {

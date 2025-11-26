@@ -55,6 +55,14 @@
             android:name=".activities.ImportantDatesActivity"
             android:parentActivityName=".activities.HomeActivity" />
 
+        <activity
+            android:name=".activities.PoliticalCompassActivity"
+            android:parentActivityName=".activities.HomeActivity" />
+
+        <activity
+            android:name=".activities.PoliticalCompassResultActivity"
+            android:parentActivityName=".activities.PoliticalCompassActivity" />
+
     </application>
 
 </manifest>

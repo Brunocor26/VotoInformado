@@ -9,8 +9,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.google.gson.annotations.SerializedName;
+
 public class Sondagem implements Serializable {
 
+    @SerializedName("_id")
+    private String id;
     private String entidade;
     private Integer tamAmostra;
     private String dataInicioRecolha;

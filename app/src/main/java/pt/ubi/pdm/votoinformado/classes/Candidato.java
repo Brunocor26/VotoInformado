@@ -11,8 +11,11 @@ import java.io.Serializable;
 
 import pt.ubi.pdm.votoinformado.R;
 
+import com.google.gson.annotations.SerializedName;
+
 public class Candidato implements Serializable {
 
+    @SerializedName("_id")
     private String id;
     private String nome;
     private String partido;

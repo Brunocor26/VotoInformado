@@ -21,21 +21,29 @@
 \contentsline {section}{\numberline {3.4}Notícias em Tempo Real}{9}{section.3.4}%
 \contentsline {section}{\numberline {3.5}Sondagens e Estatísticas}{10}{section.3.5}%
 \contentsline {section}{\numberline {3.6}Datas Importantes}{10}{section.3.6}%
-\contentsline {chapter}{\numberline {4}Implementação}{13}{chapter.4}%
-\contentsline {section}{\numberline {4.1}Integração com Firestore}{13}{section.4.1}%
-\contentsline {section}{\numberline {4.2}Parsing de Notícias (RSS)}{14}{section.4.2}%
-\contentsline {section}{\numberline {4.3}Gestão de Imagens}{14}{section.4.3}%
-\contentsline {section}{\numberline {4.4}Adapters e RecyclerViews}{14}{section.4.4}%
-\contentsline {chapter}{\numberline {5}Resultados e Testes}{15}{chapter.5}%
-\contentsline {section}{\numberline {5.1}Estado Atual do Projeto}{15}{section.5.1}%
-\contentsline {section}{\numberline {5.2}Testes Realizados}{15}{section.5.2}%
-\contentsline {subsection}{\numberline {5.2.1}Testes Manuais}{15}{subsection.5.2.1}%
-\contentsline {subsection}{\numberline {5.2.2}Testes Unitários e Instrumentados}{15}{subsection.5.2.2}%
-\contentsline {section}{\numberline {5.3}Análise de Desempenho}{16}{section.5.3}%
-\contentsline {chapter}{\numberline {6}Conclusão e Trabalho Futuro}{17}{chapter.6}%
-\contentsline {section}{\numberline {6.1}Conclusão}{17}{section.6.1}%
-\contentsline {section}{\numberline {6.2}Trabalho Futuro}{17}{section.6.2}%
-\contentsline {chapter}{Bibliography}{19}{section*.24}%
-\contentsline {chapter}{\numberline {A}Appendix}{21}{chapter.appendix1}%
-\contentsline {section}{\numberline {A.1}Datasheets dos componentes utilizados}{21}{section.appendix1.1}%
-\contentsline {chapter}{Glossary}{23}{section*.26}%
+\contentsline {section}{\numberline {3.7}Bússola Política}{11}{section.3.7}%
+\contentsline {section}{\numberline {3.8}Petições Públicas}{12}{section.3.8}%
+\contentsline {chapter}{\numberline {4}Implementação}{15}{chapter.4}%
+\contentsline {section}{\numberline {4.1}Integração com Firestore}{15}{section.4.1}%
+\contentsline {section}{\numberline {4.2}Parsing de Notícias (RSS)}{16}{section.4.2}%
+\contentsline {section}{\numberline {4.3}Gestão de Imagens}{16}{section.4.3}%
+\contentsline {section}{\numberline {4.4}Adapters e RecyclerViews}{16}{section.4.4}%
+\contentsline {section}{\numberline {4.5}Motor de Quiz e Visualização Gráfica}{17}{section.4.5}%
+\contentsline {subsection}{\numberline {4.5.1}Modelo de Dados}{17}{subsection.4.5.1}%
+\contentsline {subsection}{\numberline {4.5.2}CompassView}{17}{subsection.4.5.2}%
+\contentsline {section}{\numberline {4.6}Sistema de Petições}{17}{section.4.6}%
+\contentsline {subsection}{\numberline {4.6.1}Estrutura de Dados}{17}{subsection.4.6.1}%
+\contentsline {subsection}{\numberline {4.6.2}Interação e Ordenação}{18}{subsection.4.6.2}%
+\contentsline {chapter}{\numberline {5}Resultados e Testes}{19}{chapter.5}%
+\contentsline {section}{\numberline {5.1}Estado Atual do Projeto}{19}{section.5.1}%
+\contentsline {section}{\numberline {5.2}Testes Realizados}{19}{section.5.2}%
+\contentsline {subsection}{\numberline {5.2.1}Testes Manuais}{19}{subsection.5.2.1}%
+\contentsline {subsection}{\numberline {5.2.2}Testes Unitários e Instrumentados}{19}{subsection.5.2.2}%
+\contentsline {section}{\numberline {5.3}Análise de Desempenho}{20}{section.5.3}%
+\contentsline {chapter}{\numberline {6}Conclusão e Trabalho Futuro}{21}{chapter.6}%
+\contentsline {section}{\numberline {6.1}Conclusão}{21}{section.6.1}%
+\contentsline {section}{\numberline {6.2}Trabalho Futuro}{21}{section.6.2}%
+\contentsline {chapter}{Bibliography}{23}{section*.26}%
+\contentsline {chapter}{\numberline {A}Appendix}{25}{chapter.appendix1}%
+\contentsline {section}{\numberline {A.1}Datasheets dos componentes utilizados}{25}{section.appendix1.1}%
+\contentsline {chapter}{Glossary}{27}{section*.28}%

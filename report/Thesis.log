@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.141592653-2.6-0.999997 (TeX Live 2025) (preloaded format=xelatex 2025.11.16)  23 NOV 2025 16:08
+This is XeTeX, Version 3.141592653-2.6-0.999997 (TeX Live 2025) (preloaded format=xelatex 2025.11.16)  26 NOV 2025 17:12
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -1030,10 +1030,23 @@ Overfull \hbox (0.79587pt too wide) in paragraph at lines 133--133
 
 LaTeX Warning: `!h' float specifier changed to `!ht'.
 
-) [10] [11]
+[10]
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [11]
+Overfull \hbox (5.70506pt too wide) in paragraph at lines 166--167
+[]\TU/lmr/bx/n/10.95 Visualização\TU/lmr/m/n/10.95 : O resultado é apresentado 
+num gráfico bidimensional (Eixo Económico
+ []
+
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [12])
+[13]
 \openout2 = `Chapter4.aux'.
 
- (./Chapter4.tex [12
+ (./Chapter4.tex [14
 
 
 
@@ -1042,13 +1055,19 @@ LaTeX Warning: `!h' float specifier changed to `!ht'.
 Chapter 4.
 (/usr/local/texlive/2025/texmf-dist/tex/latex/listings/lstlang1.sty
 File: lstlang1.sty 2025/11/14 1.11a listings language file
-) [13])
-Overfull \hbox (31.57445pt too wide) in paragraph at lines 60--77
+) [15]
+Overfull \hbox (31.57445pt too wide) in paragraph at lines 60--61
 \TU/lmr/m/n/10.95 A exibição de listas eficientes foi conseguida através da imp
 lementação de \TU/lmtt/m/n/10.95 RecyclerView.Adapter
  []
 
-[14]
+[16]
+Overfull \hbox (1.89127pt too wide) in paragraph at lines 66--67
+\TU/lmr/m/n/10.95 A classe \TU/lmtt/m/n/10.95 Question \TU/lmr/m/n/10.95 encaps
+ula o texto da pergunta, o peso e o eixo a que pertence (Económico
+ []
+
+[17]) [18]
 \openout2 = `Chapter5.aux'.
 
  (./Chapter5.tex
@@ -1059,22 +1078,22 @@ Overfull \hbox (0.41074pt too wide) in paragraph at lines 37--38
 e testes de interface (Espresso),
  []
 
-) [15
+) [19
 
 
 
 
-] [16]
+] [20]
 \openout2 = `Conclusion.aux'.
 
  (./Conclusion.tex
 Chapter 6.
-) [17
+) [21
 
 
 
 
-] [18
+] [22
 
 
 
@@ -1086,18 +1105,18 @@ Chapter 6.
 
 LaTeX Warning: Empty `thebibliography' environment on input line 24.
 
-) (./Appendix.tex [19] [20
+) (./Appendix.tex [23] [24
 
 ]
 \fontsize {18pt}{11pt}\bfseries \selectfont Appendix A.
-) [21] [22
+) [25] [26
 
 ] (./Glossary.tex)
 Underfull \hbox (badness 10000) in paragraph at lines 91--91
 
  []
 
-[23] [24
+[27] [28
 
 ] (./Thesis.ind) (./Thesis.aux (./Introduction.aux) (./Chapter2.aux)
 (./Chapter3.aux) (./Chapter4.aux) (./Chapter5.aux) (./Conclusion.aux))
@@ -1106,17 +1125,17 @@ LaTeX2e <2025-11-01>
 L3 programming layer <2025-11-06>
  ***********
 Package rerunfilecheck Info: File `Thesis.out' has not changed.
-(rerunfilecheck)             Checksum: 2A45E2524F80CB0766AACCD959AF9655;5973.
+(rerunfilecheck)             Checksum: 1C40711237040642BF5421BF620C79BA;7285.
 Package rerunfilecheck Info: File `Thesis.brf' has not changed.
 (rerunfilecheck)             Checksum: D41D8CD98F00B204E9800998ECF8427E;0.
  ) 
 Here is how much of TeX's memory you used:
- 20702 strings out of 468179
- 392333 string characters out of 5433206
+ 20728 strings out of 468179
+ 392715 string characters out of 5433206
  1144526 words of memory out of 5000000
- 49015 multiletter control sequences out of 15000+600000
- 635063 words of font info for 86 fonts, out of 8000000 for 9000
+ 49039 multiletter control sequences out of 15000+600000
+ 635071 words of font info for 87 fonts, out of 8000000 for 9000
  1348 hyphenation exceptions out of 8191
  140i,11n,145p,885b,1161s stack positions out of 10000i,1000n,20000p,200000b,200000s
 
-Output written on Thesis.pdf (38 pages).
+Output written on Thesis.pdf (42 pages).

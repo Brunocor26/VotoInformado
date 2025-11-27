@@ -5,7 +5,10 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.gson.annotations.SerializedName;
+
 public class Peticao implements Serializable {
+    @SerializedName("_id")
     private String id;
     private String titulo;
     private String descricao;

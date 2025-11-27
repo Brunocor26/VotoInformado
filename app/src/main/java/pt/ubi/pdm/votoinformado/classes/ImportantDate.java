@@ -2,8 +2,12 @@ package pt.ubi.pdm.votoinformado.classes;
 
 import java.time.LocalDate;
 
+import com.google.gson.annotations.SerializedName;
+
 public class ImportantDate {
 
+    @SerializedName("_id")
+    private String id;
     private String title;
     private String date;
     private String time;

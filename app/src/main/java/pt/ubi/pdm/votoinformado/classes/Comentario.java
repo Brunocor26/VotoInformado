@@ -1,6 +1,9 @@
 package pt.ubi.pdm.votoinformado.classes;
 
+import com.google.gson.annotations.SerializedName;
+
 public class Comentario {
+    @SerializedName("_id")
     private String id;
     private String peticaoId;
     private String autorId;

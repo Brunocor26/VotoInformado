@@ -2,36 +2,34 @@
 
 Este capítulo aborda os desafios técnicos e as soluções de implementação adotadas durante o desenvolvimento.
 
-\section{Integração com Firestore} \label{sec:impl_firestore}
-A migração de dados locais para a nuvem foi um passo fundamental. A implementação utiliza \texttt{CollectionReference} para aceder às coleções de ``candidatos'' e ``sondagens''. O uso de \textit{listeners} assíncronos permite que a interface seja atualizada automaticamente assim que os dados são recebidos, sem bloquear a \textit{Main Thread}.
+\section{Migração para API Customizada} \label{sec:impl_api}
+Inicialmente, o projeto utilizava o Firebase Firestore para persistência de dados. No entanto, seguindo uma sugestão do Professor Orientador para aumentar a complexidade técnica e permitir uma solução mais personalizada, optou-se por migrar para uma API própria.
 
-% [TODO: Inserir Modelo de Dados]
+Esta nova arquitetura consiste numa API REST desenvolvida em Node.js, alojada na plataforma Render. A aplicação Android comunica com esta API utilizando a biblioteca Retrofit, garantindo uma separação clara entre a lógica de cliente e o servidor.
+
+% [TODO: Inserir Diagrama de Arquitetura]
 \begin{figure}[H]
     \centering
-    % \includegraphics[width=0.7\textwidth]{images/modelo_dados_firestore.png}
+    % \includegraphics[width=0.7\textwidth]{images/arquitetura_api.png}
     \fbox{\begin{minipage}{0.7\textwidth}
         \centering
         \vspace{3cm}
-        \textbf{[PLACEHOLDER: Modelo de Dados Firestore]} \\
-        (Screenshot do Firebase Console ou Diagrama ER)
+        \textbf{[PLACEHOLDER: Arquitetura Cliente-Servidor]} \\
+        (Diagrama: Android App <-> Retrofit <-> Node.js API <-> MongoDB)
         \vspace{3cm}
     \end{minipage}}
-    \caption{Estrutura das coleções no Cloud Firestore.}
-    \label{fig:firestore_model}
+    \caption{Arquitetura da comunicação com a API customizada.}
+    \label{fig:api_arch}
 \end{figure}
 
-\begin{lstlisting}[language=Java, caption=Exemplo de leitura do Firestore]
-db.collection("candidatos")
-    .get()
-    .addOnCompleteListener(task -> {
-        if (task.isSuccessful()) {
-            for (QueryDocumentSnapshot document : task.getResult()) {
-                Candidato candidato = document.toObject(Candidato.class);
-                listaCandidatos.add(candidato);
-            }
-            adapter.notifyDataSetChanged();
-        }
-    });
+\begin{lstlisting}[language=Java, caption=Definição da Interface Retrofit]
+public interface ApiService {
+    @GET("api/candidates")
+    Call<List<Candidato>> getCandidates();
+
+    @POST("api/petitions")
+    Call<Peticao> createPetition(@Body Peticao peticao);
+}
 \end{lstlisting}
 
 \section{Parsing de Notícias (RSS)} \label{sec:impl_rss}
@@ -58,3 +56,36 @@ O carregamento de imagens remotas em listas (\texttt{RecyclerView}) pode causar 
 
 \section{Adapters e RecyclerViews} \label{sec:impl_adapters}
 A exibição de listas eficientes foi conseguida através da implementação de \texttt{RecyclerView.Adapter} personalizados. O padrão \textit{ViewHolder} é utilizado para reciclar as vistas, garantindo uma rolagem suave mesmo com listas longas de candidatos ou notícias.
+
+\section{Motor de Quiz e Visualização Gráfica} \label{sec:impl_compass}
+A funcionalidade da Bússola Política envolveu o desenvolvimento de um motor de cálculo de pontuação e uma vista personalizada para o gráfico.
+
+\subsection{Modelo de Dados}
+A classe \texttt{Question} encapsula o texto da pergunta, o peso e o eixo a que pertence (Económico ou Social). A classe \texttt{CompassCandidate} estende a informação base de um candidato adicionando as coordenadas (x, y) da sua posição política estimada.
+
+\subsection{CompassView}
+Para desenhar o gráfico, foi criada a classe \texttt{CompassView} que estende \texttt{View}.
+\begin{itemize}
+    \item \textbf{onDraw()}: Este método é sobrescrito para desenhar os eixos, as quadrículas de fundo, e os pontos que representam o utilizador e os candidatos.
+    \item \textbf{Transformação de Coordenadas}: As coordenadas lógicas (de -10 a +10) são convertidas para coordenadas de ecrã (pixels) tendo em conta a largura e altura da vista, garantindo que o gráfico se adapta a diferentes tamanhos de ecrã.
+\end{itemize}
+
+\section{Sistema de Petições} \label{sec:impl_peticoes}
+O sistema de petições foi adaptado para consumir a nova API, mantendo a autenticação de utilizadores via Firebase Auth.
+
+\subsection{Estrutura de Dados}
+A classe \texttt{Peticao} foi atualizada para mapear os documentos MongoDB.
+\begin{lstlisting}[language=Java, caption=Estrutura simplificada da classe Peticao]
+public class Peticao {
+    @SerializedName("_id")
+    private String id;
+    private String titulo;
+    private String descricao;
+    private List<String> assinaturas; // Lista de UIDs
+    // ... getters e setters
+}
+\end{lstlisting}
+O campo \texttt{assinaturas} continua a armazenar os UIDs, permitindo a validação no cliente e no servidor.
+
+\subsection{Interação e Ordenação}
+O \texttt{PeticoesFragment} gere a visualização. A ordenação (Mais Votadas / Mais Recentes) é feita localmente utilizando \texttt{Collections.sort} com \texttt{Comparators} personalizados, o que permite uma resposta instantânea ao alterar o filtro, sem necessidade de novas requisições à API para reordenar.

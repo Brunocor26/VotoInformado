@@ -24,7 +24,11 @@ public class HomeActivity extends AppCompatActivity implements BottomNavigationV
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (com.google.firebase.auth.FirebaseAuth.getInstance().getCurrentUser() == null) {
+        // Check if user is logged in via shared preferences
+        android.content.SharedPreferences prefs = getSharedPreferences("user_session", MODE_PRIVATE);
+        String token = prefs.getString("auth_token", null);
+        
+        if (token == null || token.isEmpty()) {
             startActivity(new Intent(this, LoginActivity.class));
             finish();
             return;

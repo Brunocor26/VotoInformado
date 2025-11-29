@@ -12,8 +12,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.squareup.picasso.Picasso;
 
 import java.util.Comparator;
@@ -24,6 +22,7 @@ import java.util.Map;
 import de.hdodenhof.circleimageview.CircleImageView;
 import pt.ubi.pdm.votoinformado.R;
 import pt.ubi.pdm.votoinformado.activities.SettingsActivity;
+import pt.ubi.pdm.votoinformado.api.ApiClient;
 import pt.ubi.pdm.votoinformado.classes.Candidato;
 import pt.ubi.pdm.votoinformado.classes.Sondagem;
 import pt.ubi.pdm.votoinformado.utils.DatabaseHelper;
@@ -44,17 +43,25 @@ public class HomeFragment extends Fragment {
 
     private void updateUI(View view) {
         TextView greetingText = view.findViewById(R.id.greeting_text);
-        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
-        if (currentUser != null) {
-            String userName = currentUser.getDisplayName();
-            greetingText.setText(String.format("Bom Dia, %s!", userName != null ? userName : "Utilizador"));
+
+        // Get user data from SharedPreferences
+        android.content.SharedPreferences prefs = getActivity().getSharedPreferences("user_session", android.content.Context.MODE_PRIVATE);
+        String userName = prefs.getString("user_name", "Utilizador");
+        String photoUrl = prefs.getString("user_photo_url", "");
+
+        if (userName != null) {
+            greetingText.setText(String.format("Bom Dia, %s!", userName));
         }
 
         CircleImageView profileImage = view.findViewById(R.id.profile_image_home);
         profileImage.setOnClickListener(v -> startActivity(new Intent(getActivity(), SettingsActivity.class)));
 
-        if (currentUser != null && currentUser.getPhotoUrl() != null) {
-            Picasso.get().load(currentUser.getPhotoUrl()).into(profileImage);
+        if (photoUrl != null && !photoUrl.isEmpty()) {
+            if (!photoUrl.startsWith("http")) {
+                String sanitizedPath = photoUrl.replace('\\', '/').replaceFirst("^/", "");
+                photoUrl = ApiClient.getBaseUrl() + sanitizedPath;
+            }
+            Picasso.get().load(photoUrl).placeholder(R.drawable.candidato_generico).into(profileImage);
         } else {
             profileImage.setImageResource(R.drawable.candidato_generico);
         }
@@ -92,10 +99,18 @@ public class HomeFragment extends Fragment {
                                         if (candidatoVencedor != null) {
                                             sondagemDestaqueNome.setText(candidatoVencedor.getNome());
                                             sondagemDestaquePercentagem.setText(String.format(Locale.US, "%.1f%%", vencedor.percentagem));
-                                            
-                                            int fotoId = candidatoVencedor.getFotoId(getContext());
-                                            if (fotoId != 0) {
-                                                sondagemDestaqueImage.setImageResource(fotoId);
+
+                                            String photoUrl = candidatoVencedor.getPhotoUrl();
+                                            if (photoUrl != null && !photoUrl.isEmpty()) {
+                                                if (!photoUrl.startsWith("http")) {
+                                                    String sanitizedPath = photoUrl.replace('\\', '/').replaceFirst("^/", "");
+                                                    photoUrl = ApiClient.getBaseUrl() + sanitizedPath;
+                                                }
+                                                Picasso.get()
+                                                        .load(photoUrl)
+                                                        .placeholder(R.drawable.candidato_generico)
+                                                        .error(R.drawable.candidato_generico)
+                                                        .into(sondagemDestaqueImage);
                                             } else {
                                                 sondagemDestaqueImage.setImageResource(R.drawable.candidato_generico);
                                             }
@@ -115,7 +130,7 @@ public class HomeFragment extends Fragment {
                     @Override
                     public void onError(String message) {
                         if (isAdded()) {
-                           Toast.makeText(getContext(), "Failed to load polls: " + message, Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getContext(), "Failed to load polls: " + message, Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
@@ -151,7 +166,7 @@ public class HomeFragment extends Fragment {
                         } else {
                             imagem.setImageResource(R.drawable.candidato_generico);
                         }
-                        
+
                         card.setOnClickListener(v -> {
                             Intent i = new Intent(getActivity(), pt.ubi.pdm.votoinformado.activities.NoticiaDetalheActivity.class);
                             i.putExtra("titulo", ultimaNoticia.getTitulo());

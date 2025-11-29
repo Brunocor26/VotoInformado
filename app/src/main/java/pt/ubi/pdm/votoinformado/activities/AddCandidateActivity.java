@@ -50,7 +50,6 @@ public class AddCandidateActivity extends AppCompatActivity {
         candidato.setId(id);
         candidato.setNome(getStringOrNull(editName));
         candidato.setPartido(getStringOrNull(editParty));
-        candidato.setFotoUrl(getStringOrNull(editPhotoName));
         candidato.setProfissao(getStringOrNull(editProfession));
         candidato.setCargosPrincipais(getStringOrNull(editMainRoles));
         candidato.setBiografiaCurta(getStringOrNull(editBio));

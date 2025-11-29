@@ -54,7 +54,19 @@ public class ResultadoSondagemAdapter extends RecyclerView.Adapter<ResultadoSond
 
         if (candidato != null) {
             // É um candidato conhecido
-            holder.foto.setImageResource(candidato.getFotoId(context));
+            String photoUrl = candidato.getPhotoUrl();
+            if (photoUrl != null && !photoUrl.isEmpty()) {
+                if (!photoUrl.startsWith("http")) {
+                     photoUrl = pt.ubi.pdm.votoinformado.api.ApiClient.getBaseUrl() + photoUrl.replaceFirst("^/", "");
+                }
+                com.squareup.picasso.Picasso.get()
+                    .load(photoUrl)
+                    .placeholder(R.drawable.candidato_generico)
+                    .error(R.drawable.candidato_generico)
+                    .into(holder.foto);
+            } else {
+                holder.foto.setImageResource(R.drawable.candidato_generico);
+            }
             holder.nome.setText(candidato.getNome());
 
             // Adiciona o listener de clique para abrir o detalhe do candidato

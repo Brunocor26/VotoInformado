@@ -1,4 +1,5 @@
-\xpg@aux {}{english}
+\xpginauxfiletrue 
+\selectlanguage *{english}
 \contentsline {chapter}{Resumo}{iii}{section*.1}%
 \contentsline {chapter}{Contents}{v}{section*.3}%
 \contentsline {chapter}{List of Figures}{vii}{section*.5}%
@@ -24,16 +25,17 @@
 \contentsline {section}{\numberline {3.7}Bússola Política}{11}{section.3.7}%
 \contentsline {section}{\numberline {3.8}Petições Públicas}{12}{section.3.8}%
 \contentsline {chapter}{\numberline {4}Implementação}{15}{chapter.4}%
-\contentsline {section}{\numberline {4.1}Integração com Firestore}{15}{section.4.1}%
+\contentsline {section}{\numberline {4.1}Migração para API Customizada}{15}{section.4.1}%
 \contentsline {section}{\numberline {4.2}Parsing de Notícias (RSS)}{16}{section.4.2}%
 \contentsline {section}{\numberline {4.3}Gestão de Imagens}{16}{section.4.3}%
-\contentsline {section}{\numberline {4.4}Adapters e RecyclerViews}{16}{section.4.4}%
+\contentsline {section}{\numberline {4.4}Adapters e RecyclerViews}{17}{section.4.4}%
 \contentsline {section}{\numberline {4.5}Motor de Quiz e Visualização Gráfica}{17}{section.4.5}%
 \contentsline {subsection}{\numberline {4.5.1}Modelo de Dados}{17}{subsection.4.5.1}%
 \contentsline {subsection}{\numberline {4.5.2}CompassView}{17}{subsection.4.5.2}%
 \contentsline {section}{\numberline {4.6}Sistema de Petições}{17}{section.4.6}%
 \contentsline {subsection}{\numberline {4.6.1}Estrutura de Dados}{17}{subsection.4.6.1}%
-\contentsline {subsection}{\numberline {4.6.2}Interação e Ordenação}{18}{subsection.4.6.2}%
+\contentsline {subsection}{\numberline {4.6.2}Upload de Imagens}{18}{subsection.4.6.2}%
+\contentsline {subsection}{\numberline {4.6.3}Eliminação de Petições}{18}{subsection.4.6.3}%
 \contentsline {chapter}{\numberline {5}Resultados e Testes}{19}{chapter.5}%
 \contentsline {section}{\numberline {5.1}Estado Atual do Projeto}{19}{section.5.1}%
 \contentsline {section}{\numberline {5.2}Testes Realizados}{19}{section.5.2}%

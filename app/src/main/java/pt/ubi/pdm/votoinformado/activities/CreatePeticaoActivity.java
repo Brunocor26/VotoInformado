@@ -10,10 +10,6 @@ import android.widget.ImageView;
 import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
 import java.util.UUID;
 import pt.ubi.pdm.votoinformado.R;
 import pt.ubi.pdm.votoinformado.classes.Peticao;
@@ -68,18 +64,21 @@ public class CreatePeticaoActivity extends AppCompatActivity {
             return;
         }
 
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        if (user == null) {
+        // Get user data from SharedPreferences
+        android.content.SharedPreferences prefs = getSharedPreferences("user_session", MODE_PRIVATE);
+        String userId = prefs.getString("user_id", null);
+        String userName = prefs.getString("user_name", "Utilizador");
+
+        if (userId == null) {
             Toast.makeText(this, "Erro: Utilizador não autenticado", Toast.LENGTH_SHORT).show();
             return;
         }
 
         btnPublicar.setEnabled(false); // Desativa o botão para evitar cliques duplos
 
-        String nome = user.getDisplayName();
-        if (nome == null || nome.isEmpty()) nome = user.getEmail();
+        String nome = userName;
 
-        Peticao novaPeticao = new Peticao(titulo, desc, user.getUid(), nome);
+        Peticao novaPeticao = new Peticao(titulo, desc, userId, nome);
 
         if (imageUri != null) {
             uploadImageAndSavePeticao(novaPeticao);
@@ -102,17 +101,51 @@ public class CreatePeticaoActivity extends AppCompatActivity {
     }
 
     private void uploadImageAndSavePeticao(Peticao peticao) {
-        StorageReference storageRef = FirebaseStorage.getInstance().getReference("peticao_images")
-                .child(UUID.randomUUID().toString());
+        try {
+            java.io.File file = getFileFromUri(imageUri);
+            okhttp3.RequestBody requestFile = okhttp3.RequestBody.create(okhttp3.MediaType.parse(getContentResolver().getType(imageUri)), file);
+            okhttp3.MultipartBody.Part body = okhttp3.MultipartBody.Part.createFormData("image", file.getName(), requestFile);
 
-        storageRef.putFile(imageUri)
-            .addOnSuccessListener(taskSnapshot -> storageRef.getDownloadUrl().addOnSuccessListener(uri -> {
-                peticao.setImageUrl(uri.toString());
-                savePeticaoOnly(peticao);
-            }))
-            .addOnFailureListener(e -> {
-                Toast.makeText(this, "Falha no upload da imagem: " + e.getMessage(), Toast.LENGTH_LONG).show();
-                btnPublicar.setEnabled(true); // Reativa o botão em caso de falha
+            pt.ubi.pdm.votoinformado.api.ApiClient.getInstance().getApiService().uploadPetitionImage(body).enqueue(new retrofit2.Callback<java.util.Map<String, String>>() {
+                @Override
+                public void onResponse(retrofit2.Call<java.util.Map<String, String>> call, retrofit2.Response<java.util.Map<String, String>> response) {
+                    if (response.isSuccessful() && response.body() != null) {
+                        String imageUrl = response.body().get("imageUrl");
+                        peticao.setImageUrl(imageUrl);
+                        savePeticaoOnly(peticao);
+                    } else {
+                        Toast.makeText(CreatePeticaoActivity.this, "Falha no upload: " + response.message(), Toast.LENGTH_SHORT).show();
+                        btnPublicar.setEnabled(true);
+                    }
+                }
+
+                @Override
+                public void onFailure(retrofit2.Call<java.util.Map<String, String>> call, Throwable t) {
+                    Toast.makeText(CreatePeticaoActivity.this, "Erro de rede: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                    btnPublicar.setEnabled(true);
+                }
             });
+        } catch (java.io.IOException e) {
+            e.printStackTrace();
+            Toast.makeText(this, "Erro ao processar imagem", Toast.LENGTH_SHORT).show();
+            btnPublicar.setEnabled(true);
+        }
+    }
+
+    private java.io.File getFileFromUri(Uri uri) throws java.io.IOException {
+        android.content.ContentResolver contentResolver = getContentResolver();
+        String mimeType = contentResolver.getType(uri);
+        String extension = android.webkit.MimeTypeMap.getSingleton().getExtensionFromMimeType(mimeType);
+        java.io.File file = java.io.File.createTempFile("temp_image", "." + extension, getCacheDir());
+        
+        try (java.io.InputStream inputStream = contentResolver.openInputStream(uri);
+             java.io.OutputStream outputStream = new java.io.FileOutputStream(file)) {
+            byte[] buffer = new byte[1024];
+            int length;
+            while ((length = inputStream.read(buffer)) > 0) {
+                outputStream.write(buffer, 0, length);
+            }
+        }
+        return file;
     }
 }

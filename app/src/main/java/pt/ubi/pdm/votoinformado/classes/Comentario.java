@@ -8,6 +8,7 @@ public class Comentario {
     private String peticaoId;
     private String autorId;
     private String autorNome;
+    private String autorPhotoUrl;
     private String texto;
     private long dataCriacao;
 
@@ -15,10 +16,11 @@ public class Comentario {
         // Construtor vazio para o Firebase
     }
 
-    public Comentario(String peticaoId, String autorId, String autorNome, String texto) {
+    public Comentario(String peticaoId, String autorId, String autorNome, String autorPhotoUrl, String texto) {
         this.peticaoId = peticaoId;
         this.autorId = autorId;
         this.autorNome = autorNome;
+        this.autorPhotoUrl = autorPhotoUrl;
         this.texto = texto;
         this.dataCriacao = System.currentTimeMillis();
     }
@@ -35,6 +37,9 @@ public class Comentario {
 
     public String getAutorNome() { return autorNome; }
     public void setAutorNome(String autorNome) { this.autorNome = autorNome; }
+
+    public String getAutorPhotoUrl() { return autorPhotoUrl; }
+    public void setAutorPhotoUrl(String autorPhotoUrl) { this.autorPhotoUrl = autorPhotoUrl; }
 
     public String getTexto() { return texto; }
     public void setTexto(String texto) { this.texto = texto; }

@@ -1,6 +1,8 @@
 package pt.ubi.pdm.votoinformado.activities;
 
+
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
@@ -19,32 +21,32 @@ import androidx.credentials.exceptions.NoCredentialException;
 
 import com.google.android.libraries.identity.googleid.GetGoogleIdOption;
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential;
-import com.google.firebase.auth.AuthCredential;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.GoogleAuthProvider;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
+import okhttp3.ResponseBody;
+import org.json.JSONObject;
 import pt.ubi.pdm.votoinformado.R;
+import pt.ubi.pdm.votoinformado.api.ApiClient;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class LoginActivity extends AppCompatActivity {
 
     private static final String TAG = "LoginActivity";
     private EditText emailEditText, passwordEditText;
-    private FirebaseAuth mAuth;
     private CredentialManager credentialManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        mAuth = FirebaseAuth.getInstance();
-        if (mAuth.getCurrentUser() != null) {
-            startActivity(new Intent(this, HomeActivity.class));
-            finish();
-            return;
-        }
+        
+        // Check for existing session (e.g., SharedPreferences) - To be implemented
+        // For now, we always show login screen
 
         setContentView(R.layout.activity_login);
 
@@ -79,17 +81,50 @@ public class LoginActivity extends AppCompatActivity {
             return;
         }
 
-        mAuth.signInWithEmailAndPassword(email, password)
-                .addOnCompleteListener(this, task -> {
-                    if (task.isSuccessful()) {
-                        Toast.makeText(this, "Login bem-sucedido", Toast.LENGTH_SHORT).show();
-                        startActivity(new Intent(this, HomeActivity.class));
+        Map<String, String> body = new HashMap<>();
+        body.put("email", email);
+        body.put("password", password);
+
+        ApiClient.getInstance().getApiService().login(body).enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response.isSuccessful()) {
+                    try {
+                        String responseBody = response.body().string();
+                        JSONObject jsonObject = new JSONObject(responseBody);
+                        String token = jsonObject.getString("token");
+                        String userId = jsonObject.optString("_id", "");
+                        String name = jsonObject.optString("name", "Utilizador");
+                        String email = jsonObject.optString("email", "");
+                        String photoUrl = jsonObject.optString("photoUrl", "");
+                        
+                        // Save to SharedPreferences
+                        SharedPreferences prefs = getSharedPreferences("user_session", MODE_PRIVATE);
+                        SharedPreferences.Editor editor = prefs.edit();
+                        editor.putString("auth_token", token);
+                        editor.putString("user_id", userId);
+                        editor.putString("user_name", name);
+                        editor.putString("user_email", email);
+                        editor.putString("user_photo_url", photoUrl);
+                        editor.apply();
+                        
+                        Toast.makeText(LoginActivity.this, "Login bem-sucedido", Toast.LENGTH_SHORT).show();
+                        startActivity(new Intent(LoginActivity.this, HomeActivity.class));
                         finish();
-                    } else {
-                        Toast.makeText(this, "Falha na autenticação: " + task.getException().getMessage(),
-                                Toast.LENGTH_LONG).show();
+                    } catch (Exception e) {
+                        Log.e(TAG, "Error parsing login response", e);
+                        Toast.makeText(LoginActivity.this, "Erro ao processar resposta", Toast.LENGTH_LONG).show();
                     }
-                });
+                } else {
+                    Toast.makeText(LoginActivity.this, "Falha na autenticação", Toast.LENGTH_LONG).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                Toast.makeText(LoginActivity.this, "Erro de rede: " + t.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
     private void signInWithGoogle() {
@@ -107,46 +142,57 @@ public class LoginActivity extends AppCompatActivity {
         credentialManager.getCredentialAsync(
                 this,
                 request,
-                        null,
-                        executor,
-                        new CredentialManagerCallback<GetCredentialResponse, GetCredentialException>() {
-                            @Override
-                            public void onResult(GetCredentialResponse result) {
-                                try {
-                                    GoogleIdTokenCredential credential = GoogleIdTokenCredential.createFrom(result.getCredential().getData());
-                                    firebaseAuthWithGoogle(credential.getIdToken());
-                                } catch (Exception e) {
-                                    Log.e(TAG, "Error creating GoogleIdTokenCredential", e);
-                                    runOnUiThread(() -> Toast.makeText(LoginActivity.this, "Erro ao processar credenciais.", Toast.LENGTH_SHORT).show());
-                                }
-                            }
-
-                            @Override
-                            public void onError(@NonNull GetCredentialException e) {
-                                runOnUiThread(() -> {
-                                    if (e instanceof NoCredentialException) {
-                                        Log.w(TAG, "No Google accounts found on the device.", e);
-                                        Toast.makeText(LoginActivity.this, "Nenhuma conta Google encontrada para fazer login.", Toast.LENGTH_LONG).show();
-                                    } else {
-                                        Log.e(TAG, "GetCredentialException", e);
-                                        Toast.makeText(LoginActivity.this, "Falha no login com Google.", Toast.LENGTH_SHORT).show();
-                                    }
-                                });
-                            }
+                null,
+                executor,
+                new CredentialManagerCallback<GetCredentialResponse, GetCredentialException>() {
+                    @Override
+                    public void onResult(GetCredentialResponse result) {
+                        try {
+                            GoogleIdTokenCredential credential = GoogleIdTokenCredential.createFrom(result.getCredential().getData());
+                            backendAuthWithGoogle(credential.getIdToken());
+                        } catch (Exception e) {
+                            Log.e(TAG, "Error creating GoogleIdTokenCredential", e);
+                            runOnUiThread(() -> Toast.makeText(LoginActivity.this, "Erro ao processar credenciais.", Toast.LENGTH_SHORT).show());
                         }
-                );
+                    }
+
+                    @Override
+                    public void onError(@NonNull GetCredentialException e) {
+                        runOnUiThread(() -> {
+                            if (e instanceof NoCredentialException) {
+                                Log.w(TAG, "No Google accounts found on the device.", e);
+                                Toast.makeText(LoginActivity.this, "Nenhuma conta Google encontrada.", Toast.LENGTH_LONG).show();
+                            } else {
+                                Log.e(TAG, "GetCredentialException", e);
+                                Toast.makeText(LoginActivity.this, "Falha no login com Google.", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    }
+                }
+        );
     }
 
-    private void firebaseAuthWithGoogle(String idToken) {
-        AuthCredential credential = GoogleAuthProvider.getCredential(idToken, null);
-        mAuth.signInWithCredential(credential)
-                .addOnCompleteListener(this, task -> {
-                    if (task.isSuccessful()) {
-                        startActivity(new Intent(this, HomeActivity.class));
+    private void backendAuthWithGoogle(String idToken) {
+        Map<String, String> body = new HashMap<>();
+        body.put("idToken", idToken);
+
+        ApiClient.getInstance().getApiService().googleLogin(body).enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response.isSuccessful()) {
+                    runOnUiThread(() -> {
+                        startActivity(new Intent(LoginActivity.this, HomeActivity.class));
                         finish();
-                    } else {
-                        Toast.makeText(this, "Erro na autenticação com Google", Toast.LENGTH_SHORT).show();
-                    }
-                });
+                    });
+                } else {
+                    runOnUiThread(() -> Toast.makeText(LoginActivity.this, "Erro na autenticação com Google no backend", Toast.LENGTH_SHORT).show());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                runOnUiThread(() -> Toast.makeText(LoginActivity.this, "Erro de rede: " + t.getMessage(), Toast.LENGTH_SHORT).show());
+            }
+        });
     }
 }

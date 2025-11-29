@@ -63,14 +63,18 @@ public class SondagensFragment extends Fragment {
 
                     @Override
                     public void onError(String message) {
-                        Toast.makeText(getContext(), "Failed to load polls: " + message, Toast.LENGTH_SHORT).show();
+                        if (getContext() != null) {
+                            Toast.makeText(getContext(), "Failed to load polls: " + message, Toast.LENGTH_SHORT).show();
+                        }
                     }
                 });
             }
 
             @Override
             public void onError(String message) {
-                Toast.makeText(getContext(), "Failed to load candidates: " + message, Toast.LENGTH_SHORT).show();
+                if (getContext() != null) {
+                    Toast.makeText(getContext(), "Failed to load candidates: " + message, Toast.LENGTH_SHORT).show();
+                }
             }
         });
     }

@@ -65,9 +65,16 @@ public class ImportantDateAdapter extends RecyclerView.Adapter<ImportantDateAdap
 
             if (c != null) {
                 h.categoria.setText("Entrevista: " + c.getNome());
-                int fotoId = c.getFotoId(context);
-                if (fotoId != 0) {
-                    h.img1.setImageResource(fotoId);
+                String photoUrl = c.getPhotoUrl();
+                if (photoUrl != null && !photoUrl.isEmpty()) {
+                    if (!photoUrl.startsWith("http")) {
+                         photoUrl = pt.ubi.pdm.votoinformado.api.ApiClient.getBaseUrl() + photoUrl.replaceFirst("^/", "");
+                    }
+                    com.squareup.picasso.Picasso.get()
+                        .load(photoUrl)
+                        .placeholder(R.drawable.candidato_generico)
+                        .error(R.drawable.candidato_generico)
+                        .into(h.img1);
                 } else {
                     h.img1.setImageResource(R.drawable.candidato_generico);
                 }
@@ -84,16 +91,30 @@ public class ImportantDateAdapter extends RecyclerView.Adapter<ImportantDateAdap
 
             if (c1 != null && c2 != null) {
                 h.categoria.setText("Debate");
-                int fotoId1 = c1.getFotoId(context);
-                if (fotoId1 != 0) {
-                    h.img1.setImageResource(fotoId1);
+                String photoUrl1 = c1.getPhotoUrl();
+                if (photoUrl1 != null && !photoUrl1.isEmpty()) {
+                    if (!photoUrl1.startsWith("http")) {
+                         photoUrl1 = pt.ubi.pdm.votoinformado.api.ApiClient.getBaseUrl() + photoUrl1.replaceFirst("^/", "");
+                    }
+                    com.squareup.picasso.Picasso.get()
+                        .load(photoUrl1)
+                        .placeholder(R.drawable.candidato_generico)
+                        .error(R.drawable.candidato_generico)
+                        .into(h.img1);
                 } else {
                     h.img1.setImageResource(R.drawable.candidato_generico);
                 }
 
-                int fotoId2 = c2.getFotoId(context);
-                if (fotoId2 != 0) {
-                    h.img2.setImageResource(fotoId2);
+                String photoUrl2 = c2.getPhotoUrl();
+                if (photoUrl2 != null && !photoUrl2.isEmpty()) {
+                    if (!photoUrl2.startsWith("http")) {
+                         photoUrl2 = pt.ubi.pdm.votoinformado.api.ApiClient.getBaseUrl() + photoUrl2.replaceFirst("^/", "");
+                    }
+                    com.squareup.picasso.Picasso.get()
+                        .load(photoUrl2)
+                        .placeholder(R.drawable.candidato_generico)
+                        .error(R.drawable.candidato_generico)
+                        .into(h.img2);
                 } else {
                     h.img2.setImageResource(R.drawable.candidato_generico);
                 }

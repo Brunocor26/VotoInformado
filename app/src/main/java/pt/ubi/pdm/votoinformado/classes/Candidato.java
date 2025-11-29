@@ -4,8 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.util.Log;
 
-import com.google.firebase.firestore.Exclude;
-import com.google.firebase.firestore.PropertyName;
+    // @Exclude removed
 
 import java.io.Serializable;
 
@@ -19,7 +18,7 @@ public class Candidato implements Serializable {
     private String id;
     private String nome;
     private String partido;
-    private String fotoNome;
+    // private String fotoNome;
     private String profissao;
     private String cargosPrincipais;
     private String biografiaCurta;
@@ -40,13 +39,8 @@ public class Candidato implements Serializable {
     public String getPartido() { return partido; }
     public void setPartido(String partido) { this.partido = partido; }
 
-    @PropertyName("fotoId")
-    public String getFotoUrl() { return fotoNome; }
-    @PropertyName("fotoId")
-    public void setFotoUrl(String fotoUrl) { this.fotoNome = fotoUrl; }
+    // fotoNome removed
 
-    public String getFotoNome() { return fotoNome; }
-    public void setFotoNome(String fotoNome) { this.fotoNome = fotoNome; }
 
     public String getProfissao() { return profissao; }
     public void setProfissao(String profissao) { this.profissao = profissao; }
@@ -60,19 +54,14 @@ public class Candidato implements Serializable {
     public String getSiteOficial() { return siteOficial; }
     public void setSiteOficial(String siteOficial) { this.siteOficial = siteOficial; }
 
-    @SuppressLint("DiscouragedApi")
-    @Exclude
-    public int getFotoId(Context context) {
-        if (this.id == null || context == null) {
-            return R.drawable.candidato_generico;
-        }
-        
-        int resourceId = context.getResources().getIdentifier(
-            this.id, 
-            "drawable", 
-            context.getPackageName()
-        );
-        
-        return resourceId != 0 ? resourceId : R.drawable.candidato_generico;
+    @SerializedName("photoUrl")
+    private String photoUrl;
+
+    public String getPhotoUrl() {
+        return photoUrl;
+    }
+
+    public void setPhotoUrl(String photoUrl) {
+        this.photoUrl = photoUrl;
     }
 }

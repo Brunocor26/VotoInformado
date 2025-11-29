@@ -2,13 +2,21 @@ package pt.ubi.pdm.votoinformado.adapters;
 
 import android.content.Context;
 import android.text.format.DateUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.Picasso;
+
 import java.util.List;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 import pt.ubi.pdm.votoinformado.R;
 import pt.ubi.pdm.votoinformado.classes.Comentario;
 
@@ -16,6 +24,7 @@ public class ComentarioAdapter extends RecyclerView.Adapter<ComentarioAdapter.Vi
 
     private Context context;
     private List<Comentario> comentarios;
+    private static final String TAG = "ComentarioAdapter";
 
     public ComentarioAdapter(Context context, List<Comentario> comentarios) {
         this.context = context;
@@ -36,6 +45,36 @@ public class ComentarioAdapter extends RecyclerView.Adapter<ComentarioAdapter.Vi
         holder.autor.setText(comentario.getAutorNome());
         holder.texto.setText(comentario.getTexto());
 
+        // Load user photo
+        String photoUrl = comentario.getAutorPhotoUrl();
+        if (photoUrl != null && !photoUrl.isEmpty()) {
+            if (!photoUrl.startsWith("http")) {
+                // Sanitize the path: replace backslashes with forward slashes and remove any leading slash.
+                String sanitizedPath = photoUrl.replace('\\', '/').replaceFirst("^/", "");
+                photoUrl = pt.ubi.pdm.votoinformado.api.ApiClient.getBaseUrl() + sanitizedPath;
+            }
+            Log.d(TAG, "Loading image for " + comentario.getAutorNome() + ": " + photoUrl);
+
+            Picasso.get()
+                .load(photoUrl)
+                .placeholder(R.drawable.candidato_generico)
+                .error(R.drawable.candidato_generico)
+                .into(holder.foto, new Callback() {
+                    @Override
+                    public void onSuccess() {
+                        Log.d(TAG, "Image loaded successfully for " + comentario.getAutorNome());
+                    }
+
+                    @Override
+                    public void onError(Exception e) {
+                        Log.e(TAG, "Error loading image for " + comentario.getAutorNome() + ": " + e.getMessage());
+                    }
+                });
+        } else {
+            Log.d(TAG, "No photo URL for " + comentario.getAutorNome() + ", using generic image.");
+            holder.foto.setImageResource(R.drawable.candidato_generico);
+        }
+
         // Formata a data para algo como "Há 2 horas"
         CharSequence tempoAtras = DateUtils.getRelativeTimeSpanString(comentario.getDataCriacao(),
                 System.currentTimeMillis(), DateUtils.MINUTE_IN_MILLIS);
@@ -48,10 +87,12 @@ public class ComentarioAdapter extends RecyclerView.Adapter<ComentarioAdapter.Vi
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
+        CircleImageView foto;
         TextView autor, texto, data;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
+            foto = itemView.findViewById(R.id.img_autor_comentario);
             autor = itemView.findViewById(R.id.text_autor_comentario);
             texto = itemView.findViewById(R.id.text_comentario);
             data = itemView.findViewById(R.id.text_data_comentario);

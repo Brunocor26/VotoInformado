@@ -47,13 +47,19 @@ public class CandidatosFragment extends Fragment {
         DatabaseHelper.getCandidates(getContext(), new DatabaseHelper.DataCallback<Map<String, Candidato>>() {
             @Override
             public void onCallback(Map<String, Candidato> candidatesMap) {
+                candidatoList.clear(); // Ensure list is cleared before adding
                 candidatoList.addAll(candidatesMap.values());
                 candidatoAdapter.notifyDataSetChanged();
+                if (getContext() != null) {
+                    Toast.makeText(getContext(), "Loaded " + candidatoList.size() + " candidates", Toast.LENGTH_SHORT).show();
+                }
             }
 
             @Override
             public void onError(String message) {
-                Toast.makeText(getContext(), "Failed to load candidates: " + message, Toast.LENGTH_SHORT).show();
+                if (getContext() != null) {
+                    Toast.makeText(getContext(), "Failed to load candidates: " + message, Toast.LENGTH_SHORT).show();
+                }
             }
         });
     }

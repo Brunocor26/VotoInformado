@@ -75,21 +75,28 @@ public class DatabaseHelper {
         getApiService().getCandidates().enqueue(new Callback<List<Candidato>>() {
             @Override
             public void onResponse(Call<List<Candidato>> call, Response<List<Candidato>> response) {
+                android.util.Log.d("DatabaseHelper", "getCandidates response: " + response.code());
                 if (response.isSuccessful() && response.body() != null) {
+                    android.util.Log.d("DatabaseHelper", "getCandidates body size: " + response.body().size());
                     Map<String, Candidato> map = new HashMap<>();
                     for (Candidato c : response.body()) {
+                        android.util.Log.d("DatabaseHelper", "Candidate: " + c.getNome() + ", ID: " + c.getId());
                         if (c.getId() != null) {
                             map.put(c.getId(), c);
+                        } else {
+                            android.util.Log.e("DatabaseHelper", "Candidate ID is null!");
                         }
                     }
                     callback.onCallback(map);
                 } else {
+                    android.util.Log.e("DatabaseHelper", "getCandidates error: " + response.message());
                     callback.onError(response.message());
                 }
             }
 
             @Override
             public void onFailure(Call<List<Candidato>> call, Throwable t) {
+                android.util.Log.e("DatabaseHelper", "getCandidates failure: " + t.getMessage(), t);
                 callback.onError(t.getMessage());
             }
         });
@@ -117,15 +124,19 @@ public class DatabaseHelper {
         getApiService().getPetitions().enqueue(new Callback<List<Peticao>>() {
             @Override
             public void onResponse(Call<List<Peticao>> call, Response<List<Peticao>> response) {
+                android.util.Log.d("DatabaseHelper", "getPeticoes response: " + response.code());
                 if (response.isSuccessful() && response.body() != null) {
+                    android.util.Log.d("DatabaseHelper", "getPeticoes size: " + response.body().size());
                     callback.onCallback(response.body());
                 } else {
+                    android.util.Log.e("DatabaseHelper", "getPeticoes error: " + response.message());
                     callback.onError(response.message());
                 }
             }
 
             @Override
             public void onFailure(Call<List<Peticao>> call, Throwable t) {
+                android.util.Log.e("DatabaseHelper", "getPeticoes failure: " + t.getMessage(), t);
                 callback.onError(t.getMessage());
             }
         });
@@ -170,6 +181,24 @@ public class DatabaseHelper {
         });
     }
 
+    public static void deletePetition(String peticaoId, Context context, SaveCallback callback) {
+        getApiService().deletePetition(peticaoId).enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if (response.isSuccessful()) {
+                    if (callback != null) callback.onSuccess();
+                } else {
+                    if (callback != null) callback.onFailure(response.message());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                if (callback != null) callback.onFailure(t.getMessage());
+            }
+        });
+    }
+
     public static void saveComentario(Comentario comentario, Context context, SaveCallback callback) {
         getApiService().createComentario(comentario).enqueue(new Callback<Comentario>() {
             @Override
@@ -189,15 +218,11 @@ public class DatabaseHelper {
     }
 
     public static void loadComentarios(String peticaoId, Context context, DataCallback<List<Comentario>> callback) {
-        getApiService().getComentarios().enqueue(new Callback<List<Comentario>>() {
+        getApiService().getComentarios(peticaoId).enqueue(new Callback<List<Comentario>>() {
             @Override
             public void onResponse(Call<List<Comentario>> call, Response<List<Comentario>> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    // Filter client-side since API returns all
-                    List<Comentario> filtered = response.body().stream()
-                            .filter(c -> peticaoId.equals(c.getPeticaoId()))
-                            .collect(Collectors.toList());
-                    callback.onCallback(filtered);
+                    callback.onCallback(response.body());
                 } else {
                     callback.onError(response.message());
                 }

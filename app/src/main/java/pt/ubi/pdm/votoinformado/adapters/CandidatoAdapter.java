@@ -39,7 +39,20 @@ public class CandidatoAdapter extends RecyclerView.Adapter<CandidatoAdapter.Cand
         Candidato candidato = candidatoList.get(position);
         holder.nomeCandidato.setText(candidato.getNome());
         holder.partidoCandidato.setText(candidato.getPartido());
-        holder.fotoCandidato.setImageResource(candidato.getFotoId(context)); // Corrected call
+        String photoUrl = candidato.getPhotoUrl();
+        if (photoUrl != null && !photoUrl.isEmpty()) {
+            if (!photoUrl.startsWith("http")) {
+                 // Prepend base URL if relative
+                 photoUrl = pt.ubi.pdm.votoinformado.api.ApiClient.getBaseUrl() + photoUrl.replaceFirst("^/", "");
+            }
+            com.squareup.picasso.Picasso.get()
+                .load(photoUrl)
+                .placeholder(R.drawable.candidato_generico)
+                .error(R.drawable.candidato_generico)
+                .into(holder.fotoCandidato);
+        } else {
+            holder.fotoCandidato.setImageResource(R.drawable.candidato_generico);
+        }
 
         // Animação
         Animation anim = AnimationUtils.loadAnimation(holder.itemView.getContext(), R.anim.fade_in_slip_up);

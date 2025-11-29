@@ -1,6 +1,6 @@
 package pt.ubi.pdm.votoinformado.classes;
 
-import com.google.firebase.firestore.Exclude;
+    // @Exclude removed
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -58,7 +58,7 @@ public class Peticao implements Serializable {
     public String getImageUrl() { return imageUrl; }
     public void setImageUrl(String imageUrl) { this.imageUrl = imageUrl; }
 
-    @Exclude
+    // @Exclude removed
     public int getTotalAssinaturas() {
         return (assinaturas != null) ? assinaturas.size() : 0;
     }

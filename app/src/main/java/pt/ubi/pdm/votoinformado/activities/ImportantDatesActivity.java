@@ -19,17 +19,21 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import pt.ubi.pdm.votoinformado.R;
+import pt.ubi.pdm.votoinformado.api.ApiClient;
 import pt.ubi.pdm.votoinformado.adapters.ImportantDateAdapter;
 import pt.ubi.pdm.votoinformado.classes.Candidato;
 import pt.ubi.pdm.votoinformado.classes.Debate;
 import pt.ubi.pdm.votoinformado.classes.ImportantDate;
-import pt.ubi.pdm.votoinformado.utils.FirebaseUtils;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class ImportantDatesActivity extends AppCompatActivity {
 
@@ -41,7 +45,7 @@ public class ImportantDatesActivity extends AppCompatActivity {
     private HorizontalScrollView chipsScroll;
 
     private String categoriaSelecionada = "";
-    private Map<String, Candidato> candidatosMapGlobal;
+    private Map<String, Candidato> candidatosMapGlobal = new HashMap<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,48 +72,63 @@ public class ImportantDatesActivity extends AppCompatActivity {
             applyFilter();
         });
 
-        loadFirebaseData();
+        loadData();
     }
 
-    private void loadFirebaseData() {
-        FirebaseUtils.getCandidates(this, new FirebaseUtils.DataCallback<Map<String, Candidato>>() {
+    private void loadData() {
+        // Fetch Candidates first
+        ApiClient.getInstance().getApiService().getCandidates().enqueue(new Callback<List<Candidato>>() {
             @Override
-            public void onCallback(Map<String, Candidato> candidatesMap) {
-                candidatosMapGlobal = candidatesMap;
-
-                FirebaseUtils.getImportantDates(new FirebaseUtils.DataCallback<List<ImportantDate>>() {
-                    @Override
-                    public void onCallback(List<ImportantDate> dates) {
-                        eventosOriginais.clear();
-                        eventosOriginais.addAll(dates);
-
-                        Collections.sort(eventosOriginais, (d1, d2) -> {
-                            if (d1.getLocalDate() == null && d2.getLocalDate() == null) return 0;
-                            if (d1.getLocalDate() == null) return 1;
-                            if (d2.getLocalDate() == null) return -1;
-                            return d1.getLocalDate().compareTo(d2.getLocalDate());
-                        });
-
-                        adapter = new ImportantDateAdapter(ImportantDatesActivity.this, new ArrayList<>(), candidatosMapGlobal);
-                        recyclerView.setAdapter(adapter);
-
-                        applyFilter();
-
-                        if (categoriaSelecionada.equalsIgnoreCase("Debate")) {
-                            ativarChipsCandidatos();
-                        }
+            public void onResponse(Call<List<Candidato>> call, Response<List<Candidato>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    for (Candidato c : response.body()) {
+                        candidatosMapGlobal.put(c.getId(), c);
                     }
-
-                    @Override
-                    public void onError(String message) {
-                        Toast.makeText(ImportantDatesActivity.this, "Erro ao carregar datas", Toast.LENGTH_SHORT).show();
-                    }
-                });
+                    // Then fetch Dates
+                    fetchDates();
+                } else {
+                    Toast.makeText(ImportantDatesActivity.this, "Erro ao carregar candidatos", Toast.LENGTH_SHORT).show();
+                }
             }
 
             @Override
-            public void onError(String message) {
-                Toast.makeText(ImportantDatesActivity.this, "Erro ao carregar candidatos", Toast.LENGTH_SHORT).show();
+            public void onFailure(Call<List<Candidato>> call, Throwable t) {
+                Toast.makeText(ImportantDatesActivity.this, "Erro de rede: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void fetchDates() {
+        ApiClient.getInstance().getApiService().getDates().enqueue(new Callback<List<ImportantDate>>() {
+            @Override
+            public void onResponse(Call<List<ImportantDate>> call, Response<List<ImportantDate>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    eventosOriginais.clear();
+                    eventosOriginais.addAll(response.body());
+
+                    Collections.sort(eventosOriginais, (d1, d2) -> {
+                        if (d1.getLocalDate() == null && d2.getLocalDate() == null) return 0;
+                        if (d1.getLocalDate() == null) return 1;
+                        if (d2.getLocalDate() == null) return -1;
+                        return d1.getLocalDate().compareTo(d2.getLocalDate());
+                    });
+
+                    adapter = new ImportantDateAdapter(ImportantDatesActivity.this, new ArrayList<>(), candidatosMapGlobal);
+                    recyclerView.setAdapter(adapter);
+
+                    applyFilter();
+
+                    if (categoriaSelecionada.equalsIgnoreCase("Debate")) {
+                        ativarChipsCandidatos();
+                    }
+                } else {
+                    Toast.makeText(ImportantDatesActivity.this, "Erro ao carregar datas", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<ImportantDate>> call, Throwable t) {
+                Toast.makeText(ImportantDatesActivity.this, "Erro de rede: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -120,10 +139,12 @@ public class ImportantDatesActivity extends AppCompatActivity {
 
         Set<String> idsDebates = new HashSet<>();
         for (ImportantDate e : eventosOriginais) {
-            if (e instanceof Debate) {
-                Debate d = (Debate) e;
-                idsDebates.add(d.getIdCandidato1());
-                idsDebates.add(d.getIdCandidato2());
+            // Check if category is Debate, since we don't have instanceof check anymore if backend returns generic ImportantDate
+            // But if backend returns specific structure, we might need to adjust. 
+            // Assuming ImportantDate class has idCandidato1/2 fields populated.
+            if ("Debate".equalsIgnoreCase(e.getCategory())) {
+                if (e.getIdCandidato1() != null) idsDebates.add(e.getIdCandidato1());
+                if (e.getIdCandidato2() != null) idsDebates.add(e.getIdCandidato2());
             }
         }
 
@@ -136,12 +157,8 @@ public class ImportantDatesActivity extends AppCompatActivity {
             chip.setCheckable(true);
             chip.setClickable(true);
 
-            int fotoId = c.getFotoId(this);
-            if (fotoId != 0) {
-                chip.setChipIconResource(fotoId);
-            } else {
-                chip.setChipIconResource(R.drawable.candidato_generico);
-            }
+            // Using placeholder icon as Chip icons don't support remote URLs easily
+            chip.setChipIconResource(R.drawable.candidato_generico);
             chip.setChipIconSize(48f);
             chip.setChipIconTint(null);
 
@@ -173,10 +190,10 @@ public class ImportantDatesActivity extends AppCompatActivity {
     private void filtrarPorCandidato(String candidatoID) {
         List<ImportantDate> filtrados = new ArrayList<>();
         for (ImportantDate e : eventosOriginais) {
-            if (e instanceof Debate) {
-                Debate d = (Debate) e;
-                if (d.getIdCandidato1().equals(candidatoID) || d.getIdCandidato2().equals(candidatoID)) {
-                    filtrados.add(d);
+            if ("Debate".equalsIgnoreCase(e.getCategory())) {
+                if ((e.getIdCandidato1() != null && e.getIdCandidato1().equals(candidatoID)) || 
+                    (e.getIdCandidato2() != null && e.getIdCandidato2().equals(candidatoID))) {
+                    filtrados.add(e);
                 }
             }
         }

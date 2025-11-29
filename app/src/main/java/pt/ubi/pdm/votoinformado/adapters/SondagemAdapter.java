@@ -84,7 +84,19 @@ public class SondagemAdapter extends RecyclerView.Adapter<SondagemAdapter.Sondag
             Candidato candidatoLider = candidatoMap.get(lider.idCandidato);
 
             if (candidatoLider != null) {
-                holder.liderFoto.setImageResource(candidatoLider.getFotoId(this.context));
+                String photoUrl = candidatoLider.getPhotoUrl();
+                if (photoUrl != null && !photoUrl.isEmpty()) {
+                    if (!photoUrl.startsWith("http")) {
+                         photoUrl = pt.ubi.pdm.votoinformado.api.ApiClient.getBaseUrl() + photoUrl.replaceFirst("^/", "");
+                    }
+                    com.squareup.picasso.Picasso.get()
+                        .load(photoUrl)
+                        .placeholder(R.drawable.candidato_generico)
+                        .error(R.drawable.candidato_generico)
+                        .into(holder.liderFoto);
+                } else {
+                    holder.liderFoto.setImageResource(R.drawable.candidato_generico);
+                }
                 String liderText = String.format(Locale.US, "%s: %.1f%%", candidatoLider.getNome(), lider.percentagem);
                 holder.liderNome.setText(liderText);
                 holder.liderFoto.setOnClickListener(v -> {

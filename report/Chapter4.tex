@@ -3,9 +3,9 @@
 Este capítulo aborda os desafios técnicos e as soluções de implementação adotadas durante o desenvolvimento.
 
 \section{Migração para API Customizada} \label{sec:impl_api}
-Inicialmente, o projeto utilizava o Firebase Firestore para persistência de dados. No entanto, seguindo uma sugestão do Professor Orientador para aumentar a complexidade técnica e permitir uma solução mais personalizada, optou-se por migrar para uma API própria.
+Inicialmente, o projeto utilizava o Firebase Firestore para persistência de dados diretamente na aplicação móvel. Para aumentar a complexidade técnica e centralizar a lógica de negócio, migrou-se para uma arquitetura com uma **API REST intermédia**.
 
-Esta nova arquitetura consiste numa API REST desenvolvida em Node.js, alojada na plataforma Render. A aplicação Android comunica com esta API utilizando a biblioteca Retrofit, garantindo uma separação clara entre a lógica de cliente e o servidor.
+Esta nova arquitetura consiste numa API desenvolvida em \textbf{Node.js}, que atua como \textit{backend} para a aplicação Android. A API utiliza uma base de dados \textbf{MongoDB} para persistência de dados, comunicando através da biblioteca \textbf{Mongoose}. A autenticação é gerida através de \textbf{JWT (JSON Web Tokens)}, garantindo uma sessão segura e independente do estado do servidor.
 
 % [TODO: Inserir Diagrama de Arquitetura]
 \begin{figure}[H]
@@ -29,6 +29,10 @@ public interface ApiService {
 
     @POST("api/petitions")
     Call<Peticao> createPetition(@Body Peticao peticao);
+    
+    @Multipart
+    @POST("api/petitions/upload")
+    Call<Map<String, String>> uploadPetitionImage(@Part MultipartBody.Part image);
 }
 \end{lstlisting}
 
@@ -52,7 +56,7 @@ Um desafio interessante foi a extração de imagens, que não vinham num campo e
 \end{figure}
 
 \section{Gestão de Imagens} \label{sec:impl_imagens}
-O carregamento de imagens remotas em listas (\texttt{RecyclerView}) pode causar problemas de desempenho e consumo excessivo de memória. A biblioteca Picasso foi utilizada para mitigar estes problemas, gerindo automaticamente o download, cache e redimensionamento das imagens.
+As imagens das petições e dos candidatos são armazenadas localmente no servidor (\textit{backend}) e servidas como ficheiros estáticos. A base de dados armazena apenas o URL relativo da imagem. Na aplicação Android, a biblioteca \textbf{Picasso} é utilizada para carregar e exibir estas imagens de forma assíncrona, gerindo automaticamente o download, cache e redimensionamento das imagens.
 
 \section{Adapters e RecyclerViews} \label{sec:impl_adapters}
 A exibição de listas eficientes foi conseguida através da implementação de \texttt{RecyclerView.Adapter} personalizados. O padrão \textit{ViewHolder} é utilizado para reciclar as vistas, garantindo uma rolagem suave mesmo com listas longas de candidatos ou notícias.
@@ -71,7 +75,7 @@ Para desenhar o gráfico, foi criada a classe \texttt{CompassView} que estende \
 \end{itemize}
 
 \section{Sistema de Petições} \label{sec:impl_peticoes}
-O sistema de petições foi adaptado para consumir a nova API, mantendo a autenticação de utilizadores via Firebase Auth.
+O sistema de petições foi adaptado para consumir a nova API, mantendo a autenticação de utilizadores via Firebase Auth (gerida pelo backend).
 
 \subsection{Estrutura de Dados}
 A classe \texttt{Peticao} foi atualizada para mapear os documentos MongoDB.
@@ -82,10 +86,17 @@ public class Peticao {
     private String titulo;
     private String descricao;
     private List<String> assinaturas; // Lista de UIDs
+    private String imageUrl; // URL da imagem
     // ... getters e setters
 }
 \end{lstlisting}
-O campo \texttt{assinaturas} continua a armazenar os UIDs, permitindo a validação no cliente e no servidor.
 
-\subsection{Interação e Ordenação}
-O \texttt{PeticoesFragment} gere a visualização. A ordenação (Mais Votadas / Mais Recentes) é feita localmente utilizando \texttt{Collections.sort} com \texttt{Comparators} personalizados, o que permite uma resposta instantânea ao alterar o filtro, sem necessidade de novas requisições à API para reordenar.
+\subsection{Upload de Imagens}
+Para permitir o upload de imagens nas petições sem custos adicionais de serviços cloud, implementou-se um sistema de \textbf{armazenamento local} no servidor.
+\begin{itemize}
+    \item \textbf{Backend}: Utiliza o middleware \texttt{multer} para receber ficheiros \textit{multipart/form-data} e guardá-los numa pasta local \texttt{uploads/}. O servidor serve estes ficheiros estaticamente.
+    \item \textbf{Android}: A atividade \texttt{CreatePeticaoActivity} seleciona a imagem da galeria, converte-a num ficheiro temporário e envia-a para o endpoint \texttt{/api/petitions/upload} antes de submeter os dados da petição.
+\end{itemize}
+
+\subsection{Eliminação de Petições}
+Foi implementada a funcionalidade de eliminação de petições através do método HTTP \texttt{DELETE}. O endpoint \texttt{/api/petitions/:id} permite remover documentos da coleção \texttt{petitions} no Firestore, garantindo a integridade dos dados. A aplicação Android expõe esta funcionalidade através da classe utilitária \texttt{DatabaseHelper}.

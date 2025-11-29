@@ -15,6 +15,7 @@ import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import pt.ubi.pdm.votoinformado.R;
+import pt.ubi.pdm.votoinformado.api.ApiClient;
 import pt.ubi.pdm.votoinformado.classes.Candidato;
 
 public class CandidatoDetailActivity extends AppCompatActivity {
@@ -47,7 +48,21 @@ public class CandidatoDetailActivity extends AppCompatActivity {
         FloatingActionButton fabSite = findViewById(R.id.fab_site);
 
         collapsingToolbar.setTitle(candidato.getNome());
-        candidatoImageView.setImageResource(candidato.getFotoId(this));
+        
+        String photoUrl = candidato.getPhotoUrl();
+        if (photoUrl != null && !photoUrl.isEmpty()) {
+            if (!photoUrl.startsWith("http")) {
+                String sanitizedPath = photoUrl.replace('\\', '/').replaceFirst("^/", "");
+                photoUrl = ApiClient.getBaseUrl() + sanitizedPath;
+            }
+            com.squareup.picasso.Picasso.get()
+                .load(photoUrl)
+                .placeholder(R.drawable.candidato_generico)
+                .error(R.drawable.candidato_generico)
+                .into(candidatoImageView);
+        } else {
+            candidatoImageView.setImageResource(R.drawable.candidato_generico);
+        }
 
         partidoTextView.setText(candidato.getPartido());
         profissaoTextView.setText("Profissão: " + candidato.getProfissao());

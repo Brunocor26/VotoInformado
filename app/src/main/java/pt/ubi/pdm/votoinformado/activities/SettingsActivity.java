@@ -55,7 +55,7 @@ public class SettingsActivity extends AppCompatActivity {
     
     private void setClickListeners() {
         profileSection.setOnClickListener(v -> {
-            Toast.makeText(this, "Editar Perfil Clicado", Toast.LENGTH_SHORT).show();
+            startActivity(new Intent(this, EditProfileActivity.class));
         });
 
         notificationsSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
@@ -68,7 +68,17 @@ public class SettingsActivity extends AppCompatActivity {
         });
 
         logoutButton.setOnClickListener(v -> {
-            Toast.makeText(this, "Terminar Sessão Clicado", Toast.LENGTH_SHORT).show();
+            // Clear SharedPreferences
+            android.content.SharedPreferences prefs = getSharedPreferences("user_session", MODE_PRIVATE);
+            prefs.edit().clear().apply();
+            
+            Toast.makeText(this, "Sessão terminada", Toast.LENGTH_SHORT).show();
+            
+            // Redirect to LoginActivity
+            Intent intent = new Intent(this, LoginActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+            finish();
         });
     }
 }

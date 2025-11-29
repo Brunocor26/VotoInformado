@@ -8,11 +8,15 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import okhttp3.ResponseBody;
 import pt.ubi.pdm.votoinformado.R;
+import pt.ubi.pdm.votoinformado.api.ApiClient;
 import pt.ubi.pdm.votoinformado.classes.Debate;
 import pt.ubi.pdm.votoinformado.classes.Entrevista;
 import pt.ubi.pdm.votoinformado.classes.ImportantDate;
-import pt.ubi.pdm.votoinformado.utils.FirebaseUtils;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class AddDateActivity extends AppCompatActivity {
 
@@ -74,12 +78,22 @@ public class AddDateActivity extends AppCompatActivity {
             objectToSave = new ImportantDate(title, date, time, category);
         }
 
-        // O Firebase aceita objectToSave porque todas herdam de ImportantDate.
-        // Ele vai guardar automaticamente os campos extras se for Debate ou Entrevista.
-        FirebaseUtils.saveDate(objectToSave, AddDateActivity.this);
+        ApiClient.getInstance().getApiService().createDate(objectToSave).enqueue(new Callback<ImportantDate>() {
+            @Override
+            public void onResponse(Call<ImportantDate> call, Response<ImportantDate> response) {
+                if (response.isSuccessful()) {
+                    Toast.makeText(AddDateActivity.this, "Date saved.", Toast.LENGTH_SHORT).show();
+                    finish();
+                } else {
+                    Toast.makeText(AddDateActivity.this, "Error saving date: " + response.message(), Toast.LENGTH_SHORT).show();
+                }
+            }
 
-        // Opcional: Fechar a activity após guardar
-        finish();
+            @Override
+            public void onFailure(Call<ImportantDate> call, Throwable t) {
+                Toast.makeText(AddDateActivity.this, "Network error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private String getStringOrNull(EditText editText) {

@@ -10,8 +10,6 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 import java.util.List;
@@ -66,18 +64,22 @@ public class PeticaoDetailActivity extends AppCompatActivity {
             imagem.setVisibility(View.GONE);
         }
 
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        if (user != null && peticao.getAssinaturas().contains(user.getUid())) {
+        // Get user data from SharedPreferences
+        android.content.SharedPreferences prefs = getSharedPreferences("user_session", MODE_PRIVATE);
+        String userId = prefs.getString("user_id", null);
+        String userName = prefs.getString("user_name", "Utilizador");
+
+        if (userId != null && peticao.getAssinaturas().contains(userId)) {
             btnAssinar.setText("Já Assinou");
             btnAssinar.setEnabled(false);
         }
 
         btnAssinar.setOnClickListener(v -> {
-            if (user != null) {
-                DatabaseHelper.assinarPeticao(peticao.getId(), user.getUid(), this, new DatabaseHelper.SaveCallback() {
+            if (userId != null) {
+                DatabaseHelper.assinarPeticao(peticao.getId(), userId, this, new DatabaseHelper.SaveCallback() {
                     @Override
                     public void onSuccess() {
-                        peticao.getAssinaturas().add(user.getUid());
+                        peticao.getAssinaturas().add(userId);
                         contagem.setText(peticao.getTotalAssinaturas() + " assinaturas");
                         btnAssinar.setText("Já Assinou");
                         btnAssinar.setEnabled(false);
@@ -112,16 +114,20 @@ public class PeticaoDetailActivity extends AppCompatActivity {
             return;
         }
 
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        if (user == null) {
+        // Get user data from SharedPreferences
+        android.content.SharedPreferences prefs = getSharedPreferences("user_session", MODE_PRIVATE);
+        String userId = prefs.getString("user_id", null);
+        String userName = prefs.getString("user_name", "Utilizador");
+        String userPhotoUrl = prefs.getString("user_photo_url", "");
+
+        if (userId == null) {
             Toast.makeText(this, "Precisa estar autenticado para comentar.", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        String nome = user.getDisplayName();
-        if (nome == null || nome.isEmpty()) nome = user.getEmail();
+        String nome = userName;
 
-        final Comentario novoComentario = new Comentario(peticao.getId(), user.getUid(), nome, texto);
+        final Comentario novoComentario = new Comentario(peticao.getId(), userId, nome, userPhotoUrl, texto);
 
         // Adiciona o comentário à lista local imediatamente (UI otimista)
         comentarios.add(0, novoComentario);

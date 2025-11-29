@@ -1,6 +1,6 @@
 package pt.ubi.pdm.votoinformado.classes;
 
-import com.google.firebase.firestore.PropertyName;
+    // @PropertyName removed
 
 import java.io.Serializable;
 import java.util.Arrays;

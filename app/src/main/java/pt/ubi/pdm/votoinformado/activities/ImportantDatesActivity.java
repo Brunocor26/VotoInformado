@@ -82,7 +82,8 @@ public class ImportantDatesActivity extends AppCompatActivity {
             public void onResponse(Call<List<Candidato>> call, Response<List<Candidato>> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     for (Candidato c : response.body()) {
-                        candidatosMapGlobal.put(c.getId(), c);
+                        if (c.getId() != null) candidatosMapGlobal.put(c.getId(), c);
+                        if (c.getStringId() != null) candidatosMapGlobal.put(c.getStringId(), c);
                     }
                     // Then fetch Dates
                     fetchDates();
@@ -157,9 +158,35 @@ public class ImportantDatesActivity extends AppCompatActivity {
             chip.setCheckable(true);
             chip.setClickable(true);
 
-            // Using placeholder icon as Chip icons don't support remote URLs easily
+            // Load image with Picasso
             chip.setChipIconResource(R.drawable.candidato_generico);
-            chip.setChipIconSize(48f);
+            String photoUrl = c.getPhotoUrl();
+            if (photoUrl != null && !photoUrl.isEmpty()) {
+                if (photoUrl.contains("localhost") || photoUrl.contains("127.0.0.1")) {
+                    String relativePath = photoUrl.replaceAll("http://localhost:\\d+", "")
+                                                  .replaceAll("http://127.0.0.1:\\d+", "")
+                                                  .replace('\\', '/');
+                    if (!relativePath.startsWith("/")) relativePath = "/" + relativePath;
+                    photoUrl = pt.ubi.pdm.votoinformado.api.ApiClient.getBaseUrl() + relativePath.replaceFirst("^/", "");
+                } else if (!photoUrl.startsWith("http")) {
+                     photoUrl = pt.ubi.pdm.votoinformado.api.ApiClient.getBaseUrl() + photoUrl.replaceFirst("^/", "");
+                }
+
+                com.squareup.picasso.Target target = new com.squareup.picasso.Target() {
+                    @Override
+                    public void onBitmapLoaded(android.graphics.Bitmap bitmap, com.squareup.picasso.Picasso.LoadedFrom from) {
+                        android.graphics.drawable.Drawable d = new android.graphics.drawable.BitmapDrawable(getResources(), bitmap);
+                        chip.setChipIcon(d);
+                    }
+                    @Override
+                    public void onBitmapFailed(Exception e, android.graphics.drawable.Drawable errorDrawable) {}
+                    @Override
+                    public void onPrepareLoad(android.graphics.drawable.Drawable placeHolderDrawable) {}
+                };
+                chip.setTag(R.id.chip_target_tag, target); // Keep strong reference
+                com.squareup.picasso.Picasso.get().load(photoUrl).into(target);
+            }
+            chip.setChipIconSize(80f); // Increased size for better visibility
             chip.setChipIconTint(null);
 
             chip.setTag(id);

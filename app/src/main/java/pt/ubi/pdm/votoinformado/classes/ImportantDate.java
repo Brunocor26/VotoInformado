@@ -1,6 +1,7 @@
 package pt.ubi.pdm.votoinformado.classes;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import com.google.gson.annotations.SerializedName;
 
@@ -43,6 +44,7 @@ public class ImportantDate {
     public ImportantDate(String title, String date, String time, String category) {
     }
 
+    public String getId() { return id; }
     public String getTitle() { return title; }
     public String getDate() { return date; }
     public String getTime() { return time; }
@@ -54,6 +56,20 @@ public class ImportantDate {
     public String getIdCandidato() { return idCandidato; }
     public String getIdCandidato1() { return idCandidato1; }
     public String getIdCandidato2() { return idCandidato2; }
+
+    private List<Vote> votes;
+
+    public List<Vote> getVotes() {
+        return votes;
+    }
+
+    public static class Vote {
+        private String userId;
+        private String candidateId;
+
+        public String getUserId() { return userId; }
+        public String getCandidateId() { return candidateId; }
+    }
 
     public LocalDate getLocalDate() {
         if (localDate == null && date != null) {

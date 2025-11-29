@@ -86,4 +86,7 @@ public interface ApiService {
 
     @POST("api/dates")
     Call<ImportantDate> createDate(@Body ImportantDate date);
+
+    @POST("api/dates/{id}/vote")
+    Call<ImportantDate> voteDebate(@Path("id") String id, @Body Map<String, String> body);
 }

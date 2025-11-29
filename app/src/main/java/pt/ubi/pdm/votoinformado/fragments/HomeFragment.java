@@ -58,7 +58,16 @@ public class HomeFragment extends Fragment {
         profileImage.setOnClickListener(v -> startActivity(new Intent(getActivity(), SettingsActivity.class)));
 
         if (photoUrl != null && !photoUrl.isEmpty()) {
-            if (!photoUrl.startsWith("http")) {
+            if (photoUrl.contains("localhost") || photoUrl.contains("127.0.0.1")) {
+                // Fix legacy URLs pointing to localhost
+                String relativePath = photoUrl.replaceAll("http://localhost:\\d+", "")
+                                              .replaceAll("http://127.0.0.1:\\d+", "")
+                                              .replace('\\', '/');
+                if (!relativePath.startsWith("/")) {
+                    relativePath = "/" + relativePath;
+                }
+                photoUrl = ApiClient.getBaseUrl() + relativePath.replaceFirst("^/", "");
+            } else if (!photoUrl.startsWith("http")) {
                 String sanitizedPath = photoUrl.replace('\\', '/').replaceFirst("^/", "");
                 photoUrl = ApiClient.getBaseUrl() + sanitizedPath;
             }

@@ -27,8 +27,8 @@ public class ApiClient {
             URL url = new URL(urlString);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("HEAD");
-            connection.setConnectTimeout(1500);
-            connection.setReadTimeout(1500);
+            connection.setConnectTimeout(15000); // 15 seconds timeout for Render cold start
+            connection.setReadTimeout(15000);
             connection.connect();
             int responseCode = connection.getResponseCode();
             return (responseCode >= 200 && responseCode < 300);

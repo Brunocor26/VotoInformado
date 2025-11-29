@@ -100,3 +100,30 @@ Para permitir o upload de imagens nas petições sem custos adicionais de servi�
 
 \subsection{Eliminação de Petições}
 Foi implementada a funcionalidade de eliminação de petições através do método HTTP \texttt{DELETE}. O endpoint \texttt{/api/petitions/:id} permite remover documentos da coleção \texttt{petitions} no Firestore, garantindo a integridade dos dados. A aplicação Android expõe esta funcionalidade através da classe utilitária \texttt{DatabaseHelper}.
+
+\section{Resolução de Problemas e Otimizações} \label{sec:impl_fixes}
+Durante a fase final de testes e integração, foram identificados e resolvidos três problemas críticos que afetavam a experiência do utilizador e a estabilidade da aplicação.
+
+\subsection{Ligação de Candidatos em Sondagens}
+Foi detetada uma inconsistência na ligação entre os resultados das sondagens e os perfis dos candidatos. O problema devia-se a uma discrepância nos identificadores: a base de dados utilizava IDs do MongoDB (\texttt{\_id}), enquanto alguns resultados de sondagens referenciavam candidatos por um ID textual (e.g., "andre\_pestana").
+
+\textbf{Solução}: Implementou-se uma lógica de correspondência robusta nos adaptadores (\texttt{ResultadoSondagemAdapter}, \texttt{SondagemAdapter}) e no \texttt{HomeFragment}. O algoritmo tenta agora corresponder o candidato sequencialmente por:
+\begin{enumerate}
+    \item ID do MongoDB (\texttt{\_id}).
+    \item ID textual personalizado (\texttt{id}).
+    \item Nome do candidato (como recurso final, insensível a maiúsculas/minúsculas).
+\end{enumerate}
+
+\subsection{Conectividade com API (Render Cold Start)}
+A API, alojada no plano gratuito do serviço Render, entra em modo de suspensão após períodos de inatividade. O tempo de arranque inicial ("cold start") excedia frequentemente o timeout padrão de 1.5 segundos definido no cliente Android, levando a aplicação a falhar silenciosamente para o URL local (\texttt{localhost}).
+
+\textbf{Solução}: O timeout de conexão e leitura no \texttt{ApiClient} foi aumentado para \textbf{15 segundos}. Isto garante que a aplicação aguarda o tempo suficiente para que o servidor acorde, assegurando uma conexão bem-sucedida mesmo após inatividade.
+
+\subsection{Carregamento de Imagens de Perfil}
+Identificou-se que as imagens de perfil dos utilizadores não eram carregadas corretamente em dispositivos físicos. A causa raiz era dupla: o backend guardava URLs absolutos (e.g., \texttt{http://localhost:3000/...}) durante o registo, que são inacessíveis externamente, e os comentários não persistiam a foto do autor.
+
+\textbf{Solução}:
+\begin{itemize}
+    \item \textbf{Backend}: O controlador de autenticação foi atualizado para guardar apenas o \textbf{caminho relativo} da imagem (e.g., \texttt{/uploads/profiles/...}). Adicionalmente, a criação de comentários foi corrigida para persistir o URL da foto do autor.
+    \item \textbf{Frontend}: Implementou-se uma lógica de "sanitização" no cliente (\texttt{HomeFragment}, \texttt{ComentarioAdapter}). A aplicação deteta agora URLs legados contendo "localhost" ou "127.0.0.1", converte-os em caminhos relativos e prepõe dinamicamente o URL base correto da API (\texttt{ApiClient.getBaseUrl()}).
+\end{itemize}

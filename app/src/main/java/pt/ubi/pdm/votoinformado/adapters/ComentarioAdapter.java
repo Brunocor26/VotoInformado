@@ -48,7 +48,16 @@ public class ComentarioAdapter extends RecyclerView.Adapter<ComentarioAdapter.Vi
         // Load user photo
         String photoUrl = comentario.getAutorPhotoUrl();
         if (photoUrl != null && !photoUrl.isEmpty()) {
-            if (!photoUrl.startsWith("http")) {
+            if (photoUrl.contains("localhost") || photoUrl.contains("127.0.0.1")) {
+                // Fix legacy URLs pointing to localhost
+                String relativePath = photoUrl.replaceAll("http://localhost:\\d+", "")
+                                              .replaceAll("http://127.0.0.1:\\d+", "")
+                                              .replace('\\', '/');
+                if (!relativePath.startsWith("/")) {
+                    relativePath = "/" + relativePath;
+                }
+                photoUrl = pt.ubi.pdm.votoinformado.api.ApiClient.getBaseUrl() + relativePath.replaceFirst("^/", "");
+            } else if (!photoUrl.startsWith("http")) {
                 // Sanitize the path: replace backslashes with forward slashes and remove any leading slash.
                 String sanitizedPath = photoUrl.replace('\\', '/').replaceFirst("^/", "");
                 photoUrl = pt.ubi.pdm.votoinformado.api.ApiClient.getBaseUrl() + sanitizedPath;

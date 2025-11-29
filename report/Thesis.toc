@@ -2,10 +2,10 @@
 \selectlanguage *{english}
 \contentsline {chapter}{Resumo}{iii}{section*.1}%
 \contentsline {chapter}{Contents}{v}{section*.3}%
-\contentsline {chapter}{List of Figures}{vii}{section*.5}%
-\contentsline {chapter}{List of Tables}{ix}{section*.7}%
-\contentsline {chapter}{List of Algorithms}{xi}{section*.9}%
-\contentsline {chapter}{Acronyms and Abbreviations}{xiii}{section*.11}%
+\contentsline {chapter}{List of Figures}{ix}{section*.5}%
+\contentsline {chapter}{List of Tables}{xi}{section*.7}%
+\contentsline {chapter}{List of Algorithms}{xiii}{section*.9}%
+\contentsline {chapter}{Acronyms and Abbreviations}{xv}{section*.11}%
 \contentsline {chapter}{\numberline {1}Introdução}{1}{chapter.1}%
 \contentsline {section}{\numberline {1.1}Enquadramento e Motivação}{1}{section.1.1}%
 \contentsline {section}{\numberline {1.2}Objetivos}{1}{section.1.2}%
@@ -36,16 +36,20 @@
 \contentsline {subsection}{\numberline {4.6.1}Estrutura de Dados}{17}{subsection.4.6.1}%
 \contentsline {subsection}{\numberline {4.6.2}Upload de Imagens}{18}{subsection.4.6.2}%
 \contentsline {subsection}{\numberline {4.6.3}Eliminação de Petições}{18}{subsection.4.6.3}%
-\contentsline {chapter}{\numberline {5}Resultados e Testes}{19}{chapter.5}%
-\contentsline {section}{\numberline {5.1}Estado Atual do Projeto}{19}{section.5.1}%
-\contentsline {section}{\numberline {5.2}Testes Realizados}{19}{section.5.2}%
-\contentsline {subsection}{\numberline {5.2.1}Testes Manuais}{19}{subsection.5.2.1}%
-\contentsline {subsection}{\numberline {5.2.2}Testes Unitários e Instrumentados}{19}{subsection.5.2.2}%
-\contentsline {section}{\numberline {5.3}Análise de Desempenho}{20}{section.5.3}%
-\contentsline {chapter}{\numberline {6}Conclusão e Trabalho Futuro}{21}{chapter.6}%
-\contentsline {section}{\numberline {6.1}Conclusão}{21}{section.6.1}%
-\contentsline {section}{\numberline {6.2}Trabalho Futuro}{21}{section.6.2}%
-\contentsline {chapter}{Bibliography}{23}{section*.26}%
-\contentsline {chapter}{\numberline {A}Appendix}{25}{chapter.appendix1}%
-\contentsline {section}{\numberline {A.1}Datasheets dos componentes utilizados}{25}{section.appendix1.1}%
-\contentsline {chapter}{Glossary}{27}{section*.28}%
+\contentsline {section}{\numberline {4.7}Resolução de Problemas e Otimizações}{18}{section.4.7}%
+\contentsline {subsection}{\numberline {4.7.1}Ligação de Candidatos em Sondagens}{18}{subsection.4.7.1}%
+\contentsline {subsection}{\numberline {4.7.2}Conectividade com API (Render Cold Start)}{19}{subsection.4.7.2}%
+\contentsline {subsection}{\numberline {4.7.3}Carregamento de Imagens de Perfil}{19}{subsection.4.7.3}%
+\contentsline {chapter}{\numberline {5}Resultados e Testes}{21}{chapter.5}%
+\contentsline {section}{\numberline {5.1}Estado Atual do Projeto}{21}{section.5.1}%
+\contentsline {section}{\numberline {5.2}Testes Realizados}{21}{section.5.2}%
+\contentsline {subsection}{\numberline {5.2.1}Testes Manuais}{21}{subsection.5.2.1}%
+\contentsline {subsection}{\numberline {5.2.2}Testes Unitários e Instrumentados}{21}{subsection.5.2.2}%
+\contentsline {section}{\numberline {5.3}Análise de Desempenho}{22}{section.5.3}%
+\contentsline {chapter}{\numberline {6}Conclusão e Trabalho Futuro}{23}{chapter.6}%
+\contentsline {section}{\numberline {6.1}Conclusão}{23}{section.6.1}%
+\contentsline {section}{\numberline {6.2}Trabalho Futuro}{23}{section.6.2}%
+\contentsline {chapter}{Bibliography}{25}{section*.26}%
+\contentsline {chapter}{\numberline {A}Appendix}{27}{chapter.appendix1}%
+\contentsline {section}{\numberline {A.1}Datasheets dos componentes utilizados}{27}{section.appendix1.1}%
+\contentsline {chapter}{Glossary}{29}{section*.28}%

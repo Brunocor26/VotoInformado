@@ -1,6 +1,7 @@
 package pt.ubi.pdm.votoinformado.adapters;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -58,16 +59,21 @@ public class ImportantDateAdapter extends RecyclerView.Adapter<ImportantDateAdap
         h.img2.setVisibility(View.GONE);
         h.versusText.setVisibility(View.GONE);
 
-        if (d instanceof Entrevista) {
-            Entrevista entrevista = (Entrevista) d;
-            String id = entrevista.getIdCandidato();
+        if ("Entrevista".equalsIgnoreCase(d.getCategory())) {
+            String id = d.getIdCandidato();
             Candidato c = candidatoMap.get(id);
 
             if (c != null) {
                 h.categoria.setText("Entrevista: " + c.getNome());
                 String photoUrl = c.getPhotoUrl();
                 if (photoUrl != null && !photoUrl.isEmpty()) {
-                    if (!photoUrl.startsWith("http")) {
+                    if (photoUrl.contains("localhost") || photoUrl.contains("127.0.0.1")) {
+                        String relativePath = photoUrl.replaceAll("http://localhost:\\d+", "")
+                                                      .replaceAll("http://127.0.0.1:\\d+", "")
+                                                      .replace('\\', '/');
+                        if (!relativePath.startsWith("/")) relativePath = "/" + relativePath;
+                        photoUrl = pt.ubi.pdm.votoinformado.api.ApiClient.getBaseUrl() + relativePath.replaceFirst("^/", "");
+                    } else if (!photoUrl.startsWith("http")) {
                          photoUrl = pt.ubi.pdm.votoinformado.api.ApiClient.getBaseUrl() + photoUrl.replaceFirst("^/", "");
                     }
                     com.squareup.picasso.Picasso.get()
@@ -82,10 +88,9 @@ public class ImportantDateAdapter extends RecyclerView.Adapter<ImportantDateAdap
                 h.img1.setVisibility(View.VISIBLE);
             }
 
-        } else if (d instanceof Debate) {
-            Debate debate = (Debate) d;
-            String id1 = debate.getIdCandidato1();
-            String id2 = debate.getIdCandidato2();
+        } else if ("Debate".equalsIgnoreCase(d.getCategory())) {
+            String id1 = d.getIdCandidato1();
+            String id2 = d.getIdCandidato2();
             Candidato c1 = candidatoMap.get(id1);
             Candidato c2 = candidatoMap.get(id2);
 
@@ -93,7 +98,13 @@ public class ImportantDateAdapter extends RecyclerView.Adapter<ImportantDateAdap
                 h.categoria.setText("Debate");
                 String photoUrl1 = c1.getPhotoUrl();
                 if (photoUrl1 != null && !photoUrl1.isEmpty()) {
-                    if (!photoUrl1.startsWith("http")) {
+                    if (photoUrl1.contains("localhost") || photoUrl1.contains("127.0.0.1")) {
+                        String relativePath = photoUrl1.replaceAll("http://localhost:\\d+", "")
+                                                      .replaceAll("http://127.0.0.1:\\d+", "")
+                                                      .replace('\\', '/');
+                        if (!relativePath.startsWith("/")) relativePath = "/" + relativePath;
+                        photoUrl1 = pt.ubi.pdm.votoinformado.api.ApiClient.getBaseUrl() + relativePath.replaceFirst("^/", "");
+                    } else if (!photoUrl1.startsWith("http")) {
                          photoUrl1 = pt.ubi.pdm.votoinformado.api.ApiClient.getBaseUrl() + photoUrl1.replaceFirst("^/", "");
                     }
                     com.squareup.picasso.Picasso.get()
@@ -107,7 +118,13 @@ public class ImportantDateAdapter extends RecyclerView.Adapter<ImportantDateAdap
 
                 String photoUrl2 = c2.getPhotoUrl();
                 if (photoUrl2 != null && !photoUrl2.isEmpty()) {
-                    if (!photoUrl2.startsWith("http")) {
+                    if (photoUrl2.contains("localhost") || photoUrl2.contains("127.0.0.1")) {
+                        String relativePath = photoUrl2.replaceAll("http://localhost:\\d+", "")
+                                                      .replaceAll("http://127.0.0.1:\\d+", "")
+                                                      .replace('\\', '/');
+                        if (!relativePath.startsWith("/")) relativePath = "/" + relativePath;
+                        photoUrl2 = pt.ubi.pdm.votoinformado.api.ApiClient.getBaseUrl() + relativePath.replaceFirst("^/", "");
+                    } else if (!photoUrl2.startsWith("http")) {
                          photoUrl2 = pt.ubi.pdm.votoinformado.api.ApiClient.getBaseUrl() + photoUrl2.replaceFirst("^/", "");
                     }
                     com.squareup.picasso.Picasso.get()
@@ -123,6 +140,39 @@ public class ImportantDateAdapter extends RecyclerView.Adapter<ImportantDateAdap
                 h.img1.setVisibility(View.VISIBLE);
                 h.img2.setVisibility(View.VISIBLE);
                 h.versusText.setVisibility(View.VISIBLE);
+
+                h.itemView.setOnClickListener(v -> {
+                    try {
+                        String dateStr = d.getDate(); // YYYY-MM-DD
+                        String timeStr = d.getTime(); // HH:mm
+                        if (timeStr == null || timeStr.isEmpty()) timeStr = "00:00";
+                        
+                        // Parse date and time
+                        java.time.LocalDateTime eventDateTime = java.time.LocalDateTime.parse(dateStr + "T" + timeStr);
+                        java.time.LocalDateTime now = java.time.LocalDateTime.now();
+
+                        if (now.isBefore(eventDateTime)) {
+                            android.widget.Toast.makeText(context, "O debate ainda não começou.", android.widget.Toast.LENGTH_SHORT).show();
+                        } else if (now.isAfter(eventDateTime.plusHours(24))) {
+                            android.widget.Toast.makeText(context, "A votação para este debate já encerrou.", android.widget.Toast.LENGTH_SHORT).show();
+                        } else {
+                            // Open Voting Activity
+                            android.content.Intent intent = new android.content.Intent(context, pt.ubi.pdm.votoinformado.activities.DebateVoteActivity.class);
+                            intent.putExtra("debateId", d.getId());
+                            intent.putExtra("cand1Id", id1);
+                            intent.putExtra("cand2Id", id2);
+                            intent.putExtra("title", d.getTitle());
+                            intent.putExtra("cand1Name", c1.getNome());
+                            intent.putExtra("cand2Name", c2.getNome());
+                            intent.putExtra("cand1Photo", c1.getPhotoUrl());
+                            intent.putExtra("cand2Photo", c2.getPhotoUrl());
+                            context.startActivity(intent);
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        android.widget.Toast.makeText(context, "Erro ao verificar data do debate.", android.widget.Toast.LENGTH_SHORT).show();
+                    }
+                });
             }
         }
     }

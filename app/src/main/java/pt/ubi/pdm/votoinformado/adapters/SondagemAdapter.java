@@ -78,10 +78,41 @@ public class SondagemAdapter extends RecyclerView.Adapter<SondagemAdapter.Sondag
         holder.datas.setText(datasStr);
         holder.amostra.setText(sondagem.getTamAmostra() != null ? String.format("Amostra: %d", sondagem.getTamAmostra()) : "Amostra: N/A");
 
-        Sondagem.ResultadoPrincipal lider = sondagem.getResultadoPrincipal();
+        Sondagem.ResultadoPrincipal lider = sondagem.getCalculatedResultadoPrincipal();
 
         if (lider != null && lider.idCandidato != null) {
-            Candidato candidatoLider = candidatoMap.get(lider.idCandidato);
+            Candidato candidatoLider = null;
+            String idOuNome = lider.idCandidato;
+
+            if (candidatoMap != null) {
+                // 1. Try to match by MongoDB ID (_id)
+                for (Candidato c : candidatoMap.values()) {
+                    if (c.getId() != null && c.getId().equals(idOuNome)) {
+                        candidatoLider = c;
+                        break;
+                    }
+                }
+
+                // 2. Try to match by String ID (id)
+                if (candidatoLider == null) {
+                    for (Candidato c : candidatoMap.values()) {
+                        if (c.getStringId() != null && c.getStringId().equals(idOuNome)) {
+                            candidatoLider = c;
+                            break;
+                        }
+                    }
+                }
+
+                // 3. Fallback: Try to match by Name (case-insensitive)
+                if (candidatoLider == null) {
+                    for (Candidato c : candidatoMap.values()) {
+                        if (c.getNome() != null && c.getNome().trim().equalsIgnoreCase(idOuNome.trim())) {
+                            candidatoLider = c;
+                            break;
+                        }
+                    }
+                }
+            }
 
             if (candidatoLider != null) {
                 String photoUrl = candidatoLider.getPhotoUrl();
@@ -99,16 +130,17 @@ public class SondagemAdapter extends RecyclerView.Adapter<SondagemAdapter.Sondag
                 }
                 String liderText = String.format(Locale.US, "%s: %.1f%%", candidatoLider.getNome(), lider.percentagem);
                 holder.liderNome.setText(liderText);
+                
+                final Candidato finalCandidatoLider = candidatoLider;
                 holder.liderFoto.setOnClickListener(v -> {
                     Intent intent = new Intent(context, CandidatoDetailActivity.class);
-                    intent.putExtra(CandidatoDetailActivity.EXTRA_CANDIDATO, candidatoLider);
+                    intent.putExtra(CandidatoDetailActivity.EXTRA_CANDIDATO, finalCandidatoLider);
                     context.startActivity(intent);
                 });
             } else {
                 Log.d("SondagemAdapter", "Candidato líder com ID '" + lider.idCandidato + "' não foi encontrado.");
-                Log.d("SondagemAdapter", "Candidatos disponíveis: " + candidatoMap.keySet());
                 holder.liderFoto.setImageResource(R.drawable.candidato_generico);
-                holder.liderNome.setText("Líder não disponível");
+                holder.liderNome.setText(lider.idCandidato.substring(0, 1).toUpperCase() + lider.idCandidato.substring(1).replace("_", " "));
                 holder.liderFoto.setOnClickListener(null);
             }
         } else {

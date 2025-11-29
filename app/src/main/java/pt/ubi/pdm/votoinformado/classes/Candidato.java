@@ -16,6 +16,10 @@ public class Candidato implements Serializable {
 
     @SerializedName("_id")
     private String id;
+
+    @SerializedName("id")
+    private String stringId;
+
     private String nome;
     private String partido;
     // private String fotoNome;
@@ -32,6 +36,9 @@ public class Candidato implements Serializable {
 
     public String getId() { return id; }
     public void setId(String id) { this.id = id; }
+
+    public String getStringId() { return stringId; }
+    public void setStringId(String stringId) { this.stringId = stringId; }
 
     public String getNome() { return nome; }
     public void setNome(String nome) { this.nome = nome; }

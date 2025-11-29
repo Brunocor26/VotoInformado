@@ -11,7 +11,6 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -19,6 +18,7 @@ import java.util.Map;
 import de.hdodenhof.circleimageview.CircleImageView;
 import pt.ubi.pdm.votoinformado.R;
 import pt.ubi.pdm.votoinformado.activities.CandidatoDetailActivity;
+import pt.ubi.pdm.votoinformado.api.ApiClient;
 import pt.ubi.pdm.votoinformado.classes.Candidato;
 
 public class ResultadoSondagemAdapter extends RecyclerView.Adapter<ResultadoSondagemAdapter.ResultadoViewHolder> {
@@ -32,7 +32,7 @@ public class ResultadoSondagemAdapter extends RecyclerView.Adapter<ResultadoSond
         this.candidatoMap = candidatoMap;
         // Converte o mapa de resultados numa lista e ordena-a do maior para o menor
         this.resultadosList = new ArrayList<>(resultados.entrySet());
-        Collections.sort(this.resultadosList, (o1, o2) -> o2.getValue().compareTo(o1.getValue()));
+        this.resultadosList.sort((o1, o2) -> o2.getValue().compareTo(o1.getValue()));
     }
 
     @NonNull
@@ -50,14 +50,47 @@ public class ResultadoSondagemAdapter extends RecyclerView.Adapter<ResultadoSond
 
         if (percentagem == null) percentagem = 0.0;
 
-        Candidato candidato = candidatoMap.get(idOuNome);
+        Candidato candidato = null;
+        if (candidatoMap != null) {
+            // 1. Try to match by MongoDB ID (_id)
+            for (Candidato c : candidatoMap.values()) {
+                if (c.getId() != null && c.getId().equals(idOuNome)) {
+                    candidato = c;
+                    break;
+                }
+            }
 
-        if (candidato != null) {
+            // 2. Try to match by String ID (id)
+            if (candidato == null) {
+                for (Candidato c : candidatoMap.values()) {
+                    if (c.getStringId() != null && c.getStringId().equals(idOuNome)) {
+                        candidato = c;
+                        break;
+                    }
+                }
+            }
+            
+            // 3. Fallback: Try to match by Name (case-insensitive)
+            if (candidato == null) {
+                for (Candidato c : candidatoMap.values()) {
+                    if (c.getNome() != null && c.getNome().trim().equalsIgnoreCase(idOuNome.trim())) {
+                        candidato = c;
+                        break;
+                    }
+                }
+            }
+        }
+
+        final Candidato finalCandidato = candidato;
+
+        if (finalCandidato != null) {
             // É um candidato conhecido
-            String photoUrl = candidato.getPhotoUrl();
+            holder.nome.setText(finalCandidato.getNome());
+            String photoUrl = finalCandidato.getPhotoUrl();
             if (photoUrl != null && !photoUrl.isEmpty()) {
                 if (!photoUrl.startsWith("http")) {
-                     photoUrl = pt.ubi.pdm.votoinformado.api.ApiClient.getBaseUrl() + photoUrl.replaceFirst("^/", "");
+                    String sanitizedPath = photoUrl.replace('\\', '/').replaceFirst("^/", "");
+                    photoUrl = ApiClient.getBaseUrl() + sanitizedPath;
                 }
                 com.squareup.picasso.Picasso.get()
                     .load(photoUrl)
@@ -67,19 +100,18 @@ public class ResultadoSondagemAdapter extends RecyclerView.Adapter<ResultadoSond
             } else {
                 holder.foto.setImageResource(R.drawable.candidato_generico);
             }
-            holder.nome.setText(candidato.getNome());
 
             // Adiciona o listener de clique para abrir o detalhe do candidato
-            holder.foto.setOnClickListener(v -> {
+            holder.itemView.setOnClickListener(v -> {
                 Intent intent = new Intent(context, CandidatoDetailActivity.class);
-                intent.putExtra(CandidatoDetailActivity.EXTRA_CANDIDATO, candidato);
+                intent.putExtra(CandidatoDetailActivity.EXTRA_CANDIDATO, finalCandidato);
                 context.startActivity(intent);
             });
         } else {
             // É uma entrada genérica (ex: "Indecisos", "Brancos/Nulos")
             holder.foto.setImageResource(R.drawable.candidato_generico);
-            holder.nome.setText(idOuNome); // Mostra o nome genérico
-            holder.foto.setOnClickListener(null); // Remove o listener para evitar erros
+            holder.nome.setText(idOuNome.substring(0, 1).toUpperCase() + idOuNome.substring(1).replace("_", " ")); // Mostra o nome genérico formatado
+            holder.itemView.setOnClickListener(null); // Remove o listener para evitar erros
         }
 
         holder.percentagem.setText(String.format(Locale.US, "%.1f%%", percentagem));

@@ -14,6 +14,7 @@ import androidx.fragment.app.Fragment;
 
 import com.squareup.picasso.Picasso;
 
+import java.text.Normalizer;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
@@ -90,11 +91,42 @@ public class HomeFragment extends Fragment {
                         }
 
                         sondagens.stream()
+                                .filter(s -> s.getDataFimRecolha() != null)
                                 .max(Comparator.comparing(Sondagem::getDataFimRecolha))
                                 .ifPresent(ultimaSondagem -> {
                                     Sondagem.ResultadoPrincipal vencedor = ultimaSondagem.getCalculatedResultadoPrincipal();
                                     if (vencedor != null) {
-                                        Candidato candidatoVencedor = candidatesMap.get(vencedor.idCandidato);
+
+                                        Candidato candidatoVencedor = null;
+                                        String idOuNome = vencedor.idCandidato;
+
+                                        // 1. Try to match by MongoDB ID (_id)
+                                        for (Candidato c : candidatesMap.values()) {
+                                            if (c.getId() != null && c.getId().equals(idOuNome)) {
+                                                candidatoVencedor = c;
+                                                break;
+                                            }
+                                        }
+
+                                        // 2. Try to match by String ID (id)
+                                        if (candidatoVencedor == null) {
+                                            for (Candidato c : candidatesMap.values()) {
+                                                if (c.getStringId() != null && c.getStringId().equals(idOuNome)) {
+                                                    candidatoVencedor = c;
+                                                    break;
+                                                }
+                                            }
+                                        }
+
+                                        // 3. Fallback: Try to match by Name (case-insensitive)
+                                        if (candidatoVencedor == null) {
+                                            for (Candidato c : candidatesMap.values()) {
+                                                if (c.getNome() != null && c.getNome().trim().equalsIgnoreCase(idOuNome.trim())) {
+                                                    candidatoVencedor = c;
+                                                    break;
+                                                }
+                                            }
+                                        }
 
                                         if (candidatoVencedor != null) {
                                             sondagemDestaqueNome.setText(candidatoVencedor.getNome());

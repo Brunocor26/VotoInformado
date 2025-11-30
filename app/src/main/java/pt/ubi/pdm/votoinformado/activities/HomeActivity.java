@@ -7,10 +7,16 @@ import android.view.MenuItem;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.work.ExistingPeriodicWorkPolicy;
+import androidx.work.PeriodicWorkRequest;
+import androidx.work.WorkManager;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import java.util.concurrent.TimeUnit;
+
 import pt.ubi.pdm.votoinformado.R;
+import pt.ubi.pdm.votoinformado.activities.notificacoes.SyncDatesWorker;
 import pt.ubi.pdm.votoinformado.fragments.CandidatosFragment;
 import pt.ubi.pdm.votoinformado.fragments.ChooseEventTypeFragment;
 import pt.ubi.pdm.votoinformado.fragments.HomeFragment;
@@ -27,7 +33,7 @@ public class HomeActivity extends AppCompatActivity implements BottomNavigationV
         // Check if user is logged in via shared preferences
         android.content.SharedPreferences prefs = getSharedPreferences("user_session", MODE_PRIVATE);
         String token = prefs.getString("auth_token", null);
-        
+
         if (token == null || token.isEmpty()) {
             startActivity(new Intent(this, LoginActivity.class));
             finish();
@@ -43,6 +49,22 @@ public class HomeActivity extends AppCompatActivity implements BottomNavigationV
         if (savedInstanceState == null) {
             loadFragment(new HomeFragment());
         }
+
+        //funcao que vai tratar das notificacoes mesmo sem a necessidade de ter a aplicacao aberta
+        scheduleDateSync();
+    }
+
+    private void scheduleDateSync() {
+        //criamos um pedido de trabalho periódico
+        PeriodicWorkRequest syncDatesRequest =
+                new PeriodicWorkRequest.Builder(SyncDatesWorker.class, 24, TimeUnit.HOURS)
+                        .build();               //executar a logica do SyncDatesWorker.class a cada 24h
+
+        //entregamos o pedido de trabalho ao WorkManager
+        WorkManager.getInstance(this).enqueueUniquePeriodicWork(
+                "syncDatesWork",
+                ExistingPeriodicWorkPolicy.KEEP,
+                syncDatesRequest);
     }
 
     private boolean loadFragment(Fragment fragment) {

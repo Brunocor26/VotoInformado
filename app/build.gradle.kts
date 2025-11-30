@@ -42,7 +42,8 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
-
+    // WorkManager
+    implementation("androidx.work:work-runtime:2.9.0")
     // Retrofit (para fazer os pedidos de rede)
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     // Conversor Gson (para o Retrofit usar o Gson)

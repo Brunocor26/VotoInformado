@@ -1,11 +1,17 @@
 package pt.ubi.pdm.votoinformado.activities;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.MenuItem;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.work.ExistingPeriodicWorkPolicy;
 import androidx.work.PeriodicWorkRequest;
@@ -25,6 +31,10 @@ import pt.ubi.pdm.votoinformado.fragments.PeticoesFragment;
 import pt.ubi.pdm.votoinformado.fragments.SondagensFragment;
 
 public class HomeActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener {
+
+    // Launcher para pedir a permissão de notificação
+    private final ActivityResultLauncher<String> requestPermissionLauncher = registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
+    });
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,8 +60,21 @@ public class HomeActivity extends AppCompatActivity implements BottomNavigationV
             loadFragment(new HomeFragment());
         }
 
+        // Pede permissão de notificações (para Android 13+)
+        askNotificationPermission();
+        
         //funcao que vai tratar das notificacoes mesmo sem a necessidade de ter a aplicacao aberta
         scheduleDateSync();
+    }
+
+    private void askNotificationPermission() {
+        // Apenas necessário para API 33+ (Android 13)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+                // Pede diretamente a permissão
+                requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS);
+            }
+        }
     }
 
     private void scheduleDateSync() {

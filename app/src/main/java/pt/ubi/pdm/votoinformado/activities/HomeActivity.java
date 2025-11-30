@@ -110,7 +110,7 @@ public class HomeActivity extends AppCompatActivity implements BottomNavigationV
         } else if (itemId == R.id.nav_candidatos) {
             fragment = new CandidatosFragment();
         } else if (itemId == R.id.nav_eventos) {
-            fragment = new ChooseEventTypeFragment();
+            fragment = new pt.ubi.pdm.votoinformado.fragments.ImportantDatesHostFragment();
         } else if (itemId == R.id.nav_sondagens) {
             fragment = new SondagensFragment();
         } else if (itemId == R.id.nav_noticias) {

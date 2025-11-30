@@ -1,10 +1,14 @@
-package pt.ubi.pdm.votoinformado.activities;
+package pt.ubi.pdm.votoinformado.fragments;
 
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 import androidx.viewpager2.widget.ViewPager2;
@@ -13,27 +17,31 @@ import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
 import pt.ubi.pdm.votoinformado.R;
-import pt.ubi.pdm.votoinformado.fragments.ImportantDateFragment;
 import pt.ubi.pdm.votoinformado.viewmodels.ImportantDatesViewModel;
 
-public class ImportantDatesActivity extends AppCompatActivity {
+public class ImportantDatesHostFragment extends Fragment {
 
     private ImportantDatesViewModel viewModel;
 
+    @Nullable
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_important_dates);
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.fragment_important_dates_host, container, false);
+    }
 
-        viewModel = new ViewModelProvider(this).get(ImportantDatesViewModel.class);
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
 
-        ViewPager2 viewPager = findViewById(R.id.viewPager);
-        TabLayout tabLayout = findViewById(R.id.tabLayout);
+        viewModel = new ViewModelProvider(requireActivity()).get(ImportantDatesViewModel.class);
+
+        ViewPager2 viewPager = view.findViewById(R.id.viewPager);
+        TabLayout tabLayout = view.findViewById(R.id.tabLayout);
 
         viewPager.setAdapter(new FragmentStateAdapter(this) {
             @NonNull
             @Override
-            public androidx.fragment.app.Fragment createFragment(int position) {
+            public Fragment createFragment(int position) {
                 switch (position) {
                     case 0: return ImportantDateFragment.newInstance("Datas");
                     case 1: return ImportantDateFragment.newInstance("Debate");
@@ -56,20 +64,10 @@ public class ImportantDatesActivity extends AppCompatActivity {
             }
         }).attach();
 
-        // Handle intent extras if any (e.g., deep linking to specific tab)
-        String filtroCategoria = getIntent().getStringExtra("filtro_categoria");
-        if (filtroCategoria != null) {
-            if (filtroCategoria.equalsIgnoreCase("Debate")) {
-                viewPager.setCurrentItem(1, false);
-            } else if (filtroCategoria.equalsIgnoreCase("Entrevista")) {
-                viewPager.setCurrentItem(2, false);
-            }
-        }
-
         // Load data
-        viewModel.getError().observe(this, error -> {
+        viewModel.getError().observe(getViewLifecycleOwner(), error -> {
             if (error != null) {
-                Toast.makeText(this, error, Toast.LENGTH_SHORT).show();
+                Toast.makeText(requireContext(), error, Toast.LENGTH_SHORT).show();
             }
         });
         

@@ -6,19 +6,23 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.chip.Chip;
+
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
+import java.util.Locale;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import pt.ubi.pdm.votoinformado.R;
 import pt.ubi.pdm.votoinformado.classes.Candidato;
-import pt.ubi.pdm.votoinformado.classes.Debate;
-import pt.ubi.pdm.votoinformado.classes.Entrevista;
 import pt.ubi.pdm.votoinformado.classes.ImportantDate;
 
 public class ImportantDateAdapter extends RecyclerView.Adapter<ImportantDateAdapter.Holder> {
@@ -50,42 +54,50 @@ public class ImportantDateAdapter extends RecyclerView.Adapter<ImportantDateAdap
         ImportantDate d = lista.get(position);
 
         h.titulo.setText(d.getTitle());
-        h.dataHora.setText(d.getDate() + " · " + d.getTime());
-        h.categoria.setText(d.getCategory());
+        
+        // Format Date for Calendar Leaf
+        if (d.getDate() != null && !d.getDate().isEmpty()) {
+            try {
+                LocalDate date = LocalDate.parse(d.getDate());
+                h.txtDia.setText(String.valueOf(date.getDayOfMonth()));
+                h.txtMes.setText(date.getMonth().name().substring(0, 3));
+            } catch (Exception e) {
+                h.txtDia.setText("?");
+                h.txtMes.setText("???");
+            }
+        } else {
+            h.txtDia.setText("-");
+            h.txtMes.setText("-");
+        }
+
+        h.txtHora.setText(d.getTime() != null ? d.getTime() : "--:--");
+        h.chipCategoria.setText(d.getCategory());
 
         // Reset visibilities
         h.layoutFotos.setVisibility(View.GONE);
+        h.layoutCandidato1.setVisibility(View.GONE);
+        h.layoutCandidato2.setVisibility(View.GONE);
+        h.versusText.setVisibility(View.GONE);
         h.img1.setVisibility(View.GONE);
         h.img2.setVisibility(View.GONE);
-        h.versusText.setVisibility(View.GONE);
 
         if ("Entrevista".equalsIgnoreCase(d.getCategory())) {
             String id = d.getIdCandidato();
             Candidato c = candidatoMap.get(id);
 
             if (c != null) {
-                h.categoria.setText("Entrevista: " + c.getNome());
-                String photoUrl = c.getPhotoUrl();
-                if (photoUrl != null && !photoUrl.isEmpty()) {
-                    if (photoUrl.contains("localhost") || photoUrl.contains("127.0.0.1")) {
-                        String relativePath = photoUrl.replaceAll("http://localhost:\\d+", "")
-                                                      .replaceAll("http://127.0.0.1:\\d+", "")
-                                                      .replace('\\', '/');
-                        if (!relativePath.startsWith("/")) relativePath = "/" + relativePath;
-                        photoUrl = pt.ubi.pdm.votoinformado.api.ApiClient.getBaseUrl() + relativePath.replaceFirst("^/", "");
-                    } else if (!photoUrl.startsWith("http")) {
-                         photoUrl = pt.ubi.pdm.votoinformado.api.ApiClient.getBaseUrl() + photoUrl.replaceFirst("^/", "");
-                    }
-                    com.squareup.picasso.Picasso.get()
-                        .load(photoUrl)
-                        .placeholder(R.drawable.candidato_generico)
-                        .error(R.drawable.candidato_generico)
-                        .into(h.img1);
-                } else {
-                    h.img1.setImageResource(R.drawable.candidato_generico);
-                }
+                h.chipCategoria.setText("Entrevista");
+                loadPhoto(c.getPhotoUrl(), h.img1);
+                
                 h.layoutFotos.setVisibility(View.VISIBLE);
+                h.layoutCandidato1.setVisibility(View.VISIBLE);
                 h.img1.setVisibility(View.VISIBLE);
+                
+                // For interviews, we might want to hide the VS text and second candidate area completely
+                // But layout structure expects them. We can just hide VS and cand2.
+                // Or we can repurpose layoutCandidato1 to be centered? 
+                // The current XML has them in a horizontal layout. 
+                // Let's just show cand1 and hide the rest.
             }
 
         } else if ("Debate".equalsIgnoreCase(d.getCategory())) {
@@ -95,48 +107,14 @@ public class ImportantDateAdapter extends RecyclerView.Adapter<ImportantDateAdap
             Candidato c2 = candidatoMap.get(id2);
 
             if (c1 != null && c2 != null) {
-                h.categoria.setText("Debate");
-                String photoUrl1 = c1.getPhotoUrl();
-                if (photoUrl1 != null && !photoUrl1.isEmpty()) {
-                    if (photoUrl1.contains("localhost") || photoUrl1.contains("127.0.0.1")) {
-                        String relativePath = photoUrl1.replaceAll("http://localhost:\\d+", "")
-                                                      .replaceAll("http://127.0.0.1:\\d+", "")
-                                                      .replace('\\', '/');
-                        if (!relativePath.startsWith("/")) relativePath = "/" + relativePath;
-                        photoUrl1 = pt.ubi.pdm.votoinformado.api.ApiClient.getBaseUrl() + relativePath.replaceFirst("^/", "");
-                    } else if (!photoUrl1.startsWith("http")) {
-                         photoUrl1 = pt.ubi.pdm.votoinformado.api.ApiClient.getBaseUrl() + photoUrl1.replaceFirst("^/", "");
-                    }
-                    com.squareup.picasso.Picasso.get()
-                        .load(photoUrl1)
-                        .placeholder(R.drawable.candidato_generico)
-                        .error(R.drawable.candidato_generico)
-                        .into(h.img1);
-                } else {
-                    h.img1.setImageResource(R.drawable.candidato_generico);
-                }
-
-                String photoUrl2 = c2.getPhotoUrl();
-                if (photoUrl2 != null && !photoUrl2.isEmpty()) {
-                    if (photoUrl2.contains("localhost") || photoUrl2.contains("127.0.0.1")) {
-                        String relativePath = photoUrl2.replaceAll("http://localhost:\\d+", "")
-                                                      .replaceAll("http://127.0.0.1:\\d+", "")
-                                                      .replace('\\', '/');
-                        if (!relativePath.startsWith("/")) relativePath = "/" + relativePath;
-                        photoUrl2 = pt.ubi.pdm.votoinformado.api.ApiClient.getBaseUrl() + relativePath.replaceFirst("^/", "");
-                    } else if (!photoUrl2.startsWith("http")) {
-                         photoUrl2 = pt.ubi.pdm.votoinformado.api.ApiClient.getBaseUrl() + photoUrl2.replaceFirst("^/", "");
-                    }
-                    com.squareup.picasso.Picasso.get()
-                        .load(photoUrl2)
-                        .placeholder(R.drawable.candidato_generico)
-                        .error(R.drawable.candidato_generico)
-                        .into(h.img2);
-                } else {
-                    h.img2.setImageResource(R.drawable.candidato_generico);
-                }
+                h.chipCategoria.setText("Debate");
+                
+                loadPhoto(c1.getPhotoUrl(), h.img1);
+                loadPhoto(c2.getPhotoUrl(), h.img2);
 
                 h.layoutFotos.setVisibility(View.VISIBLE);
+                h.layoutCandidato1.setVisibility(View.VISIBLE);
+                h.layoutCandidato2.setVisibility(View.VISIBLE);
                 h.img1.setVisibility(View.VISIBLE);
                 h.img2.setVisibility(View.VISIBLE);
                 h.versusText.setVisibility(View.VISIBLE);
@@ -179,25 +157,53 @@ public class ImportantDateAdapter extends RecyclerView.Adapter<ImportantDateAdap
         }
     }
 
+    private void loadPhoto(String url, ImageView target) {
+        if (url != null && !url.isEmpty()) {
+            if (url.contains("localhost") || url.contains("127.0.0.1")) {
+                String relativePath = url.replaceAll("http://localhost:\\d+", "")
+                                              .replaceAll("http://127.0.0.1:\\d+", "")
+                                              .replace('\\', '/');
+                if (!relativePath.startsWith("/")) relativePath = "/" + relativePath;
+                url = pt.ubi.pdm.votoinformado.api.ApiClient.getBaseUrl() + relativePath.replaceFirst("^/", "");
+            } else if (!url.startsWith("http")) {
+                 url = pt.ubi.pdm.votoinformado.api.ApiClient.getBaseUrl() + url.replaceFirst("^/", "");
+            }
+            com.squareup.picasso.Picasso.get()
+                .load(url)
+                .placeholder(R.drawable.candidato_generico)
+                .error(R.drawable.candidato_generico)
+                .into(target);
+        } else {
+            target.setImageResource(R.drawable.candidato_generico);
+        }
+    }
+
     @Override
     public int getItemCount() {
         return lista.size();
     }
 
     static class Holder extends RecyclerView.ViewHolder {
-        TextView titulo, dataHora, categoria, versusText;
+        TextView titulo, txtDia, txtMes, txtHora, versusText;
+        Chip chipCategoria;
         CircleImageView img1, img2;
-        View layoutFotos;
+        LinearLayout layoutFotos, layoutCandidato1, layoutCandidato2;
 
         Holder(@NonNull View itemView) {
             super(itemView);
             titulo = itemView.findViewById(R.id.txtTituloEvento);
-            dataHora = itemView.findViewById(R.id.txtDataHora);
-            categoria = itemView.findViewById(R.id.txtCategoria);
+            txtDia = itemView.findViewById(R.id.txtDia);
+            txtMes = itemView.findViewById(R.id.txtMes);
+            txtHora = itemView.findViewById(R.id.txtHora);
+            chipCategoria = itemView.findViewById(R.id.chipCategoria);
+            
             img1 = itemView.findViewById(R.id.imgCandidato1);
             img2 = itemView.findViewById(R.id.imgCandidato2);
             versusText = itemView.findViewById(R.id.versus_text);
+            
             layoutFotos = itemView.findViewById(R.id.layoutFotos);
+            layoutCandidato1 = itemView.findViewById(R.id.layoutCandidato1);
+            layoutCandidato2 = itemView.findViewById(R.id.layoutCandidato2);
         }
     }
 }

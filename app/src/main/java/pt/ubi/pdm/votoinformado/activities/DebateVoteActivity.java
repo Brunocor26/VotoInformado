@@ -26,6 +26,10 @@ import retrofit2.Response;
 
 public class DebateVoteActivity extends AppCompatActivity {
 
+    private com.github.mikephil.charting.charts.PieChart pieChart;
+    private String cand1Name, cand2Name;
+    private boolean isVotingClosed = false;
+
     private String debateId, cand1Id, cand2Id;
     private TextView txtResult1, txtResult2;
     private Button btnVote1, btnVote2;
@@ -40,10 +44,11 @@ public class DebateVoteActivity extends AppCompatActivity {
         cand1Id = getIntent().getStringExtra("cand1Id");
         cand2Id = getIntent().getStringExtra("cand2Id");
         String title = getIntent().getStringExtra("title");
-        String cand1Name = getIntent().getStringExtra("cand1Name");
-        String cand2Name = getIntent().getStringExtra("cand2Name");
+        cand1Name = getIntent().getStringExtra("cand1Name");
+        cand2Name = getIntent().getStringExtra("cand2Name");
         String cand1Photo = getIntent().getStringExtra("cand1Photo");
         String cand2Photo = getIntent().getStringExtra("cand2Photo");
+        String eventDateTimeStr = getIntent().getStringExtra("eventDateTime");
 
         ((TextView) findViewById(R.id.txtDebateTitle)).setText(title);
         ((TextView) findViewById(R.id.txtCand1Name)).setText(cand1Name);
@@ -60,11 +65,42 @@ public class DebateVoteActivity extends AppCompatActivity {
         txtResult1 = findViewById(R.id.txtResult1);
         txtResult2 = findViewById(R.id.txtResult2);
         progressBar = findViewById(R.id.progressBarVoting);
+        pieChart = findViewById(R.id.pieChart);
+        setupPieChart();
 
-        btnVote1.setOnClickListener(v -> vote(cand1Id));
-        btnVote2.setOnClickListener(v -> vote(cand2Id));
+        // Check 24h rule
+        if (eventDateTimeStr != null) {
+            java.time.LocalDateTime eventDateTime = java.time.LocalDateTime.parse(eventDateTimeStr);
+            java.time.LocalDateTime now = java.time.LocalDateTime.now();
+            if (now.isAfter(eventDateTime.plusHours(24))) {
+                isVotingClosed = true;
+                btnVote1.setEnabled(false);
+                btnVote2.setEnabled(false);
+                btnVote1.setText("Encerrado");
+                btnVote2.setText("Encerrado");
+                Toast.makeText(this, "A votação para este debate já encerrou.", Toast.LENGTH_SHORT).show();
+            }
+        }
 
-        checkIfVoted();
+        btnVote1.setOnClickListener(v -> {
+            if (!isVotingClosed) vote(cand1Id);
+        });
+        btnVote2.setOnClickListener(v -> {
+            if (!isVotingClosed) vote(cand2Id);
+        });
+
+        checkIfVoted(); // This will also load results if voting is closed
+    }
+
+    private void setupPieChart() {
+        pieChart.setUsePercentValues(true);
+        pieChart.getDescription().setEnabled(false);
+        pieChart.setExtraOffsets(5, 10, 5, 5);
+        pieChart.setDragDecelerationFrictionCoef(0.95f);
+        pieChart.setDrawHoleEnabled(true);
+        pieChart.setHoleColor(android.graphics.Color.WHITE);
+        pieChart.setTransparentCircleRadius(61f);
+        pieChart.setEntryLabelColor(android.graphics.Color.BLACK);
     }
 
     private void loadImage(String url, CircleImageView img) {
@@ -85,10 +121,6 @@ public class DebateVoteActivity extends AppCompatActivity {
     }
 
     private void checkIfVoted() {
-        // We need to fetch the debate details to check votes
-        // Since we don't have a single debate endpoint, we fetch all and filter (not ideal but works for now)
-        // Or we can just try to vote and handle "already voted" error, but we want to show results if already voted.
-        // Let's fetch all dates.
         progressBar.setVisibility(View.VISIBLE);
         ApiClient.getInstance().getApiService().getDates().enqueue(new Callback<List<ImportantDate>>() {
             @Override
@@ -96,7 +128,7 @@ public class DebateVoteActivity extends AppCompatActivity {
                 progressBar.setVisibility(View.GONE);
                 if (response.isSuccessful() && response.body() != null) {
                     for (ImportantDate d : response.body()) {
-                        if (d.getId() != null && d.getId().equals(debateId)) { // Assuming ImportantDate has getId() mapped to _id
+                        if (d.getId() != null && d.getId().equals(debateId)) {
                             processVotes(d);
                             break;
                         }
@@ -113,30 +145,30 @@ public class DebateVoteActivity extends AppCompatActivity {
 
     private void processVotes(ImportantDate debate) {
         List<ImportantDate.Vote> votes = debate.getVotes();
-        if (votes == null) return;
+        if (votes == null) votes = new java.util.ArrayList<>(); // Handle null votes
 
-        SharedPreferences prefs = getSharedPreferences("UserPrefs", MODE_PRIVATE);
-        String userId = prefs.getString("user_id", null); // Assuming user_id is saved
+        SharedPreferences prefs = getSharedPreferences("user_session", MODE_PRIVATE);
+        String userId = prefs.getString("user_id", null);
 
         boolean userVoted = false;
         int count1 = 0;
         int count2 = 0;
 
         for (ImportantDate.Vote v : votes) {
-            if (v.getUserId().equals(userId)) {
+            if (userId != null && v.getUserId().equals(userId)) {
                 userVoted = true;
             }
             if (v.getCandidateId().equals(cand1Id)) count1++;
             else if (v.getCandidateId().equals(cand2Id)) count2++;
         }
 
-        if (userVoted) {
+        if (userVoted || isVotingClosed) {
             showResults(count1, count2);
         }
     }
 
     private void vote(String candidateId) {
-        SharedPreferences prefs = getSharedPreferences("UserPrefs", MODE_PRIVATE);
+        SharedPreferences prefs = getSharedPreferences("user_session", MODE_PRIVATE);
         String userId = prefs.getString("user_id", null);
 
         if (userId == null) {
@@ -156,7 +188,13 @@ public class DebateVoteActivity extends AppCompatActivity {
                 if (response.isSuccessful() && response.body() != null) {
                     processVotes(response.body());
                 } else {
-                    Toast.makeText(DebateVoteActivity.this, "Erro ao votar: " + response.message(), Toast.LENGTH_SHORT).show();
+                    try {
+                        String errorBody = response.errorBody().string();
+                        android.util.Log.e("DebateVoteActivity", "Erro API: " + errorBody);
+                        Toast.makeText(DebateVoteActivity.this, "Erro ao votar", Toast.LENGTH_SHORT).show();
+                    } catch (Exception e) {
+                        android.util.Log.e("DebateVoteActivity", "Erro: " + response.message());
+                    }
                 }
             }
 
@@ -173,16 +211,33 @@ public class DebateVoteActivity extends AppCompatActivity {
         btnVote2.setVisibility(View.GONE);
         txtResult1.setVisibility(View.VISIBLE);
         txtResult2.setVisibility(View.VISIBLE);
+        pieChart.setVisibility(View.VISIBLE);
 
         int total = c1 + c2;
         if (total == 0) {
             txtResult1.setText("0%");
             txtResult2.setText("0%");
+            pieChart.setNoDataText("Sem votos ainda.");
+            pieChart.invalidate();
         } else {
             int p1 = (c1 * 100) / total;
             int p2 = (c2 * 100) / total;
             txtResult1.setText(p1 + "% (" + c1 + ")");
             txtResult2.setText(p2 + "% (" + c2 + ")");
+
+            java.util.ArrayList<com.github.mikephil.charting.data.PieEntry> entries = new java.util.ArrayList<>();
+            if (c1 > 0) entries.add(new com.github.mikephil.charting.data.PieEntry((float) c1, cand1Name));
+            if (c2 > 0) entries.add(new com.github.mikephil.charting.data.PieEntry((float) c2, cand2Name));
+
+            com.github.mikephil.charting.data.PieDataSet dataSet = new com.github.mikephil.charting.data.PieDataSet(entries, "Resultados");
+            dataSet.setColors(com.github.mikephil.charting.utils.ColorTemplate.MATERIAL_COLORS);
+            dataSet.setValueTextSize(12f);
+            dataSet.setValueTextColor(android.graphics.Color.BLACK);
+
+            com.github.mikephil.charting.data.PieData data = new com.github.mikephil.charting.data.PieData(dataSet);
+            pieChart.setData(data);
+            pieChart.invalidate();
+            pieChart.animateY(1400, com.github.mikephil.charting.animation.Easing.EaseInOutQuad);
         }
     }
     

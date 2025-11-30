@@ -153,10 +153,8 @@ public class ImportantDateAdapter extends RecyclerView.Adapter<ImportantDateAdap
 
                         if (now.isBefore(eventDateTime)) {
                             android.widget.Toast.makeText(context, "O debate ainda não começou.", android.widget.Toast.LENGTH_SHORT).show();
-                        } else if (now.isAfter(eventDateTime.plusHours(24))) {
-                            android.widget.Toast.makeText(context, "A votação para este debate já encerrou.", android.widget.Toast.LENGTH_SHORT).show();
                         } else {
-                            // Open Voting Activity
+                            // Open Voting Activity (it will handle "Voting Closed" state)
                             android.content.Intent intent = new android.content.Intent(context, pt.ubi.pdm.votoinformado.activities.DebateVoteActivity.class);
                             intent.putExtra("debateId", d.getId());
                             intent.putExtra("cand1Id", id1);
@@ -166,6 +164,10 @@ public class ImportantDateAdapter extends RecyclerView.Adapter<ImportantDateAdap
                             intent.putExtra("cand2Name", c2.getNome());
                             intent.putExtra("cand1Photo", c1.getPhotoUrl());
                             intent.putExtra("cand2Photo", c2.getPhotoUrl());
+                            
+                            // Pass event time to check 24h rule inside Activity
+                            intent.putExtra("eventDateTime", eventDateTime.toString());
+                            
                             context.startActivity(intent);
                         }
                     } catch (Exception e) {

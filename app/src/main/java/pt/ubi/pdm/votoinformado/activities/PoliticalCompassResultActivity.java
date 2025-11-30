@@ -44,6 +44,38 @@ public class PoliticalCompassResultActivity extends AppCompatActivity {
 
         Button btnFinish = findViewById(R.id.btn_finish);
         btnFinish.setOnClickListener(v -> finish());
+
+        Button btnShare = findViewById(R.id.btn_share);
+        btnShare.setOnClickListener(v -> shareResult(compassView));
+    }
+
+    private void shareResult(android.view.View view) {
+        android.graphics.Bitmap bitmap = android.graphics.Bitmap.createBitmap(view.getWidth(), view.getHeight(), android.graphics.Bitmap.Config.ARGB_8888);
+        android.graphics.Canvas canvas = new android.graphics.Canvas(bitmap);
+        view.draw(canvas);
+
+        try {
+            java.io.File cachePath = new java.io.File(getCacheDir(), "images");
+            cachePath.mkdirs(); // don't forget to make the directory
+            java.io.FileOutputStream stream = new java.io.FileOutputStream(cachePath + "/compass_result.png"); // overwrites this image every time
+            bitmap.compress(android.graphics.Bitmap.CompressFormat.PNG, 100, stream);
+            stream.close();
+
+            java.io.File imagePath = new java.io.File(getCacheDir(), "images");
+            java.io.File newFile = new java.io.File(imagePath, "compass_result.png");
+            android.net.Uri contentUri = androidx.core.content.FileProvider.getUriForFile(this, "pt.ubi.pdm.votoinformado.fileprovider", newFile);
+
+            if (contentUri != null) {
+                android.content.Intent shareIntent = new android.content.Intent();
+                shareIntent.setAction(android.content.Intent.ACTION_SEND);
+                shareIntent.addFlags(android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION); // temp permission for receiving app to read this file
+                shareIntent.setDataAndType(contentUri, getContentResolver().getType(contentUri));
+                shareIntent.putExtra(android.content.Intent.EXTRA_STREAM, contentUri);
+                startActivity(android.content.Intent.createChooser(shareIntent, "Partilhar via"));
+            }
+        } catch (java.io.IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

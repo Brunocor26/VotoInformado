@@ -1,0 +1,26 @@
+graph LR
+    User((Eleitor))
+    Admin((Administrador))
+
+    subgraph VotoInformado
+        UC1(Visualizar Candidatos)
+        UC2(Ler Notícias)
+        UC3(Consultar Sondagens)
+        UC4(Realizar Bússola Política)
+        UC5(Criar Petição)
+        UC6(Assinar Petição)
+        UC7(Gerir Conteúdos)
+    end
+
+    User --> UC1
+    User --> UC2
+    User --> UC3
+    User --> UC4
+    User --> UC5
+    User --> UC6
+    
+    Admin --> UC7
+    Admin --> UC5
+
+    style User fill:#fff,stroke:#333,stroke-width:2px
+    style Admin fill:#fff,stroke:#333,stroke-width:2px

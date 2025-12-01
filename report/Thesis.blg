@@ -8,7 +8,6 @@ A level-1 auxiliary file: Chapter4.aux
 A level-1 auxiliary file: Chapter5.aux
 A level-1 auxiliary file: Conclusion.aux
 The style file: template-ubi/IEEEtran.bst
-I found no \citation commands---while reading file Thesis.aux
 Reallocated singl_function (elt_size=4) to 100 items from 50.
 Reallocated singl_function (elt_size=4) to 100 items from 50.
 Reallocated singl_function (elt_size=4) to 100 items from 50.
@@ -20,45 +19,44 @@ Database file #1: bibliography.bib
 -- See the "IEEEtran_bst_HOWTO.pdf" manual for usage information.
 
 Done.
-You've used 0 entries,
+You've used 8 entries,
             4039 wiz_defined-function locations,
-            816 strings with 7314 characters,
-and the built_in function-call counts, 103 in all, are:
-= -- 0
-> -- 0
+            856 strings with 8171 characters,
+and the built_in function-call counts, 2919 in all, are:
+= -- 231
+> -- 32
 < -- 0
-+ -- 0
-- -- 0
-* -- 19
-:= -- 26
-add.period$ -- 0
-call.type$ -- 0
-change.case$ -- 0
++ -- 16
+- -- 8
+* -- 99
+:= -- 548
+add.period$ -- 16
+call.type$ -- 8
+change.case$ -- 8
 chr.to.int$ -- 0
-cite$ -- 0
-duplicate$ -- 0
-empty$ -- 1
-format.name$ -- 0
-if$ -- 3
+cite$ -- 8
+duplicate$ -- 248
+empty$ -- 297
+format.name$ -- 8
+if$ -- 618
 int.to.chr$ -- 0
-int.to.str$ -- 0
-missing$ -- 0
-newline$ -- 23
-num.names$ -- 0
-pop$ -- 0
+int.to.str$ -- 8
+missing$ -- 56
+newline$ -- 47
+num.names$ -- 8
+pop$ -- 152
 preamble$ -- 1
 purify$ -- 0
 quote$ -- 2
-skip$ -- 1
+skip$ -- 240
 stack$ -- 0
-substring$ -- 0
-swap$ -- 0
+substring$ -- 8
+swap$ -- 136
 text.length$ -- 0
 text.prefix$ -- 0
 top$ -- 5
-type$ -- 0
+type$ -- 8
 warning$ -- 0
-while$ -- 0
-width$ -- 0
-write$ -- 22
-(There was 1 error message)
+while$ -- 8
+width$ -- 9
+write$ -- 86

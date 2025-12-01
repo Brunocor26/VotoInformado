@@ -1,0 +1,40 @@
+classDiagram
+    class Candidato {
+        +String id
+        +String name
+        +String party
+        +String photoUrl
+        +List~String~ proposals
+    }
+
+    class Peticao {
+        +String id
+        +String title
+        +String description
+        +String imageUrl
+        +List~String~ signatures
+    }
+
+    class ImportantDate {
+        +String id
+        +String title
+        +Date date
+        +String type
+    }
+
+    class ApiService {
+        <<interface>>
+        +getCandidates()
+        +createPetition()
+        +getDates()
+    }
+
+    class HomeActivity {
+        +onCreate()
+        +setupNavigation()
+    }
+
+    HomeActivity --> ApiService : uses
+    ApiService ..> Candidato : returns
+    ApiService ..> Peticao : returns
+    ApiService ..> ImportantDate : returns

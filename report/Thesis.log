@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.141592653-2.6-0.999995 (TeX Live 2023/Debian) (preloaded format=xelatex 2025.11.28)  29 NOV 2025 23:22
+This is XeTeX, Version 3.141592653-2.6-0.999995 (TeX Live 2023/Debian) (preloaded format=xelatex 2025.11.28)  1 DEC 2025 17:39
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -837,6 +837,23 @@ File: lstlang1.sty 2023/02/27 1.9 listings language file
 (/usr/share/texlive/texmf-dist/tex/latex/listings/lstmisc.sty
 File: lstmisc.sty 2023/02/27 1.9 (Carsten Heinz)
 )
+(/usr/share/texlive/texmf-dist/tex/latex/polyglossia/gloss-portuges.ldf
+File: gloss-portuges.ldf polyglossia: module for Portuguese
+
+(/usr/share/texlive/texmf-dist/tex/latex/polyglossia/gloss-portuguese.ldf
+File: gloss-portuguese.ldf polyglossia: module for Portuguese
+Package polyglossia Info: Option: portuguese, variant=portuguese.
+
+(/usr/share/texlive/texmf-dist/tex/latex/polyglossia/babelsh.def
+File: babelsh.def 2022/06/21 Babel common definitions for shorthands
+ Taken verbatim from babel files (2022/06/06 v3.76)
+)
+Package babel Info: Making " an active character on input line 65.
+\portuguese@hyphen=\XeTeXcharclass2
+))
+Package polyglossia Info: Option: portuguese, variant=portuguese.
+Package polyglossia Info: Default language is portuguese.
+Package polyglossia Info: Option: portuguese, variant=portuguese.
 \@indexfile=\write3
 \openout3 = `Thesis.idx'.
 
@@ -1023,23 +1040,29 @@ File: images/logo_ubi_vprincipal.eps Graphic file (type eps)
 
 ])
 \c@lstlisting=\count346
+Package polyglossia Info: Option: portuguese, variant=portuguese.
+Package polyglossia Info: Option: portuguese, variant=portuguese.
 LaTeX Info: Redefining \rmfamily on input line 57.
 LaTeX Info: Redefining \sffamily on input line 57.
 LaTeX Info: Redefining \ttfamily on input line 57.
+Package polyglossia Info: Option: portuguese, variant=portuguese.
+Package polyglossia Info: Option: portuguese, variant=portuguese.
  [3] [4
 
 ] (./Thesis.toc
+Package polyglossia Info: Option: portuguese, variant=portuguese.
+Package polyglossia Info: Option: portuguese, variant=portuguese.
 LaTeX Info: Redefining \rmfamily on input line 2.
 LaTeX Info: Redefining \sffamily on input line 2.
 LaTeX Info: Redefining \ttfamily on input line 2.
-LaTeX Font Info:    Trying to load font information for U+msa on input line 10.
-
+Package polyglossia Info: Option: portuguese, variant=portuguese.
+Package polyglossia Info: Option: portuguese, variant=portuguese.
+LaTeX Font Info:    Trying to load font information for U+msa on input line 9.
 
 (/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Trying to load font information for U+msb on input line 10.
-
+LaTeX Font Info:    Trying to load font information for U+msb on input line 9.
 
 (/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
@@ -1062,12 +1085,12 @@ LaTeX Info: Redefining \ttfamily on input line 6.
 LaTeX Info: Redefining \rmfamily on input line 8.
 LaTeX Info: Redefining \sffamily on input line 8.
 LaTeX Info: Redefining \ttfamily on input line 8.
-LaTeX Info: Redefining \rmfamily on input line 10.
-LaTeX Info: Redefining \sffamily on input line 10.
-LaTeX Info: Redefining \ttfamily on input line 10.
-LaTeX Info: Redefining \rmfamily on input line 12.
-LaTeX Info: Redefining \sffamily on input line 12.
-LaTeX Info: Redefining \ttfamily on input line 12.
+LaTeX Info: Redefining \rmfamily on input line 9.
+LaTeX Info: Redefining \sffamily on input line 9.
+LaTeX Info: Redefining \ttfamily on input line 9.
+LaTeX Info: Redefining \rmfamily on input line 11.
+LaTeX Info: Redefining \sffamily on input line 11.
+LaTeX Info: Redefining \ttfamily on input line 11.
 LaTeX Info: Redefining \rmfamily on input line 13.
 LaTeX Info: Redefining \sffamily on input line 13.
 LaTeX Info: Redefining \ttfamily on input line 13.
@@ -1077,24 +1100,9 @@ LaTeX Info: Redefining \ttfamily on input line 15.
 LaTeX Info: Redefining \rmfamily on input line 17.
 LaTeX Info: Redefining \sffamily on input line 17.
 LaTeX Info: Redefining \ttfamily on input line 17.
-LaTeX Info: Redefining \rmfamily on input line 19.
-LaTeX Info: Redefining \sffamily on input line 19.
-LaTeX Info: Redefining \ttfamily on input line 19.
 LaTeX Info: Redefining \rmfamily on input line 21.
 LaTeX Info: Redefining \sffamily on input line 21.
 LaTeX Info: Redefining \ttfamily on input line 21.
-LaTeX Info: Redefining \rmfamily on input line 23.
-LaTeX Info: Redefining \sffamily on input line 23.
-LaTeX Info: Redefining \ttfamily on input line 23.
-LaTeX Info: Redefining \rmfamily on input line 26.
-LaTeX Info: Redefining \sffamily on input line 26.
-LaTeX Info: Redefining \ttfamily on input line 26.
-LaTeX Info: Redefining \rmfamily on input line 28.
-LaTeX Info: Redefining \sffamily on input line 28.
-LaTeX Info: Redefining \ttfamily on input line 28.
-LaTeX Info: Redefining \rmfamily on input line 31.
-LaTeX Info: Redefining \sffamily on input line 31.
-LaTeX Info: Redefining \ttfamily on input line 31.
 )
 \tf@lof=\write6
 \openout6 = `Thesis.lof'.
@@ -1107,18 +1115,18 @@ LaTeX Info: Redefining \ttfamily on input line 31.
 LaTeX Info: Redefining \rmfamily on input line 4.
 LaTeX Info: Redefining \sffamily on input line 4.
 LaTeX Info: Redefining \ttfamily on input line 4.
-LaTeX Info: Redefining \rmfamily on input line 5.
-LaTeX Info: Redefining \sffamily on input line 5.
-LaTeX Info: Redefining \ttfamily on input line 5.
-LaTeX Info: Redefining \rmfamily on input line 6.
-LaTeX Info: Redefining \sffamily on input line 6.
-LaTeX Info: Redefining \ttfamily on input line 6.
-LaTeX Info: Redefining \rmfamily on input line 9.
-LaTeX Info: Redefining \sffamily on input line 9.
-LaTeX Info: Redefining \ttfamily on input line 9.
+LaTeX Info: Redefining \rmfamily on input line 7.
+LaTeX Info: Redefining \sffamily on input line 7.
+LaTeX Info: Redefining \ttfamily on input line 7.
+LaTeX Info: Redefining \rmfamily on input line 8.
+LaTeX Info: Redefining \sffamily on input line 8.
+LaTeX Info: Redefining \ttfamily on input line 8.
 LaTeX Info: Redefining \rmfamily on input line 10.
 LaTeX Info: Redefining \sffamily on input line 10.
 LaTeX Info: Redefining \ttfamily on input line 10.
+LaTeX Info: Redefining \rmfamily on input line 11.
+LaTeX Info: Redefining \sffamily on input line 11.
+LaTeX Info: Redefining \ttfamily on input line 11.
 LaTeX Info: Redefining \rmfamily on input line 12.
 LaTeX Info: Redefining \sffamily on input line 12.
 LaTeX Info: Redefining \ttfamily on input line 12.
@@ -1128,24 +1136,9 @@ LaTeX Info: Redefining \ttfamily on input line 13.
 LaTeX Info: Redefining \rmfamily on input line 14.
 LaTeX Info: Redefining \sffamily on input line 14.
 LaTeX Info: Redefining \ttfamily on input line 14.
-LaTeX Info: Redefining \rmfamily on input line 15.
-LaTeX Info: Redefining \sffamily on input line 15.
-LaTeX Info: Redefining \ttfamily on input line 15.
-LaTeX Info: Redefining \rmfamily on input line 16.
-LaTeX Info: Redefining \sffamily on input line 16.
-LaTeX Info: Redefining \ttfamily on input line 16.
 LaTeX Info: Redefining \rmfamily on input line 17.
 LaTeX Info: Redefining \sffamily on input line 17.
 LaTeX Info: Redefining \ttfamily on input line 17.
-LaTeX Info: Redefining \rmfamily on input line 19.
-LaTeX Info: Redefining \sffamily on input line 19.
-LaTeX Info: Redefining \ttfamily on input line 19.
-LaTeX Info: Redefining \rmfamily on input line 20.
-LaTeX Info: Redefining \sffamily on input line 20.
-LaTeX Info: Redefining \ttfamily on input line 20.
-LaTeX Info: Redefining \rmfamily on input line 22.
-LaTeX Info: Redefining \sffamily on input line 22.
-LaTeX Info: Redefining \ttfamily on input line 22.
 )
 \tf@lot=\write7
 \openout7 = `Thesis.lot'.
@@ -1154,29 +1147,22 @@ LaTeX Info: Redefining \ttfamily on input line 22.
 
 ] [12
 
-] (./Thesis.loa)
-\tf@loa=\write8
-\openout8 = `Thesis.loa'.
-
- [13]
-[14
-
 ]
 No file Thesis.nls.
 (./Acronyms.tex)
-Underfull \hbox (badness 10000) in paragraph at lines 4--70
+Underfull \hbox (badness 10000) in paragraph at lines 13--70
 
  []
 
-[15
+[13
 
-] [16
+] [14
 
 ]
 \openout2 = `Introduction.aux'.
 
  (./Introduction.tex
-Chapter 1.
+Capítulo 1.
 ) [1
 
 
@@ -1184,9 +1170,9 @@ Chapter 1.
 \openout2 = `Chapter2.aux'.
 
  (./Chapter2.tex
-Chapter 2.
+Capítulo 2.
 
-Overfull \hbox (1.43279pt too wide) in paragraph at lines 28--29
+Overfull \hbox (1.43279pt too wide) in paragraph at lines 12--13
 []\TU/lmr/bx/n/10.95 Modelos (Classes)\TU/lmr/m/n/10.95 : Representam as entida
 des de dados, como \TU/lmtt/m/n/10.95 Candidato\TU/lmr/m/n/10.95 , \TU/lmtt/m/n
 /10.95 Noticia
@@ -1197,164 +1183,179 @@ des de dados, como \TU/lmtt/m/n/10.95 Candidato\TU/lmr/m/n/10.95 , \TU/lmtt/m/n
 
 
 
-] [4]) [5]
+]) [4]
 \openout2 = `Chapter3.aux'.
 
- (./Chapter3.tex [6
+ (./Chapter3.tex
+Capítulo 3.
+File: images/screenshot_login.png.jpg Graphic file (type bmp)
+<images/screenshot_login.png.jpg>
+[5
 
 
 
 
 ]
-Chapter 3.
-[7]
-Overfull \hbox (5.06638pt too wide) in paragraph at lines 81--81
- []\TU/lmr/m/n/10.95 (images/screenshot_candidatos.png) 
- []
-
+File: images/screenshot_candidatos.jpg Graphic file (type bmp)
+<images/screenshot_candidatos.jpg>
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
- [8]
-Underfull \vbox (badness 10000) has occurred while \output is active []
+ [6]
+File: images/screenshot_noticias.jpg Graphic file (type bmp)
+<images/screenshot_noticias.jpg>
 
- [9]
-Overfull \hbox (0.79587pt too wide) in paragraph at lines 133--133
- []\TU/lmr/m/n/10.95 (images/screenshot_sondagem.png) 
- []
+Underfull \vbox (badness 2486) has occurred while \output is active []
+
+ [7]
+File: images/screenshot_sondagens.jpg Graphic file (type bmp)
+<images/screenshot_sondagens.jpg>
 
 
 LaTeX Warning: `!h' float specifier changed to `!ht'.
 
-[10]
-Underfull \vbox (badness 10000) has occurred while \output is active []
+[8]
+File: images/screenshot_compass.jpg Graphic file (type bmp)
+<images/screenshot_compass.jpg>
 
- [11]
-Overfull \hbox (5.70506pt too wide) in paragraph at lines 166--167
-[]\TU/lmr/bx/n/10.95 Visualização\TU/lmr/m/n/10.95 : O resultado é apresentado 
-num gráfico bidimensional (Eixo Económico
- []
+Underfull \vbox (badness 4120) has occurred while \output is active []
 
+ [9]
+File: images/screeshot_peticoes.jpg Graphic file (type bmp)
+<images/screeshot_peticoes.jpg>
 
-Underfull \vbox (badness 10000) has occurred while \output is active []
+Underfull \vbox (badness 6477) has occurred while \output is active []
 
- [12])
-[13]
+ [10])
+[11]
 \openout2 = `Chapter4.aux'.
 
- (./Chapter4.tex [14
+ (./Chapter4.tex [12
 
 
 
 
 ]
-Chapter 4.
+Capítulo 4.
 (/usr/share/texlive/texmf-dist/tex/latex/listings/lstlang1.sty
 File: lstlang1.sty 2023/02/27 1.9 listings language file
 )
 Package hyperref Info: bookmark level for unknown lstlisting defaults to 0 on i
-nput line 25.
- [15] [16]
-Overfull \hbox (31.57445pt too wide) in paragraph at lines 62--63
+nput line 10.
+ [13]
+Overfull \hbox (31.57445pt too wide) in paragraph at lines 32--33
 \TU/lmr/m/n/10.95 A exibição de listas eficientes foi conseguida através da imp
 lementação de \TU/lmtt/m/n/10.95 RecyclerView.Adapter
  []
 
-
-Overfull \hbox (1.89127pt too wide) in paragraph at lines 68--69
-\TU/lmr/m/n/10.95 A classe \TU/lmtt/m/n/10.95 Question \TU/lmr/m/n/10.95 encaps
-ula o texto da pergunta, o peso e o eixo a que pertence (Económico
- []
-
-[17]
-Overfull \hbox (7.98933pt too wide) in paragraph at lines 98--99
-\TU/lmr/m/n/10.95 converte-a num ficheiro temporário e envia-a para o endpoint 
-\TU/lmtt/m/n/10.95 /api/petitions/upload
- []
-
-
-Overfull \hbox (15.51077pt too wide) in paragraph at lines 102--103
+[14]
+Overfull \hbox (15.51077pt too wide) in paragraph at lines 72--73
 \TU/lmtt/m/n/10.95 DELETE\TU/lmr/m/n/10.95 . O endpoint \TU/lmtt/m/n/10.95 /api
 /petitions/:id \TU/lmr/m/n/10.95 permite remover documentos da coleção \TU/lmtt
 /m/n/10.95 petitions
  []
 
-[18]
-Overfull \hbox (107.7493pt too wide) in paragraph at lines 110--111
-[]\TU/lmr/bx/n/10.95 Solução\TU/lmr/m/n/10.95 : Implementou-se uma lógica de co
-rrespondência robusta nos adaptadores (\TU/lmtt/m/n/10.95 ResultadoSondagemAdap
-ter\TU/lmr/m/n/10.95 ,
+
+Underfull \vbox (badness 1152) has occurred while \output is active []
+
+ [15]
+Overfull \hbox (107.7493pt too wide) in paragraph at lines 80--81
+[]\TU/lmr/bx/n/10.95 Solução\TU/lmr/m/n/10.95 : Implementou-- se uma lógica de 
+correspondência robusta nos adaptadores (\TU/lmtt/m/n/10.95 ResultadoSondagemAd
+apter\TU/lmr/m/n/10.95 ,
  []
 
-) [19]
+[16]
+Overfull \hbox (5.4617pt too wide) in paragraph at lines 106--107
+[]\TU/lmr/bx/n/10.95 Resolução de Nomes\TU/lmr/m/n/10.95 : Tenta-- se extrair o
+ nome real do ficheiro via \TU/lmtt/m/n/10.95 OpenableColumns
+ []
+
+
+Overfull \hbox (56.92368pt too wide) in paragraph at lines 107--108
+\TU/lmr/m/n/10.95 JPEG caso o sistema não consiga determinar o tipo MIME, preve
+nindo \TU/lmtt/m/n/10.95 NullPointerExceptions\TU/lmr/m/n/10.95 . 
+ []
+
+) [17]
 \openout2 = `Chapter5.aux'.
 
- (./Chapter5.tex [20
+ (./Chapter5.tex [18
 
 
 
 
 ]
-Chapter 5.
-
-Overfull \hbox (0.41074pt too wide) in paragraph at lines 37--38
-\TU/lmr/m/n/10.95 O projeto inclui uma estrutura para testes unitários (JUnit) 
-e testes de interface (Espresso),
- []
-
-) [21] [22]
+Capítulo 5.
+) [19] [20]
 \openout2 = `Conclusion.aux'.
 
  (./Conclusion.tex
-Chapter 6.
-) [23
+Capítulo 6.
+) [21
 
 
 
 
-] [24
+] [22
 
 
 
 ] (./Thesis.bbl (./Thesis.brf)
-\tf@brf=\write9
-\openout9 = `Thesis.brf'.
+\tf@brf=\write8
+\openout8 = `Thesis.brf'.
 
-
-
-LaTeX Warning: Empty `thebibliography' environment on input line 24.
-
-) (./Appendix.tex [25] [26
+) (./Appendix.tex [23] [24
 
 ]
-\fontsize {18pt}{11pt}\bfseries \selectfont Appendix A.
-) [27] [28
+\fontsize {18pt}{11pt}\bfseries \selectfont Apêndice A.
+[25]
+Underfull \vbox (badness 10000) has occurred while \output is active []
 
-] (./Glossary.tex)
+ [26]
+[27]
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [28]
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [29]
+[30]
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [31])
+[32] (./Glossary.tex)
 Underfull \hbox (badness 10000) in paragraph at lines 91--91
 
  []
 
-[29] [30
 
-] (./Thesis.ind) (./Thesis.aux (./Introduction.aux) (./Chapter2.aux)
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [33
+
+]
+Overfull \vbox (21.24141pt too high) has occurred while \output is active []
+
+
+[34] (./Thesis.ind) (./Thesis.aux (./Introduction.aux) (./Chapter2.aux)
 (./Chapter3.aux) (./Chapter4.aux) (./Chapter5.aux) (./Conclusion.aux))
  ***********
 LaTeX2e <2023-11-01> patch level 1
 L3 programming layer <2024-01-22>
  ***********
 Package rerunfilecheck Info: File `Thesis.out' has not changed.
-(rerunfilecheck)             Checksum: E9F74861BC60482E72C5F01C4CD58F6E;8502.
+(rerunfilecheck)             Checksum: 064A766D0E30C22DE4C63DA6038DC1AD;9051.
 Package rerunfilecheck Info: File `Thesis.brf' has not changed.
-(rerunfilecheck)             Checksum: D41D8CD98F00B204E9800998ECF8427E;0.
+(rerunfilecheck)             Checksum: C4F3544AE035F5574C3A8249FF101AB3;409.
  ) 
 Here is how much of TeX's memory you used:
- 20747 strings out of 474878
- 394211 string characters out of 5762515
- 1971627 words of memory out of 5000000
- 42377 multiletter control sequences out of 15000+600000
+ 21533 strings out of 474878
+ 410062 string characters out of 5762515
+ 2174627 words of memory out of 5000000
+ 43150 multiletter control sequences out of 15000+600000
  565419 words of font info for 83 fonts, out of 8000000 for 9000
  1348 hyphenation exceptions out of 8191
- 140i,12n,145p,885b,1880s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 140i,12n,145p,662b,1825s stack positions out of 10000i,1000n,20000p,200000b,200000s
 
-Output written on Thesis.pdf (46 pages).
+Output written on Thesis.pdf (48 pages).

@@ -8,14 +8,7 @@ A segurança e personalização são garantidas através de um sistema de autent
 % [TODO: Inserir Screenshot Login]
 \begin{figure}[H]
     \centering
-    % \includegraphics[width=0.4\textwidth]{images/screenshot_login.png}
-    \fbox{\begin{minipage}{0.4\textwidth}
-        \centering
-        \vspace{4cm}
-        \textbf{[PLACEHOLDER: Screenshot Login]} \\
-        (images/screenshot\_login.png)
-        \vspace{4cm}
-    \end{minipage}}
+    \includegraphics[width=0.4\textwidth]{images/screenshot_login.png.jpg}
     \caption{Ecrã de Login da aplicação.}
     \label{fig:login}
 \end{figure}
@@ -50,20 +43,6 @@ A tabela abaixo resume as principais funcionalidades implementadas.
     \label{tab:requisitos}
 \end{table}
 
-% [TODO: Inserir Diagrama de Casos de Uso]
-\begin{figure}[H]
-    \centering
-    % \includegraphics[width=0.8\textwidth]{images/diagrama_casos_uso.png}
-    \fbox{\begin{minipage}{0.8\textwidth}
-        \centering
-        \vspace{3cm}
-        \textbf{[PLACEHOLDER: Diagrama de Casos de Uso]} \\
-        (Atores: Eleitor, Admin; Casos: Ver Candidatos, Votar, Ler Notícias)
-        \vspace{3cm}
-    \end{minipage}}
-    \caption{Diagrama de Casos de Uso do sistema.}
-    \label{fig:use_cases}
-\end{figure}
 
 \section{Consulta de Candidatos} \label{sec:func_candidatos}
 Esta é uma das funcionalidades centrais da aplicação.
@@ -71,14 +50,7 @@ Esta é uma das funcionalidades centrais da aplicação.
 % [TODO: Inserir Screenshot Lista Candidatos]
 \begin{figure}[H]
     \centering
-    % \includegraphics[width=0.4\textwidth]{images/screenshot_candidatos.png}
-    \fbox{\begin{minipage}{0.4\textwidth}
-        \centering
-        \vspace{4cm}
-        \textbf{[PLACEHOLDER: Screenshot Candidatos]} \\
-        (images/screenshot\_candidatos.png)
-        \vspace{4cm}
-    \end{minipage}}
+    \includegraphics[width=0.4\textwidth]{images/screenshot_candidatos.jpg}
     \caption{Lista de candidatos apresentada ao utilizador.}
     \label{fig:candidatos}
 \end{figure}
@@ -99,14 +71,7 @@ Para manter o utilizador atualizado sobre a atualidade política:
 % [TODO: Inserir Screenshot Notícias]
 \begin{figure}[H]
     \centering
-    % \includegraphics[width=0.4\textwidth]{images/screenshot_noticias.png}
-    \fbox{\begin{minipage}{0.4\textwidth}
-        \centering
-        \vspace{4cm}
-        \textbf{[PLACEHOLDER: Screenshot Notícias]} \\
-        (images/screenshot\_noticias.png)
-        \vspace{4cm}
-    \end{minipage}}
+    \includegraphics[width=0.4\textwidth]{images/screenshot_noticias.jpg}
     \caption{Feed de notícias políticas.}
     \label{fig:noticias}
 \end{figure}
@@ -123,14 +88,7 @@ A secção de sondagens permite visualizar as tendências de voto.
 % [TODO: Inserir Screenshot Sondagem]
 \begin{figure}[h!]
     \centering
-    % \includegraphics[width=0.4\textwidth]{images/screenshot_sondagem.png}
-    \fbox{\begin{minipage}{0.4\textwidth}
-        \centering
-        \vspace{4cm}
-        \textbf{[PLACEHOLDER: Screenshot Sondagem]} \\
-        (images/screenshot\_sondagem.png)
-        \vspace{4cm}
-    \end{minipage}}
+    \includegraphics[width=0.4\textwidth]{images/screenshot_sondagens.jpg}
     \caption{Visualização gráfica dos resultados de uma sondagem.}
     \label{fig:sondagem}
 \end{figure}
@@ -141,7 +99,13 @@ A secção de sondagens permite visualizar as tendências de voto.
 \end{itemize}
 
 \section{Datas Importantes} \label{sec:func_datas}
-Um calendário eleitoral que lista eventos cruciais como debates, dias de reflexão e o dia das eleições, garantindo que o eleitor não perde prazos importantes.
+Um calendário eleitoral organizado por categorias que lista eventos cruciais. A interface foi reestruturada para utilizar um sistema de \textbf{abas (Tabs)}, permitindo ao utilizador filtrar facilmente entre:
+\begin{itemize}
+    \item \textbf{Datas}: Prazos oficiais, dias de reflexão e o dia das eleições.
+    \item \textbf{Debates}: Calendário de debates televisivos entre candidatos.
+    \item \textbf{Entrevistas}: Agendamento de entrevistas aos candidatos.
+\end{itemize}
+Esta organização facilita a consulta e garante que o eleitor não perde prazos ou eventos importantes.
 
 \section{Bússola Política} \label{sec:func_compass}
 A Bússola Política é uma ferramenta interativa que permite ao utilizador descobrir o seu posicionamento político através de um questionário.
@@ -149,14 +113,7 @@ A Bússola Política é uma ferramenta interativa que permite ao utilizador desc
 % [TODO: Inserir Screenshot Bússola]
 \begin{figure}[H]
     \centering
-    % \includegraphics[width=0.4\textwidth]{images/screenshot_compass.png}
-    \fbox{\begin{minipage}{0.4\textwidth}
-        \centering
-        \vspace{4cm}
-        \textbf{[PLACEHOLDER: Screenshot Bússola]} \\
-        (images/screenshot\_compass.png)
-        \vspace{4cm}
-    \end{minipage}}
+    \includegraphics[width=0.4\textwidth]{images/screenshot_compass.jpg}
     \caption{Resultado do teste da Bússola Política.}
     \label{fig:compass}
 \end{figure}
@@ -164,6 +121,7 @@ A Bússola Política é uma ferramenta interativa que permite ao utilizador desc
 \begin{itemize}
     \item \textbf{Questionário}: Um conjunto de perguntas sobre temas económicos e sociais, onde o utilizador expressa o seu grau de concordância.
     \item \textbf{Visualização}: O resultado é apresentado num gráfico bidimensional (Eixo Económico vs. Eixo Social), comparando a posição do utilizador com a de vários candidatos e partidos.
+    \item \textbf{Partilhar}: O utilizador pode partilhar o resultado do teste como imagem através de um botão.
 \end{itemize}
 
 \section{Petições Públicas} \label{sec:func_peticoes}
@@ -172,14 +130,7 @@ Para promover a participação cívica ativa, a aplicação inclui um sistema de
 % [TODO: Inserir Screenshot Petições]
 \begin{figure}[H]
     \centering
-    % \includegraphics[width=0.4\textwidth]{images/screenshot_peticoes.png}
-    \fbox{\begin{minipage}{0.4\textwidth}
-        \centering
-        \vspace{4cm}
-        \textbf{[PLACEHOLDER: Screenshot Petições]} \\
-        (images/screenshot\_peticoes.png)
-        \vspace{4cm}
-    \end{minipage}}
+    \includegraphics[width=0.4\textwidth]{images/screeshot_peticoes.jpg}
     \caption{Lista de petições públicas criadas pelos utilizadores.}
     \label{fig:peticoes}
 \end{figure}

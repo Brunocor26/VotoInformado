@@ -3,23 +3,7 @@
 Este capítulo descreve a arquitetura de software adotada para o desenvolvimento da aplicação VotoInformado, bem como as tecnologias e bibliotecas utilizadas.
 
 \section{Arquitetura do Sistema} \label{sec:arq_sistema}
-A aplicação foi desenvolvida para o sistema operativo Android, utilizando a linguagem Java. A estrutura do projeto segue os padrões recomendados pela Google, organizando o código em componentes lógicos para facilitar a manutenção e escalabilidade.
-
-% [TODO: Inserir Diagrama de Arquitetura aqui]
-% Sugestão: Um diagrama mostrando a App Android <-> Firebase (Auth, Firestore, Storage) <-> RSS Feed
-\begin{figure}[H]
-    \centering
-    % \includegraphics[width=0.8\textwidth]{images/arquitetura_sistema.png}
-    \fbox{\begin{minipage}{0.8\textwidth}
-        \centering
-        \vspace{2cm}
-        \textbf{[PLACEHOLDER: Diagrama de Arquitetura]} \\
-        (Colocar imagem: images/arquitetura\_sistema.png)
-        \vspace{2cm}
-    \end{minipage}}
-    \caption{Arquitetura de alto nível do sistema VotoInformado.}
-    \label{fig:arquitetura}
-\end{figure}
+A aplicação foi desenvolvida para o sistema operativo Android \cite{AndroidDev}, utilizando a linguagem Java. A estrutura do projeto segue os padrões recomendados pela Google, organizando o código em componentes lógicos para facilitar a manutenção e escalabilidade.
 
 A arquitetura baseia-se na separação de responsabilidades:
 \begin{itemize}
@@ -29,29 +13,21 @@ A arquitetura baseia-se na separação de responsabilidades:
     \item \textbf{Utils/Helpers}: Classes utilitárias para acesso a dados e operações comuns.
 \end{itemize}
 
-% [TODO: Inserir Diagrama de Classes UML aqui]
-\begin{figure}[H]
-    \centering
-    % \includegraphics[width=0.9\textwidth]{images/diagrama_classes.png}
-    \fbox{\begin{minipage}{0.9\textwidth}
-        \centering
-        \vspace{3cm}
-        \textbf{[PLACEHOLDER: Diagrama de Classes UML]} \\
-        (Mostrar relações entre Activities, Fragments e Modelos)
-        \vspace{3cm}
-    \end{minipage}}
-    \caption{Diagrama de Classes simplificado da aplicação.}
-    \label{fig:uml_classes}
-\end{figure}
-
 \section{Tecnologias Utilizadas} \label{sec:arq_tecnologias}
 
-\subsection{Firebase}
-O backend da aplicação é suportado inteiramente pela plataforma Firebase, tirando partido dos seus serviços \textit{serverless}:
+\subsection{Backend (API Customizada)}
+O backend da aplicação, inicialmente projetado em Firebase, foi migrado para uma solução customizada para responder a requisitos de maior complexidade técnica e controlo. A arquitetura atual utiliza:
 \begin{itemize}
-    \item \textbf{Firebase Authentication}: Gere a autenticação de utilizadores, suportando login por email/password e integração com a conta Google.
-    \item \textbf{Cloud Firestore}: Base de dados NoSQL flexível e escalável, utilizada para armazenar toda a informação da aplicação (candidatos, sondagens, datas).
-    \item \textbf{Firebase Storage}: Utilizado para o armazenamento e distribuição de ficheiros multimédia, como as fotografias dos candidatos.
+    \item \textbf{Node.js \& Express} \cite{NodeJS, ExpressJS}: Servidor de aplicação que expõe uma API RESTful para comunicação com a aplicação móvel.
+    \item \textbf{MongoDB} \cite{MongoDB}: Base de dados NoSQL orientada a documentos, escolhida pela sua flexibilidade e escalabilidade.
+    \item \textbf{Mongoose} \cite{Mongoose}: Biblioteca de modelação de objetos (ODM) para interação estruturada com o MongoDB.
+\end{itemize}
+
+\subsection{Firebase (Legado/Autenticação)}
+Embora a persistência de dados tenha sido migrada, o Firebase continua a desempenhar um papel auxiliar:
+\begin{itemize}
+    \item \textbf{Firebase Authentication}: Mantido para gestão segura de identidades e sessões de utilizador.
+    \item \textbf{Nota de Migração}: A transição do Firebase Firestore para a API customizada foi motivada por uma sugestão pedagógica para aumentar a complexidade do projeto e demonstrar competências de desenvolvimento \textit{full-stack}.
 \end{itemize}
 
 \subsection{Bibliotecas Externas}
@@ -78,8 +54,8 @@ Para enriquecer a funcionalidade da aplicação, foram integradas diversas bibli
 \end{table}
 
 \begin{itemize}
-    \item \textbf{Picasso}: Biblioteca poderosa para o carregamento e cache de imagens em Android. Resolve problemas complexos de gestão de memória e reciclagem de vistas em listas.
-    \item \textbf{MPAndroidChart}: Utilizada para a criação de gráficos interativos e visualmente apelativos na secção de sondagens.
+    \item \textbf{Picasso} \cite{Picasso}: Biblioteca poderosa para o carregamento e cache de imagens em Android. Resolve problemas complexos de gestão de memória e reciclagem de vistas em listas.
+    \item \textbf{MPAndroidChart} \cite{MPAndroidChart}: Utilizada para a criação de gráficos interativos e visualmente apelativos na secção de sondagens.
     \item \textbf{CircleImageView}: Permite a exibição de imagens de perfil com formato circular de forma simples e eficiente.
-    \item \textbf{Retrofit/Gson} (Legado): Inicialmente utilizadas para parsing JSON, foram substituídas pela integração direta com o Firestore, mas fizeram parte do processo de desenvolvimento.
+    \item \textbf{Retrofit/Gson} \cite{Retrofit} (Legado): Inicialmente utilizadas para parsing JSON, foram substituídas pela integração direta com o Firestore, mas fizeram parte do processo de desenvolvimento.
 \end{itemize}

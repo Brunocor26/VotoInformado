@@ -1,7 +1,310 @@
-\chapter{Appendix} \label{chap:appendix}
+\chapter{Anexos} \label{chap:appendix}
 
-Nam placerat ullamcorper ante non venenatis. Phasellus et ipsum at lorem rhoncus euismod. Phasellus in risus elit, sed mollis dolor. Aenean non ligula ut metus porta laoreet. Duis mi quam, sollicitudin non posuere eu, facilisis vestibulum purus. Cras eget odio et diam imperdiet consectetur eu vel libero. Cras in dapibus felis. Praesent sed nunc neque. Donec lobortis venenatis pretium. Praesent quis lorem ipsum, id mattis ante. 
+Esta secção contém excertos de código relevantes que detalham a implementação do sistema VotoInformado.
 
-\section{Datasheets dos componentes utilizados}
+\section{Código Fonte Relevante}
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent at magna viverra neque bibendum pellentesque. Morbi ullamcorper auctor turpis vitae mollis. Fusce elementum mauris eu magna tristique vel aliquet erat iaculis. Donec sed augue mi. Aenean commodo lorem ac nulla iaculis rhoncus. Mauris facilisis, ante in molestie bibendum, lorem augue vehicula metus, ac auctor turpis quam nec purus. Nam malesuada accumsan neque, quis vulputate nibh dapibus vitae. Vestibulum eu arcu ut est posuere malesuada. Donec aliquet, mauris vel viverra bibendum, risus sem fringilla orci, placerat laoreet felis velit ac justo. Mauris sit amet sollicitudin magna. Sed commodo enim sed nibh consectetur cursus. Duis turpis lacus, semper non facilisis eu, semper eu lacus. Donec vel urna urna, eget gravida magna.
+\subsection*{Cliente da API - ApiClient.java}
+\begin{lstlisting}[language=Java, caption=Cliente da API para comunicação com o servidor.]
+package pt.ubi.pdm.votoinformado.api;
+
+import android.util.Log;
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.concurrent.CountDownLatch;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+
+public class ApiClient {
+    private static final String RENDER_URL = "https://api-votoinformado.onrender.com/";
+    private static final String LOCAL_URL = "http://10.0.2.2:3000/"; // Localhost for Android Emulator
+    private static final String LOCAL_IP_URL = "http://10.250.134.7:3000/"; // Local IP for Physical Device
+
+    private static volatile ApiClient instance;
+    private static final Object lock = new Object();
+    private final Retrofit retrofit;
+    private static String baseUrl;
+
+    private ApiClient(Retrofit retrofit) {
+        this.retrofit = retrofit;
+    }
+
+    private static boolean isUrlAvailable(String urlString) {
+        try {
+            URL url = new URL(urlString);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("HEAD");
+            connection.setConnectTimeout(15000); // 15 seconds timeout for Render cold start
+            connection.setReadTimeout(15000);
+            connection.connect();
+            int responseCode = connection.getResponseCode();
+            return (responseCode >= 200 && responseCode < 300);
+        } catch (IOException e) {
+            return false;
+        }
+    }
+
+    public static ApiClient getInstance() {
+        if (instance == null) {
+            synchronized (lock) {
+                if (instance == null) {
+                    CountDownLatch latch = new CountDownLatch(1);
+                    new Thread(() -> {
+                        if (isUrlAvailable(RENDER_URL)) {
+                            baseUrl = RENDER_URL;
+                        } else if (isUrlAvailable(LOCAL_IP_URL)) {
+                            baseUrl = LOCAL_IP_URL;
+                        } else {
+                            baseUrl = LOCAL_URL;
+                        }
+                        Log.d("ApiClient", "Using base URL: " + baseUrl);
+
+                        Retrofit retrofit = new Retrofit.Builder()
+                                .baseUrl(baseUrl)
+                                .addConverterFactory(GsonConverterFactory.create())
+                                .build();
+                        
+                        instance = new ApiClient(retrofit);
+                        latch.countDown();
+                    }).start();
+
+                    try {
+                        latch.await(); // Block until initialization is complete
+                    } catch (InterruptedException e) {
+                        Thread.currentThread().interrupt();
+                        // Handle error, maybe fallback to a default
+                        if (instance == null) {
+                           Log.e("ApiClient", "Initialization interrupted, falling back to local URL");
+                           baseUrl = LOCAL_URL;
+                           Retrofit retrofit = new Retrofit.Builder()
+                                   .baseUrl(baseUrl)
+                                   .addConverterFactory(GsonConverterFactory.create())
+                                   .build();
+                           instance = new ApiClient(retrofit);
+                        }
+                    }
+                }
+            }
+        }
+        return instance;
+    }
+
+    public ApiService getApiService() {
+        return retrofit.create(ApiService.class);
+    }
+
+    public static String getBaseUrl() {
+        if (instance == null) {
+            getInstance(); // ensure initialization
+        }
+        return baseUrl;
+    }
+}
+\end{lstlisting}
+
+\subsection*{Atividade Principal - HomeActivity.java}
+\begin{lstlisting}[language=Java, caption=Atividade principal que gere a navegação e o fragmento inicial.]
+package pt.ubi.pdm.votoinformado.activities;
+
+import android.Manifest;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.os.Build;
+import android.os.Bundle;
+import android.view.MenuItem;
+
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
+import androidx.work.ExistingPeriodicWorkPolicy;
+import androidx.work.PeriodicWorkRequest;
+import androidx.work.WorkManager;
+
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+
+import java.util.concurrent.TimeUnit;
+
+import pt.ubi.pdm.votoinformado.R;
+import pt.ubi.pdm.votoinformado.activities.notificacoes.SyncDatesWorker;
+import pt.ubi.pdm.votoinformado.fragments.CandidatosFragment;
+import pt.ubi.pdm.votoinformado.fragments.ChooseEventTypeFragment;
+import pt.ubi.pdm.votoinformado.fragments.HomeFragment;
+import pt.ubi.pdm.votoinformado.fragments.NoticiasFragment;
+import pt.ubi.pdm.votoinformado.fragments.PeticoesFragment;
+import pt.ubi.pdm.votoinformado.fragments.SondagensFragment;
+
+public class HomeActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener {
+
+    // Launcher para pedir a permissão de notificação
+    private final ActivityResultLauncher<String> requestPermissionLauncher = registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
+    });
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        // Check if user is logged in via shared preferences
+        android.content.SharedPreferences prefs = getSharedPreferences("user_session", MODE_PRIVATE);
+        String token = prefs.getString("auth_token", null);
+
+        if (token == null || token.isEmpty()) {
+            startActivity(new Intent(this, LoginActivity.class));
+            finish();
+            return;
+        }
+
+        setContentView(R.layout.activity_home);
+
+        BottomNavigationView bottomNav = findViewById(R.id.bottom_navigation);
+        bottomNav.setOnNavigationItemSelectedListener(this);
+
+        // Load the default fragment
+        if (savedInstanceState == null) {
+            loadFragment(new HomeFragment());
+        }
+
+        // Pede permissão de notificações (para Android 13+)
+        askNotificationPermission();
+        
+        //funcao que vai tratar das notificacoes mesmo sem a necessidade de ter a aplicacao aberta
+        scheduleDateSync();
+    }
+
+    private void askNotificationPermission() {
+        // Apenas necessário para API 33+ (Android 13)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+                // Pede diretamente a permissão
+                requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS);
+            }
+        }
+    }
+
+    private void scheduleDateSync() {
+        //criamos um pedido de trabalho periódico
+        PeriodicWorkRequest syncDatesRequest =
+                new PeriodicWorkRequest.Builder(SyncDatesWorker.class, 24, TimeUnit.HOURS)
+                        .build();               //executar a logica do SyncDatesWorker.class a cada 24h
+
+        //entregamos o pedido de trabalho ao WorkManager
+        WorkManager.getInstance(this).enqueueUniquePeriodicWork(
+                "syncDatesWork",
+                ExistingPeriodicWorkPolicy.KEEP,
+                syncDatesRequest);
+    }
+
+    private boolean loadFragment(Fragment fragment) {
+        if (fragment != null) {
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_container, fragment)
+                    .commit();
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        Fragment fragment = null;
+
+        int itemId = item.getItemId();
+        if (itemId == R.id.nav_home) {
+            fragment = new HomeFragment();
+        } else if (itemId == R.id.nav_candidatos) {
+            fragment = new CandidatosFragment();
+        } else if (itemId == R.id.nav_eventos) {
+            fragment = new pt.ubi.pdm.votoinformado.fragments.ImportantDatesHostFragment();
+        } else if (itemId == R.id.nav_sondagens) {
+            fragment = new SondagensFragment();
+        } else if (itemId == R.id.nav_noticias) {
+            fragment = new NoticiasFragment();
+        } else if (itemId == R.id.nav_peticoes) {
+            fragment = new PeticoesFragment();
+        }
+
+        return loadFragment(fragment);
+    }
+}
+\end{lstlisting}
+
+\subsection*{Modelo de Dados - Candidato.java}
+\begin{lstlisting}[language=Java, caption=Classe que representa o modelo de dados de um Candidato.]
+package pt.ubi.pdm.votoinformado.classes;
+
+import android.annotation.SuppressLint;
+import android.content.Context;
+import android.util.Log;
+
+    // @Exclude removed
+
+import java.io.Serializable;
+
+import pt.ubi.pdm.votoinformado.R;
+
+import com.google.gson.annotations.SerializedName;
+
+public class Candidato implements Serializable {
+
+    @SerializedName("_id")
+    private String id;
+
+    @SerializedName("id")
+    private String stringId;
+
+    private String nome;
+    private String partido;
+    // private String fotoNome;
+    private String profissao;
+    private String cargosPrincipais;
+    private String biografiaCurta;
+    private String siteOficial;
+
+    public Candidato() {
+        // Construtor vazio necessário para o Firestore
+    }
+
+    // Getters and Setters with PropertyName annotations
+
+    public String getId() { return id; }
+    public void setId(String id) { this.id = id; }
+
+    public String getStringId() { return stringId; }
+    public void setStringId(String stringId) { this.stringId = stringId; }
+
+    public String getNome() { return nome; }
+    public void setNome(String nome) { this.nome = nome; }
+
+    public String getPartido() { return partido; }
+    public void setPartido(String partido) { this.partido = partido; }
+
+    // fotoNome removed
+
+
+    public String getProfissao() { return profissao; }
+    public void setProfissao(String profissao) { this.profissao = profissao; }
+
+    public String getCargosPrincipais() { return cargosPrincipais; }
+    public void setCargosPrincipais(String cargosPrincipais) { this.cargosPrincipais = cargosPrincipais; }
+
+    public String getBiografiaCurta() { return biografiaCurta; }
+    public void setBiografiaCurta(String biografiaCurta) { this.biografiaCurta = biografiaCurta; }
+
+    public String getSiteOficial() { return siteOficial; }
+    public void setSiteOficial(String siteOficial) { this.siteOficial = siteOficial; }
+
+    @SerializedName("photoUrl")
+    private String photoUrl;
+
+    public String getPhotoUrl() {
+        return photoUrl;
+    }
+
+    public void setPhotoUrl(String photoUrl) {
+        this.photoUrl = photoUrl;
+    }
+}
+\end{lstlisting}

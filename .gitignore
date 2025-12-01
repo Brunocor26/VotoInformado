@@ -14,4 +14,18 @@
 .cxx
 local.properties
 API_VotoInformado_PDM
-report
+
+# LaTeX generated files
+report/*.aux
+report/*.log
+report/*.bbl
+report/*.blg
+report/*.lof
+report/*.lot
+report/*.out
+report/*.toc
+report/*.fls
+report/*.fdb_latexmk
+report/*.synctex.gz
+report/*.pdf
+report/images/

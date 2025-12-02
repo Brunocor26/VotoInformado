@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <EditText
+            android:id="@+id/etNome"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Nome" />
+
+        <EditText
+            android:id="@+id/etPartido"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Partido" />
+
+        <EditText
+            android:id="@+id/etBio"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Biografia Curta" />
+
+        <EditText
+            android:id="@+id/etProfissao"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Profissão" />
+
+        <EditText
+            android:id="@+id/etCargos"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Cargos Principais" />
+
+        <EditText
+            android:id="@+id/etSite"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Site Oficial" />
+
+        <Button
+            android:id="@+id/btnSelectPhoto"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Selecionar Foto" />
+
+        <ImageView
+            android:id="@+id/ivPhoto"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:layout_marginTop="8dp"
+            android:scaleType="centerCrop"
+            android:background="#EEE" />
+
+        <Button
+            android:id="@+id/btnSubmit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="Criar Candidato" />
+
+    </LinearLayout>
+</ScrollView>

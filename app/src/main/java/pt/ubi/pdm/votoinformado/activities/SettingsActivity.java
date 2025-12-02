@@ -15,7 +15,6 @@ public class SettingsActivity extends AppCompatActivity {
     private SwitchMaterial darkModeSwitch;
     private SwitchMaterial notificationsSwitch;
     private LinearLayout profileSection;
-    private LinearLayout devOptionsButton;
     private LinearLayout logoutButton;
 
     @Override
@@ -33,7 +32,6 @@ public class SettingsActivity extends AppCompatActivity {
         darkModeSwitch = findViewById(R.id.darkModeSwitch);
         notificationsSwitch = findViewById(R.id.notifications_switch);
         profileSection = findViewById(R.id.profile_section);
-        devOptionsButton = findViewById(R.id.dev_options_button);
         logoutButton = findViewById(R.id.logout_button);
         
         setDarkModeSwitch();
@@ -61,10 +59,6 @@ public class SettingsActivity extends AppCompatActivity {
         notificationsSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
             String status = isChecked ? "ativadas" : "desativadas";
             Toast.makeText(this, "Notificações " + status, Toast.LENGTH_SHORT).show();
-        });
-
-        devOptionsButton.setOnClickListener(v -> {
-            startActivity(new Intent(this, DevActivity.class));
         });
 
         logoutButton.setOnClickListener(v -> {

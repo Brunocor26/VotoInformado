@@ -14,8 +14,8 @@ A segurança e personalização são garantidas através de um sistema de autent
 \end{figure}
 
 \begin{itemize}
-    \item \textbf{Login e Registo}: Os utilizadores podem criar conta com email e password ou utilizar a sua conta Google para um acesso mais rápido.
-    \item \textbf{Gestão de Sessão}: A aplicação mantém a sessão do utilizador ativa, permitindo acesso direto sem necessidade de login constante.
+    \item \textbf{Login e Registo}: Os utilizadores podem criar conta com email e password.
+    \item \textbf{Gestão de Sessão}: A aplicação mantém a sessão do utilizador ativa, o que permite acesso direto sem necessidade de login constante.
 \end{itemize}
 
 \section{Requisitos Funcionais} \label{sec:func_requisitos}
@@ -29,7 +29,7 @@ A tabela abaixo resume as principais funcionalidades implementadas.
         \hline
         \textbf{ID} & \textbf{Funcionalidade} & \textbf{Descrição} \\
         \hline
-        RF01 & Autenticação & Permitir login e registo via Email/Password e Google. \\
+        RF01 & Autenticação & Permitir login e registo via Email/Password. \\
         \hline
         RF02 & Listar Candidatos & Visualizar lista de candidatos com foto e partido. \\
         \hline
@@ -99,7 +99,7 @@ A secção de sondagens permite visualizar as tendências de voto.
 \end{itemize}
 
 \section{Datas Importantes} \label{sec:func_datas}
-Um calendário eleitoral organizado por categorias que lista eventos cruciais. A interface foi reestruturada para utilizar um sistema de \textbf{abas (Tabs)}, permitindo ao utilizador filtrar facilmente entre:
+Um calendário eleitoral organizado por categorias que lista eventos cruciais. A interface foi reestruturada para utilizar um sistema de \textbf{abas (Tabs)}, o que permite ao utilizador filtrar facilmente entre:
 \begin{itemize}
     \item \textbf{Datas}: Prazos oficiais, dias de reflexão e o dia das eleições.
     \item \textbf{Debates}: Calendário de debates televisivos entre candidatos.
@@ -107,8 +107,25 @@ Um calendário eleitoral organizado por categorias que lista eventos cruciais. A
 \end{itemize}
 Esta organização facilita a consulta e garante que o eleitor não perde prazos ou eventos importantes.
 
+\section{Notificações de Debates} \label{sec:func_notificacoes}
+Para assegurar que os eleitores acompanham os debates televisivos, a aplicação dispõe de um sistema de notificações.
+
+% [TODO: Inserir Screenshot Notificação]
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.4\textwidth]{images/screenshot_notificacao.png}
+    \caption{Exemplo de notificação recebida antes e aquando de um debate.}
+    \label{fig:notificacao_debate}
+\end{figure}
+
+\begin{itemize}
+    \item \textbf{Alerta Antecipado}: O utilizador é notificado com antecedência sobre o início da transmissão.
+    \item \textbf{Alerta ao Iniciar}: O utilizador é notificado imediatamente quando a transmissão começa.
+    \item \textbf{Conteúdo}: A notificação indica os candidatos intervenientes e o canal televisivo.
+\end{itemize}
+
 \section{Bússola Política} \label{sec:func_compass}
-A Bússola Política é uma ferramenta interativa que permite ao utilizador descobrir o seu posicionamento político através de um questionário.
+A Bússola Política é uma ferramenta interativa que permite ao utilizador descobrir o seu posicionamento político através de um questionário. Esta funcionalidade foi inspirada no conhecido website \textit{The Political Compass} \cite{PoliticalCompass}, adaptando o conceito para o contexto da aplicação.
 
 % [TODO: Inserir Screenshot Bússola]
 \begin{figure}[H]
@@ -120,7 +137,7 @@ A Bússola Política é uma ferramenta interativa que permite ao utilizador desc
 
 \begin{itemize}
     \item \textbf{Questionário}: Um conjunto de perguntas sobre temas económicos e sociais, onde o utilizador expressa o seu grau de concordância.
-    \item \textbf{Visualização}: O resultado é apresentado num gráfico bidimensional (Eixo Económico vs. Eixo Social), comparando a posição do utilizador com a de vários candidatos e partidos.
+    \item \textbf{Visualização}: O resultado é apresentado num gráfico bidimensional (Eixo Económico vs. Eixo Social), e compara a posição do utilizador com a de vários candidatos e partidos.
     \item \textbf{Partilhar}: O utilizador pode partilhar o resultado do teste como imagem através de um botão.
 \end{itemize}
 
@@ -130,13 +147,31 @@ Para promover a participação cívica ativa, a aplicação inclui um sistema de
 % [TODO: Inserir Screenshot Petições]
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.4\textwidth]{images/screeshot_peticoes.jpg}
+    \includegraphics[width=0.4\textwidth]{images/screenshot_peticoes.jpg}
     \caption{Lista de petições públicas criadas pelos utilizadores.}
     \label{fig:peticoes}
 \end{figure}
 
 \begin{itemize}
-    \item \textbf{Criação}: Qualquer utilizador autenticado pode criar uma nova petição, definindo um título, uma descrição e adicionando uma \textbf{imagem ilustrativa}.
-    \item \textbf{Assinatura}: Os utilizadores podem apoiar causas assinando petições existentes.
-    \item \textbf{Ordenação}: A lista de petições pode ser ordenada por popularidade (mais votadas) ou por data (mais recentes), facilitando a descoberta de causas relevantes.
+    \item \textbf{Criação}: Qualquer utilizador autenticado pode criar uma nova petição, na qual define um título, uma descrição e adiciona uma \textbf{imagem ilustrativa}.
+    \item \textbf{Assinatura}: Os utilizadores podem apoiar causas ao assinar petições existentes.
+    \item \textbf{Ordenação}: A lista de petições pode ser ordenada por popularidade (mais votadas) ou por data (mais recentes), o que facilita a descoberta de causas relevantes.
+\end{itemize}
+
+\section{Opções de Desenvolvedor (Administração)} \label{sec:func_dev_options}
+Para facilitar a gestão de conteúdos e testes durante o desenvolvimento, foi implementada uma interface de administração acessível diretamente na aplicação.
+
+% [TODO: Inserir Screenshot Dev Options]
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.4\textwidth]{images/screenshot_dev_options.jpg}
+    \caption{Interface de Opções de Desenvolvedor.}
+    \label{fig:dev_options}
+\end{figure}
+
+Esta funcionalidade é acedida através de um botão flutuante (FAB) no ecrã principal e permite:
+\begin{itemize}
+    \item \textbf{Adicionar Candidato}: Criação de novos perfis de candidatos, incluindo o upload de fotografia, biografia e dados partidários.
+    \item \textbf{Adicionar Evento}: Agendamento de eventos (debates, arruadas) com suporte para geolocalização (latitude/longitude).
+    \item \textbf{Criar Sondagem}: Lançamento de novas sondagens. Esta interface permite selecionar os candidatos participantes e \textbf{inserir manualmente} as percentagens de voto para cada um, permitindo simular diferentes cenários eleitorais para testes.
 \end{itemize}

@@ -64,7 +64,12 @@ public class HomeActivity extends AppCompatActivity implements BottomNavigationV
         askNotificationPermission();
         
         //funcao que vai tratar das notificacoes mesmo sem a necessidade de ter a aplicacao aberta
+        //funcao que vai tratar das notificacoes mesmo sem a necessidade de ter a aplicacao aberta
         scheduleDateSync();
+
+        findViewById(R.id.fabDev).setOnClickListener(v -> {
+            startActivity(new Intent(this, DevOptionsActivity.class));
+        });
     }
 
     private void askNotificationPermission() {

@@ -86,6 +86,13 @@ public class ApiClient {
         return retrofit.create(ApiService.class);
     }
 
+    public static Retrofit getClient() {
+        if (instance == null) {
+            getInstance();
+        }
+        return instance.retrofit;
+    }
+
     public static String getBaseUrl() {
         if (instance == null) {
             getInstance(); // ensure initialization

@@ -3,7 +3,7 @@
 Este capítulo descreve a arquitetura de software adotada para o desenvolvimento da aplicação VotoInformado, bem como as tecnologias e bibliotecas utilizadas.
 
 \section{Arquitetura do Sistema} \label{sec:arq_sistema}
-A aplicação foi desenvolvida para o sistema operativo Android \cite{AndroidDev}, utilizando a linguagem Java. A estrutura do projeto segue os padrões recomendados pela Google, organizando o código em componentes lógicos para facilitar a manutenção e escalabilidade.
+A aplicação foi desenvolvida para o sistema operativo Android \cite{AndroidDev} e utiliza a linguagem Java. A estrutura do projeto segue os padrões recomendados pela Google e organiza o código em componentes lógicos para facilitar a manutenção e escalabilidade.
 
 A arquitetura baseia-se na separação de responsabilidades:
 \begin{itemize}
@@ -16,7 +16,7 @@ A arquitetura baseia-se na separação de responsabilidades:
 \section{Tecnologias Utilizadas} \label{sec:arq_tecnologias}
 
 \subsection{Backend (API Customizada)}
-O backend da aplicação, inicialmente projetado em Firebase, foi migrado para uma solução customizada para responder a requisitos de maior complexidade técnica e controlo. A arquitetura atual utiliza:
+O backend da aplicação, inicialmente projetado em Firebase, foi migrado para uma solução personalizada para responder a requisitos de maior complexidade técnica e controlo. A arquitetura atual utiliza:
 \begin{itemize}
     \item \textbf{Node.js \& Express} \cite{NodeJS, ExpressJS}: Servidor de aplicação que expõe uma API RESTful para comunicação com a aplicação móvel.
     \item \textbf{MongoDB} \cite{MongoDB}: Base de dados NoSQL orientada a documentos, escolhida pela sua flexibilidade e escalabilidade.
@@ -27,7 +27,7 @@ O backend da aplicação, inicialmente projetado em Firebase, foi migrado para u
 Embora a persistência de dados tenha sido migrada, o Firebase continua a desempenhar um papel auxiliar:
 \begin{itemize}
     \item \textbf{Firebase Authentication}: Mantido para gestão segura de identidades e sessões de utilizador.
-    \item \textbf{Nota de Migração}: A transição do Firebase Firestore para a API customizada foi motivada por uma sugestão pedagógica para aumentar a complexidade do projeto e demonstrar competências de desenvolvimento \textit{full-stack}.
+    \item \textbf{Nota de Migração}: A transição do Firebase Firestore para a API personalizada foi motivada por uma sugestão pedagógica para aumentar a complexidade do projeto e demonstrar competências de desenvolvimento \textit{full-stack}.
 \end{itemize}
 
 \subsection{Bibliotecas Externas}
@@ -41,13 +41,13 @@ Para enriquecer a funcionalidade da aplicação, foram integradas diversas bibli
         \hline
         \textbf{Biblioteca} & \textbf{Propósito} \\
         \hline
-        Picasso & Carregamento e cache de imagens assíncrono. \\
+        Picasso & Carregamento e colocação em cache de imagens assíncronos. \\
         \hline
         MPAndroidChart & Criação de gráficos para visualização de sondagens. \\
         \hline
         CircleImageView & Exibição de imagens de perfil circulares. \\
         \hline
-        Retrofit/Gson & (Legado) Parsing de dados JSON. \\
+        Retrofit/Gson & (Legado) Análise sintática de dados JSON. \\
         \hline
     \end{tabular}
     \label{tab:bibliotecas}
@@ -57,5 +57,5 @@ Para enriquecer a funcionalidade da aplicação, foram integradas diversas bibli
     \item \textbf{Picasso} \cite{Picasso}: Biblioteca poderosa para o carregamento e cache de imagens em Android. Resolve problemas complexos de gestão de memória e reciclagem de vistas em listas.
     \item \textbf{MPAndroidChart} \cite{MPAndroidChart}: Utilizada para a criação de gráficos interativos e visualmente apelativos na secção de sondagens.
     \item \textbf{CircleImageView}: Permite a exibição de imagens de perfil com formato circular de forma simples e eficiente.
-    \item \textbf{Retrofit/Gson} \cite{Retrofit} (Legado): Inicialmente utilizadas para parsing JSON, foram substituídas pela integração direta com o Firestore, mas fizeram parte do processo de desenvolvimento.
+    \item \textbf{Retrofit/Gson} \cite{Retrofit} (Legado): Inicialmente utilizadas para análise sintática de JSON, foram substituídas pela integração direta com o Firestore, mas fizeram parte do processo de desenvolvimento.
 \end{itemize}

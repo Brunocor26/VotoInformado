@@ -31,7 +31,7 @@ import retrofit2.Response;
 
 public class AddDateFragment extends Fragment {
 
-    private EditText etTitle, etDate, etTime, etLat, etLong, etAddress;
+    private EditText etTitle, etDate, etTime, etLat, etLong;
     private Spinner spType;
     private CheckBox cbLocation;
     private ApiService apiService;
@@ -39,6 +39,16 @@ public class AddDateFragment extends Fragment {
     private Spinner spCandidate1, spCandidate2, spSingleCandidate;
     private android.widget.LinearLayout llCandidatesSelector, llSingleCandidateSelector;
     private java.util.List<pt.ubi.pdm.votoinformado.classes.Candidato> candidateList = new java.util.ArrayList<>();
+
+    private final androidx.activity.result.ActivityResultLauncher<android.content.Intent> mapPickerLauncher =
+            registerForActivityResult(new androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult(), result -> {
+                if (result.getResultCode() == android.app.Activity.RESULT_OK && result.getData() != null) {
+                    double lat = result.getData().getDoubleExtra("latitude", 0);
+                    double lng = result.getData().getDoubleExtra("longitude", 0);
+                    etLat.setText(String.valueOf(lat));
+                    etLong.setText(String.valueOf(lng));
+                }
+            });
 
     @Nullable
     @Override
@@ -52,8 +62,9 @@ public class AddDateFragment extends Fragment {
         cbLocation = view.findViewById(R.id.cbLocation);
         etLat = view.findViewById(R.id.etLat);
         etLong = view.findViewById(R.id.etLong);
-        etAddress = view.findViewById(R.id.etAddress);
+
         Button btnSubmit = view.findViewById(R.id.btnSubmitDate);
+        Button btnPickLocation = view.findViewById(R.id.btnPickLocation);
         
         spCandidate1 = view.findViewById(R.id.spCandidate1);
         spCandidate2 = view.findViewById(R.id.spCandidate2);
@@ -97,7 +108,12 @@ public class AddDateFragment extends Fragment {
             int visibility = isChecked ? View.VISIBLE : View.GONE;
             etLat.setVisibility(visibility);
             etLong.setVisibility(visibility);
-            etAddress.setVisibility(visibility);
+            btnPickLocation.setVisibility(visibility);
+        });
+
+        btnPickLocation.setOnClickListener(v -> {
+            android.content.Intent intent = new android.content.Intent(getActivity(), pt.ubi.pdm.votoinformado.activities.MapPickerActivity.class);
+            mapPickerLauncher.launch(intent);
         });
 
         btnSubmit.setOnClickListener(v -> submitDate());
@@ -200,12 +216,10 @@ public class AddDateFragment extends Fragment {
             try {
                 double lat = Double.parseDouble(etLat.getText().toString());
                 double lng = Double.parseDouble(etLong.getText().toString());
-                String address = etAddress.getText().toString();
                 
                 ImportantDate.Location loc = new ImportantDate.Location();
                 loc.setLatitude(lat);
                 loc.setLongitude(lng);
-                loc.setAddress(address);
                 event.setLocation(loc);
             } catch (NumberFormatException e) {
                 Toast.makeText(getContext(), "Lat/Long inválidos", Toast.LENGTH_SHORT).show();
@@ -213,7 +227,32 @@ public class AddDateFragment extends Fragment {
             }
         }
 
-        apiService.createDate(event).enqueue(new Callback<ImportantDate>() {
+        // Get token
+        android.content.SharedPreferences prefs = null;
+        try {
+            String masterKeyAlias = androidx.security.crypto.MasterKeys.getOrCreate(androidx.security.crypto.MasterKeys.AES256_GCM_SPEC);
+            prefs = androidx.security.crypto.EncryptedSharedPreferences.create(
+                    "user_session_secure",
+                    masterKeyAlias,
+                    getContext(),
+                    androidx.security.crypto.EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
+                    androidx.security.crypto.EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
+            );
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        String token = null;
+        if (prefs != null) {
+            token = prefs.getString("auth_token", null);
+        }
+
+        if (token == null) {
+            Toast.makeText(getContext(), "Erro de autenticação", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        apiService.createDate("Bearer " + token, event).enqueue(new Callback<ImportantDate>() {
             @Override
             public void onResponse(Call<ImportantDate> call, Response<ImportantDate> response) {
                 if (response.isSuccessful()) {
@@ -237,7 +276,6 @@ public class AddDateFragment extends Fragment {
         etTime.setText("");
         etLat.setText("");
         etLong.setText("");
-        etAddress.setText("");
         cbLocation.setChecked(false);
         spCandidate1.setSelection(0);
         spCandidate2.setSelection(0);

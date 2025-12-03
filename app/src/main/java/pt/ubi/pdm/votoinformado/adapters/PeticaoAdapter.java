@@ -44,7 +44,7 @@ public class PeticaoAdapter extends RecyclerView.Adapter<PeticaoAdapter.ViewHold
             holder.imageView.setVisibility(View.VISIBLE);
             
             // Handle relative paths
-            if (!imageUrl.startsWith("https")) {
+            if (!imageUrl.startsWith("http")) {
                 String baseUrl = pt.ubi.pdm.votoinformado.api.ApiClient.getBaseUrl();
                 // Remove leading slash if present to avoid double slashes
                 if (imageUrl.startsWith("/")) {

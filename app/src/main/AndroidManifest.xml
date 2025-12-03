@@ -73,6 +73,11 @@
             android:name=".activities.DebateVoteActivity"
             android:parentActivityName=".activities.PoliticalCompassActivity" />
 
+        <activity
+            android:name=".activities.MapPickerActivity"
+            android:label="Selecionar Localização"
+            android:parentActivityName=".activities.DevOptionsActivity" />
+
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="pt.ubi.pdm.votoinformado.fileprovider"
@@ -83,11 +88,11 @@
                 android:resource="@xml/provider_paths" />
         </provider>
 
-    </application>
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyDAbRq4nqA3jMombGxRjjTalGOREMbUAxw"/>
 
-    <meta-data
-        android:name="com.google.android.geo.API_KEY"
-        android:value="AIzaSyDAbRq4nqA3jMombGxRjjTalGOREMbUAxw"/>
+    </application>
 
     <uses-permission android:name="android.permission.INTERNET" />
 

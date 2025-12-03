@@ -68,15 +68,42 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
 
         // Exemplo: centrar em Lisboa
         LatLng lisboa = new LatLng(38.736946, -9.142685);
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(lisboa, 12));
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(lisboa, 6)); // Zoom out to see more of Portugal
+
+        loadMapMarkers();
+    }
+
+    private void loadMapMarkers() {
+        ApiClient.getInstance().getApiService().getDates().enqueue(new retrofit2.Callback<List<pt.ubi.pdm.votoinformado.classes.ImportantDate>>() {
+            @Override
+            public void onResponse(retrofit2.Call<List<pt.ubi.pdm.votoinformado.classes.ImportantDate>> call, retrofit2.Response<List<pt.ubi.pdm.votoinformado.classes.ImportantDate>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    for (pt.ubi.pdm.votoinformado.classes.ImportantDate date : response.body()) {
+                        pt.ubi.pdm.votoinformado.classes.ImportantDate.Location loc = date.getLocation();
+                        if (loc != null && (loc.getLatitude() != 0 || loc.getLongitude() != 0)) {
+                            LatLng position = new LatLng(loc.getLatitude(), loc.getLongitude());
+                            mMap.addMarker(new com.google.android.gms.maps.model.MarkerOptions()
+                                    .position(position)
+                                    .title(date.getTitle())
+                                    .snippet(date.getDate() + " " + date.getTime()));
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(retrofit2.Call<List<pt.ubi.pdm.votoinformado.classes.ImportantDate>> call, Throwable t) {
+                // Fail silently or log error
+                t.printStackTrace();
+            }
+        });
     }
     // ------------------------------------------
 
     private void updateUI(View view) {
         TextView greetingText = view.findViewById(R.id.greeting_text);
 
-        android.content.SharedPreferences prefs = getActivity().getSharedPreferences("user_session", android.content.Context.MODE_PRIVATE);
-        // Get user data from SharedPreferences
+
         // Get user data from EncryptedSharedPreferences
         android.content.SharedPreferences prefs = null;
         try {

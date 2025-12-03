@@ -96,7 +96,7 @@ public interface ApiService {
     Call<List<ImportantDate>> getDates();
 
     @POST("api/dates")
-    Call<ImportantDate> createDate(@Body ImportantDate date);
+    Call<ImportantDate> createDate(@retrofit2.http.Header("Authorization") String authHeader, @Body ImportantDate date);
 
     @POST("api/dates/{id}/vote")
     Call<ImportantDate> voteDebate(@Path("id") String id, @Body Map<String, String> body);

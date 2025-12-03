@@ -103,12 +103,21 @@
             android:layout_height="wrap_content"
             android:text="Adicionar Localização" />
 
+        <Button
+            android:id="@+id/btnPickLocation"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Selecionar no Mapa"
+            android:visibility="gone"
+            style="@style/Widget.Material3.Button.OutlinedButton" />
+
         <EditText
             android:id="@+id/etLat"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Latitude"
             android:inputType="numberDecimal|numberSigned"
+            android:focusable="false"
             android:visibility="gone" />
 
         <EditText
@@ -117,14 +126,10 @@
             android:layout_height="wrap_content"
             android:hint="Longitude"
             android:inputType="numberDecimal|numberSigned"
+            android:focusable="false"
             android:visibility="gone" />
 
-        <EditText
-            android:id="@+id/etAddress"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Morada"
-            android:visibility="gone" />
+
 
         <Button
             android:id="@+id/btnSubmitDate"

@@ -89,6 +89,13 @@ No lado do cliente, o foco foi a proteção dos dados sensíveis do utilizador:
     \item \textbf{Configuração de Rede}: Definição de uma \texttt{Network Security Config} restritiva que bloqueia tráfego em texto claro (HTTP) para domínios não locais, permitindo apenas exceções para o ambiente de desenvolvimento (\texttt{localhost} e \texttt{10.0.2.2}).
 \end{itemize}
 
+\section{Integração de Mapas} \label{sec:impl_maps}
+Para a visualização geográfica, optou-se pela integração do \textbf{Google Maps SDK for Android}.
+\begin{itemize}
+    \item \textbf{Configuração}: A chave de API (\texttt{API\_KEY}) foi configurada no \texttt{AndroidManifest.xml}, permitindo o acesso aos serviços de mapas da Google.
+    \item \textbf{Implementação}: O \texttt{HomeFragment} implementa a interface \texttt{OnMapReadyCallback}. O mapa é carregado assincronamente através de um \texttt{SupportMapFragment}, e quando pronto (\texttt{onMapReady}), a câmara é posicionada nas coordenadas predefinidas (e.g., Lisboa), oferecendo uma base para futura visualização de eventos georreferenciados.
+\end{itemize}
+
 \section{Resolução de Problemas e Otimizações} \label{sec:impl_fixes}
 Durante a fase final de testes e integração, foram identificados e resolvidos três problemas críticos que afetavam a experiência do utilizador e a estabilidade da aplicação.
 

@@ -71,6 +71,24 @@ Para permitir o upload de imagens nas petições sem custos adicionais de servi�
 \subsection{Eliminação de Petições}
 Foi implementada a funcionalidade de eliminação de petições através do método HTTP \texttt{DELETE}. O endpoint \texttt{/api/petitions/:id} permite remover documentos da coleção \texttt{petitions} no MongoDB, o que garante a integridade dos dados. A aplicação Android expõe esta funcionalidade através da classe utilitária \texttt{DatabaseHelper}.
 
+\section{Segurança e Proteção de Dados} \label{sec:impl_security}
+Nesta fase do desenvolvimento, foi realizada uma auditoria de segurança que resultou na implementação de várias medidas de proteção tanto no backend como na aplicação móvel.
+
+\subsection{Backend (API)}
+Para reforçar a segurança da API Node.js, foram integrados vários middlewares essenciais:
+\begin{itemize}
+    \item \textbf{Helmet}: Configuração de cabeçalhos HTTP seguros para proteção contra vulnerabilidades web conhecidas.
+    \item \textbf{Rate Limiting}: Implementação de limites de taxa de requisições para prevenir ataques de força bruta e negação de serviço (DoS).
+    \item \textbf{Sanitização de Dados}: Utilização do \texttt{express-mongo-sanitize} para prevenir injeção de NoSQL e do \texttt{xss-clean} para mitigar ataques de Cross-Site Scripting (XSS).
+\end{itemize}
+
+\subsection{Aplicação Android}
+No lado do cliente, o foco foi a proteção dos dados sensíveis do utilizador:
+\begin{itemize}
+    \item \textbf{Armazenamento Seguro}: Substituição do \texttt{SharedPreferences} padrão pelo \texttt{Encrypted}\-\texttt{Shared}\-\texttt{Preferences} da biblioteca Android Security Crypto. Isto garante que o token de autenticação (JWT) e os dados do utilizador são armazenados de forma encriptada no dispositivo.
+    \item \textbf{Configuração de Rede}: Definição de uma \texttt{Network Security Config} restritiva que bloqueia tráfego em texto claro (HTTP) para domínios não locais, permitindo apenas exceções para o ambiente de desenvolvimento (\texttt{localhost} e \texttt{10.0.2.2}).
+\end{itemize}
+
 \section{Resolução de Problemas e Otimizações} \label{sec:impl_fixes}
 Durante a fase final de testes e integração, foram identificados e resolvidos três problemas críticos que afetavam a experiência do utilizador e a estabilidade da aplicação.
 

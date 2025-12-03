@@ -1,6 +1,10 @@
 package pt.ubi.pdm.votoinformado.activities;
 
 import android.content.Intent;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import androidx.security.crypto.EncryptedSharedPreferences;
+import androidx.security.crypto.MasterKey;
 import android.os.Bundle;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
@@ -62,9 +66,24 @@ public class SettingsActivity extends AppCompatActivity {
         });
 
         logoutButton.setOnClickListener(v -> {
-            // Clear SharedPreferences
-            android.content.SharedPreferences prefs = getSharedPreferences("user_session", MODE_PRIVATE);
-            prefs.edit().clear().apply();
+            // Clear EncryptedSharedPreferences
+            try {
+                MasterKey masterKey = new MasterKey.Builder(SettingsActivity.this)
+                        .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
+                        .build();
+
+                SharedPreferences prefs = EncryptedSharedPreferences.create(
+                        SettingsActivity.this,
+                        "user_session_secure",
+                        masterKey,
+                        EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
+                        EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
+                );
+                prefs.edit().clear().apply();
+            } catch (Exception e) {
+                e.printStackTrace();
+                Toast.makeText(SettingsActivity.this, "Erro ao terminar sessão", Toast.LENGTH_SHORT).show();
+            }
             
             Toast.makeText(this, "Sessão terminada", Toast.LENGTH_SHORT).show();
             

@@ -2,10 +2,13 @@ package pt.ubi.pdm.votoinformado.activities;
 
 import android.Manifest;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.MenuItem;
+import androidx.security.crypto.EncryptedSharedPreferences;
+import androidx.security.crypto.MasterKey;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -41,7 +44,28 @@ public class HomeActivity extends AppCompatActivity implements BottomNavigationV
         super.onCreate(savedInstanceState);
 
         // Check if user is logged in via shared preferences
-        android.content.SharedPreferences prefs = getSharedPreferences("user_session", MODE_PRIVATE);
+        // Check if user is logged in via shared preferences
+        SharedPreferences prefs = null;
+        try {
+            MasterKey masterKey = new MasterKey.Builder(this)
+                    .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
+                    .build();
+
+            prefs = EncryptedSharedPreferences.create(
+                    this,
+                    "user_session_secure",
+                    masterKey,
+                    EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
+                    EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
+            );
+        } catch (Exception e) {
+            e.printStackTrace();
+            // Fallback or handle error - for now, if we can't read secure prefs, force login
+            startActivity(new Intent(this, LoginActivity.class));
+            finish();
+            return;
+        }
+
         String token = prefs.getString("auth_token", null);
 
         if (token == null || token.isEmpty()) {
@@ -67,9 +91,18 @@ public class HomeActivity extends AppCompatActivity implements BottomNavigationV
         //funcao que vai tratar das notificacoes mesmo sem a necessidade de ter a aplicacao aberta
         scheduleDateSync();
 
-        findViewById(R.id.fabDev).setOnClickListener(v -> {
-            startActivity(new Intent(this, DevOptionsActivity.class));
-        });
+        com.google.android.material.floatingactionbutton.FloatingActionButton fabDev = findViewById(R.id.fabDev);
+        String role = prefs.getString("user_role", "user");
+        android.util.Log.d("HomeActivity", "User Role from Prefs: " + role);
+
+        if ("admin".equals(role)) {
+            fabDev.setVisibility(android.view.View.VISIBLE);
+            fabDev.setOnClickListener(v -> {
+                startActivity(new Intent(this, DevOptionsActivity.class));
+            });
+        } else {
+            fabDev.setVisibility(android.view.View.GONE);
+        }
     }
 
     private void askNotificationPermission() {

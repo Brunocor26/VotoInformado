@@ -3,6 +3,8 @@ package pt.ubi.pdm.votoinformado.activities;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import androidx.security.crypto.EncryptedSharedPreferences;
+import androidx.security.crypto.MasterKey;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
@@ -74,22 +76,42 @@ public class LoginActivity extends AppCompatActivity {
                 if (response.isSuccessful()) {
                     try {
                         String responseBody = response.body().string();
+                        Log.d(TAG, "Login Response: " + responseBody);
                         JSONObject jsonObject = new JSONObject(responseBody);
                         String token = jsonObject.getString("token");
                         String userId = jsonObject.optString("_id", "");
                         String name = jsonObject.optString("name", "Utilizador");
                         String email = jsonObject.optString("email", "");
                         String photoUrl = jsonObject.optString("photoUrl", "");
+                        String role = jsonObject.optString("role", "user");
+                        Log.d(TAG, "Parsed Role: " + role);
                         
-                        // Save to SharedPreferences
-                        SharedPreferences prefs = getSharedPreferences("user_session", MODE_PRIVATE);
-                        SharedPreferences.Editor editor = prefs.edit();
-                        editor.putString("auth_token", token);
-                        editor.putString("user_id", userId);
-                        editor.putString("user_name", name);
-                        editor.putString("user_email", email);
-                        editor.putString("user_photo_url", photoUrl);
-                        editor.apply();
+                        // Save to EncryptedSharedPreferences
+                        try {
+                            MasterKey masterKey = new MasterKey.Builder(LoginActivity.this)
+                                    .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
+                                    .build();
+
+                            SharedPreferences prefs = EncryptedSharedPreferences.create(
+                                    LoginActivity.this,
+                                    "user_session_secure",
+                                    masterKey,
+                                    EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
+                                    EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
+                            );
+
+                            SharedPreferences.Editor editor = prefs.edit();
+                            editor.putString("auth_token", token);
+                            editor.putString("user_id", userId);
+                            editor.putString("user_name", name);
+                            editor.putString("user_email", email);
+                            editor.putString("user_photo_url", photoUrl);
+                            editor.putString("user_role", role);
+                            editor.apply();
+                        } catch (Exception e) {
+                            Log.e(TAG, "Error saving to EncryptedSharedPreferences", e);
+                            Toast.makeText(LoginActivity.this, "Erro de segurança ao salvar dados", Toast.LENGTH_SHORT).show();
+                        }
                         
                         Toast.makeText(LoginActivity.this, "Login bem-sucedido", Toast.LENGTH_SHORT).show();
                         startActivity(new Intent(LoginActivity.this, HomeActivity.class));

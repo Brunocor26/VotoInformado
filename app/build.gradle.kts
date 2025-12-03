@@ -1,7 +1,6 @@
 
 plugins {
     alias(libs.plugins.android.application)
-    id("com.google.gms.google-services")
 }
 
 android {
@@ -53,8 +52,6 @@ dependencies {
     // Biblioteca de Gráficos
     implementation("com.github.PhilJay:MPAndroidChart:3.1.0")
 
-    // Credential Manager (Keep for Google Sign-In via System)
-    implementation("androidx.credentials:credentials:1.5.0")
-    implementation("androidx.credentials:credentials-play-services-auth:1.5.0")
-    implementation(libs.googleid)
+    // Security Crypto
+    implementation("androidx.security:security-crypto:1.1.0-alpha06")
 }

@@ -55,14 +55,6 @@ public class DatabaseHelper {
     }
 
     public static void saveDate(ImportantDate date, Context context) {
-        // The API might not have a create date endpoint implemented in the interface yet, 
-        // but based on the plan we are migrating. 
-        // If the endpoint is missing in ApiService, we should add it or skip.
-        // The ApiService I created has getDates but not createDate.
-        // I will comment this out or add a Toast saying not implemented if the API doesn't support it.
-        // However, the user said "migrate", so I should probably have added it.
-        // For now, I'll leave it as a TODO or try to implement if I can.
-        // Since I didn't add createDate to ApiService, I'll show a toast.
         Toast.makeText(context, "Save Date not implemented in API yet.", Toast.LENGTH_SHORT).show();
     }
 

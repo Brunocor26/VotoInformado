@@ -57,4 +57,7 @@ dependencies {
     implementation("androidx.credentials:credentials:1.5.0")
     implementation("androidx.credentials:credentials-play-services-auth:1.5.0")
     implementation(libs.googleid)
+
+    // mapa
+    implementation("com.google.android.gms:play-services-maps:18.1.0")
 }

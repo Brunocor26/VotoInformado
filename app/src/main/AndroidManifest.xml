@@ -92,4 +92,10 @@
 
     </application>
 
+    <meta-data
+        android:name="com.google.android.geo.API_KEY"
+        android:value="AIzaSyDAbRq4nqA3jMombGxRjjTalGOREMbUAxw"/>
+
+    <uses-permission android:name="android.permission.INTERNET" />
+
 </manifest>

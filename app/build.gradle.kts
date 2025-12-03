@@ -1,7 +1,6 @@
 
 plugins {
     alias(libs.plugins.android.application)
-    id("com.google.gms.google-services")
 }
 
 android {
@@ -60,4 +59,6 @@ dependencies {
 
     // mapa
     implementation("com.google.android.gms:play-services-maps:18.1.0")
+    // Security Crypto
+    implementation("androidx.security:security-crypto:1.1.0-alpha06")
 }

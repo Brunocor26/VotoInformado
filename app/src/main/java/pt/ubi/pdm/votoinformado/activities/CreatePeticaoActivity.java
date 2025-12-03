@@ -65,7 +65,21 @@ public class CreatePeticaoActivity extends AppCompatActivity {
         }
 
         // Get user data from SharedPreferences
-        android.content.SharedPreferences prefs = getSharedPreferences("user_session", MODE_PRIVATE);
+        // Get user data from EncryptedSharedPreferences
+        android.content.SharedPreferences prefs = null;
+        try {
+            String masterKey = androidx.security.crypto.MasterKeys.getOrCreate(androidx.security.crypto.MasterKeys.AES256_GCM_SPEC);
+            prefs = androidx.security.crypto.EncryptedSharedPreferences.create(
+                    "user_session_secure",
+                    masterKey,
+                    this,
+                    androidx.security.crypto.EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
+                    androidx.security.crypto.EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
+            );
+        } catch (Exception e) {
+            e.printStackTrace();
+            return;
+        }
         String userId = prefs.getString("user_id", null);
         String userName = prefs.getString("user_name", "Utilizador");
 

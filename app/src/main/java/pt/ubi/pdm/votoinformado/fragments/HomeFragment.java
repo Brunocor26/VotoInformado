@@ -76,6 +76,24 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
         TextView greetingText = view.findViewById(R.id.greeting_text);
 
         android.content.SharedPreferences prefs = getActivity().getSharedPreferences("user_session", android.content.Context.MODE_PRIVATE);
+        // Get user data from SharedPreferences
+        // Get user data from EncryptedSharedPreferences
+        android.content.SharedPreferences prefs = null;
+        try {
+            String masterKey = androidx.security.crypto.MasterKeys.getOrCreate(androidx.security.crypto.MasterKeys.AES256_GCM_SPEC);
+            prefs = androidx.security.crypto.EncryptedSharedPreferences.create(
+                    "user_session_secure",
+                    masterKey,
+                    getActivity(),
+                    androidx.security.crypto.EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
+                    androidx.security.crypto.EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
+            );
+        } catch (Exception e) {
+            e.printStackTrace();
+            // Fallback or handle error
+            return;
+        }
+
         String userName = prefs.getString("user_name", "Utilizador");
         String photoUrl = prefs.getString("user_photo_url", "");
 

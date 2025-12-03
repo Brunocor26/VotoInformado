@@ -19,4 +19,14 @@
         android:layout_alignParentBottom="true"
         app:menu="@menu/bottom_nav_menu" />
 
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fabDev"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/bottom_navigation"
+        android:layout_alignParentStart="true"
+        android:layout_margin="16dp"
+        android:src="@android:drawable/ic_menu_manage"
+        android:contentDescription="Dev Options" />
+
 </RelativeLayout>

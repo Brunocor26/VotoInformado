@@ -1,7 +1,10 @@
 package pt.ubi.pdm.votoinformado.activities;
 
 import android.content.Intent;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import androidx.security.crypto.EncryptedSharedPreferences;
+import androidx.security.crypto.MasterKey;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -63,7 +66,23 @@ public class EditProfileActivity extends AppCompatActivity {
     }
 
     private void loadUserData() {
-        SharedPreferences prefs = getSharedPreferences("user_session", MODE_PRIVATE);
+        SharedPreferences prefs = null;
+        try {
+            MasterKey masterKey = new MasterKey.Builder(this)
+                    .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
+                    .build();
+
+            prefs = EncryptedSharedPreferences.create(
+                    this,
+                    "user_session_secure",
+                    masterKey,
+                    EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
+                    EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
+            );
+        } catch (Exception e) {
+            e.printStackTrace();
+            return;
+        }
         String name = prefs.getString("user_name", "");
         String email = prefs.getString("user_email", "");
         String photoUrl = prefs.getString("user_photo_url", "");
@@ -99,7 +118,27 @@ public class EditProfileActivity extends AppCompatActivity {
 
         btnSave.setEnabled(false);
 
-        SharedPreferences prefs = getSharedPreferences("user_session", MODE_PRIVATE);
+        btnSave.setEnabled(false);
+
+        final SharedPreferences prefs;
+        try {
+            MasterKey masterKey = new MasterKey.Builder(this)
+                    .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
+                    .build();
+
+            prefs = EncryptedSharedPreferences.create(
+                    this,
+                    "user_session_secure",
+                    masterKey,
+                    EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
+                    EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
+            );
+        } catch (Exception e) {
+            e.printStackTrace();
+            Toast.makeText(this, "Erro de segurança", Toast.LENGTH_SHORT).show();
+            btnSave.setEnabled(true);
+            return;
+        }
         String token = prefs.getString("auth_token", "");
 
         RequestBody namePart = RequestBody.create(MediaType.parse("text/plain"), name);

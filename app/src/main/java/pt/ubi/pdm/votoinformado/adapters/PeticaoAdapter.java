@@ -42,6 +42,17 @@ public class PeticaoAdapter extends RecyclerView.Adapter<PeticaoAdapter.ViewHold
         String imageUrl = peticao.getImageUrl();
         if (imageUrl != null && !imageUrl.isEmpty()) {
             holder.imageView.setVisibility(View.VISIBLE);
+            
+            // Handle relative paths
+            if (!imageUrl.startsWith("https")) {
+                String baseUrl = pt.ubi.pdm.votoinformado.api.ApiClient.getBaseUrl();
+                // Remove leading slash if present to avoid double slashes
+                if (imageUrl.startsWith("/")) {
+                    imageUrl = imageUrl.substring(1);
+                }
+                imageUrl = baseUrl + imageUrl;
+            }
+            
             Picasso.get().load(imageUrl).into(holder.imageView);
         } else {
             holder.imageView.setVisibility(View.GONE);

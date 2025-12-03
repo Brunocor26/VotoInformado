@@ -14,8 +14,11 @@ public class ImportantDate {
     private String time;
     private String category;
 
+    @SerializedName("idCandidato")
     private String idCandidato;
+    @SerializedName("idCandidato1")
     private String idCandidato1;
+    @SerializedName("idCandidato2")
     private String idCandidato2;
 
     private transient LocalDate localDate;
@@ -77,4 +80,33 @@ public class ImportantDate {
         }
         return localDate;
     }
+
+    public void setTitle(String title) { this.title = title; }
+    public void setDate(String date) { this.date = date; }
+    public void setTime(String time) { this.time = time; }
+    public void setCategory(String category) { this.category = category; }
+
+    private Location location;
+
+    public Location getLocation() { return location; }
+    public void setLocation(Location location) { this.location = location; }
+
+    public static class Location {
+        private double latitude;
+        private double longitude;
+        private String address;
+
+        public double getLatitude() { return latitude; }
+        public void setLatitude(double latitude) { this.latitude = latitude; }
+
+        public double getLongitude() { return longitude; }
+        public void setLongitude(double longitude) { this.longitude = longitude; }
+
+        public String getAddress() { return address; }
+        public void setAddress(String address) { this.address = address; }
+    }
+
+    public void setIdCandidato1(String idCandidato1) { this.idCandidato1 = idCandidato1; }
+    public void setIdCandidato2(String idCandidato2) { this.idCandidato2 = idCandidato2; }
+    public void setIdCandidato(String idCandidato) { this.idCandidato = idCandidato; }
 }

@@ -34,8 +34,7 @@ public interface ApiService {
             @Part MultipartBody.Part photo
     );
 
-    @POST("api/auth/google")
-    Call<ResponseBody> googleLogin(@Body Map<String, String> body);
+
 
     @Multipart
     @retrofit2.http.PUT("api/auth/me")
@@ -48,6 +47,18 @@ public interface ApiService {
     // Candidates
     @GET("api/candidates")
     Call<List<Candidato>> getCandidates();
+
+    @Multipart
+    @POST("api/candidates")
+    Call<Candidato> createCandidate(
+            @Part("nome") RequestBody nome,
+            @Part("partido") RequestBody partido,
+            @Part("biografiaCurta") RequestBody biografiaCurta,
+            @Part("profissao") RequestBody profissao,
+            @Part("cargosPrincipais") RequestBody cargosPrincipais,
+            @Part("siteOficial") RequestBody siteOficial,
+            @Part MultipartBody.Part photo
+    );
 
     // Petitions
     @GET("api/petitions")

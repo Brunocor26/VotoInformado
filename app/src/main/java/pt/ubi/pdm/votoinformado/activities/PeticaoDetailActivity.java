@@ -59,13 +59,38 @@ public class PeticaoDetailActivity extends AppCompatActivity {
         String imageUrl = peticao.getImageUrl();
         if (imageUrl != null && !imageUrl.isEmpty()) {
             imagem.setVisibility(View.VISIBLE);
+            
+            // Handle relative paths
+            if (!imageUrl.startsWith("http")) {
+                String baseUrl = pt.ubi.pdm.votoinformado.api.ApiClient.getBaseUrl();
+                // Remove leading slash if present to avoid double slashes
+                if (imageUrl.startsWith("/")) {
+                    imageUrl = imageUrl.substring(1);
+                }
+                imageUrl = baseUrl + imageUrl;
+            }
+
             Picasso.get().load(imageUrl).into(imagem);
         } else {
             imagem.setVisibility(View.GONE);
         }
 
         // Get user data from SharedPreferences
-        android.content.SharedPreferences prefs = getSharedPreferences("user_session", MODE_PRIVATE);
+        // Get user data from EncryptedSharedPreferences
+        android.content.SharedPreferences prefs = null;
+        try {
+            String masterKey = androidx.security.crypto.MasterKeys.getOrCreate(androidx.security.crypto.MasterKeys.AES256_GCM_SPEC);
+            prefs = androidx.security.crypto.EncryptedSharedPreferences.create(
+                    "user_session_secure",
+                    masterKey,
+                    this,
+                    androidx.security.crypto.EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
+                    androidx.security.crypto.EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
+            );
+        } catch (Exception e) {
+            e.printStackTrace();
+            return;
+        }
         String userId = prefs.getString("user_id", null);
         String userName = prefs.getString("user_name", "Utilizador");
 
@@ -115,7 +140,21 @@ public class PeticaoDetailActivity extends AppCompatActivity {
         }
 
         // Get user data from SharedPreferences
-        android.content.SharedPreferences prefs = getSharedPreferences("user_session", MODE_PRIVATE);
+        // Get user data from EncryptedSharedPreferences
+        android.content.SharedPreferences prefs = null;
+        try {
+            String masterKey = androidx.security.crypto.MasterKeys.getOrCreate(androidx.security.crypto.MasterKeys.AES256_GCM_SPEC);
+            prefs = androidx.security.crypto.EncryptedSharedPreferences.create(
+                    "user_session_secure",
+                    masterKey,
+                    this,
+                    androidx.security.crypto.EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
+                    androidx.security.crypto.EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
+            );
+        } catch (Exception e) {
+            e.printStackTrace();
+            return;
+        }
         String userId = prefs.getString("user_id", null);
         String userName = prefs.getString("user_name", "Utilizador");
         String userPhotoUrl = prefs.getString("user_photo_url", "");

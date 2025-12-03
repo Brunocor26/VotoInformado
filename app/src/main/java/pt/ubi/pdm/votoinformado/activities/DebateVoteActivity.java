@@ -147,7 +147,21 @@ public class DebateVoteActivity extends AppCompatActivity {
         List<ImportantDate.Vote> votes = debate.getVotes();
         if (votes == null) votes = new java.util.ArrayList<>(); // Handle null votes
 
-        SharedPreferences prefs = getSharedPreferences("user_session", MODE_PRIVATE);
+        // Get user data from EncryptedSharedPreferences
+        SharedPreferences prefs = null;
+        try {
+            String masterKey = androidx.security.crypto.MasterKeys.getOrCreate(androidx.security.crypto.MasterKeys.AES256_GCM_SPEC);
+            prefs = androidx.security.crypto.EncryptedSharedPreferences.create(
+                    "user_session_secure",
+                    masterKey,
+                    this,
+                    androidx.security.crypto.EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
+                    androidx.security.crypto.EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
+            );
+        } catch (Exception e) {
+            e.printStackTrace();
+            return;
+        }
         String userId = prefs.getString("user_id", null);
 
         boolean userVoted = false;
@@ -168,7 +182,21 @@ public class DebateVoteActivity extends AppCompatActivity {
     }
 
     private void vote(String candidateId) {
-        SharedPreferences prefs = getSharedPreferences("user_session", MODE_PRIVATE);
+        // Get user data from EncryptedSharedPreferences
+        SharedPreferences prefs = null;
+        try {
+            String masterKey = androidx.security.crypto.MasterKeys.getOrCreate(androidx.security.crypto.MasterKeys.AES256_GCM_SPEC);
+            prefs = androidx.security.crypto.EncryptedSharedPreferences.create(
+                    "user_session_secure",
+                    masterKey,
+                    this,
+                    androidx.security.crypto.EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
+                    androidx.security.crypto.EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
+            );
+        } catch (Exception e) {
+            e.printStackTrace();
+            return;
+        }
         String userId = prefs.getString("user_id", null);
 
         if (userId == null) {

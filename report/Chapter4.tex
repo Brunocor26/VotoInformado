@@ -2,10 +2,10 @@
 
 Este capítulo aborda os desafios técnicos e as soluções de implementação adotadas durante o desenvolvimento.
 
-\section{Migração para API Customizada} \label{sec:impl_api}
-Inicialmente, o projeto utilizava o Firebase Firestore para persistência de dados diretamente na aplicação móvel. No entanto, seguindo uma \textbf{sugestão pedagógica do docente} para aumentar a complexidade técnica do projeto e permitir uma solução mais personalizada, migrou-se para uma arquitetura com uma **API REST intermédia**.
+\section{Migração para API Personalizada} \label{sec:impl_api}
+Inicialmente, o projeto utilizava o Firebase Firestore para persistência de dados diretamente na aplicação móvel. No entanto, em resposta a uma \textbf{sugestão pedagógica do docente} para aumentar a complexidade técnica do projeto e permitir uma solução mais personalizada, migrou-se para uma arquitetura com uma \textbf{API REST intermédia}.
 
-Esta nova arquitetura consiste numa API desenvolvida em \textbf{Node.js}, que atua como \textit{backend} para a aplicação Android. A API utiliza uma base de dados \textbf{MongoDB} para persistência de dados, comunicando através da biblioteca \textbf{Mongoose}. A autenticação é gerida através de \textbf{JWT (JSON Web Tokens)}, garantindo uma sessão segura e independente do estado do servidor.
+Esta nova arquitetura consiste numa API desenvolvida em \textbf{Node.js}, que atua como \textit{backend} para a aplicação Android. A API encontra-se alojada na plataforma \textbf{Render}, tirando partido do seu plano gratuito para disponibilizar os serviços publicamente. A API utiliza uma base de dados \textbf{MongoDB} para persiência de dados e comunica através da biblioteca \textbf{Mongoose}. A autenticação é gerida através de \textbf{JWT (JSON Web Tokens)}, o que garante uma sessão segura e independente do estado do servidor.
 
 \begin{lstlisting}[language=Java, caption=Definição da Interface Retrofit]
 public interface ApiService {
@@ -22,30 +22,30 @@ public interface ApiService {
 \end{lstlisting}
 
 \section{Parsing de Notícias (RSS)} \label{sec:impl_rss}
-Para obter as notícias, foi implementada a classe \texttt{NoticiasFetcher}. Esta classe realiza uma requisição HTTP ao feed RSS da RTP e faz o parsing do XML resultante utilizando \texttt{DocumentBuilder}.
+Para obter as notícias, foi implementada a classe \texttt{NoticiasFetcher}. Esta classe realiza uma requisição HTTP ao feed RSS da RTP e faz a análise sintática do XML resultante com o \texttt{DocumentBuilder}.
 Um desafio interessante foi a extração de imagens, que não vinham num campo explícito, mas sim embutidas na descrição HTML. Foi utilizada uma expressão regular (Regex) para extrair o atributo \texttt{src} das tags \texttt{<img>}.
 
 \section{Gestão de Imagens} \label{sec:impl_imagens}
-As imagens das petições e dos candidatos são armazenadas localmente no servidor (\textit{backend}) e servidas como ficheiros estáticos. A base de dados armazena apenas o URL relativo da imagem. Na aplicação Android, a biblioteca \textbf{Picasso} \cite{Picasso} é utilizada para carregar e exibir estas imagens de forma assíncrona, gerindo automaticamente o download, cache e redimensionamento das imagens.
+As imagens das petições e dos candidatos são armazenadas localmente no servidor (\textit{backend}) e servidas como ficheiros estáticos. A base de dados armazena apenas o URL relativo da imagem. Na aplicação Android, a biblioteca \textbf{Picasso} \cite{Picasso} é utilizada para carregar e exibir estas imagens de forma assíncrona, que gere automaticamente a transferência, cache e redimensionamento das imagens.
 
 \section{Adapters e RecyclerViews} \label{sec:impl_adapters}
-A exibição de listas eficientes foi conseguida através da implementação de \texttt{RecyclerView.Adapter} personalizados. O padrão \textit{ViewHolder} é utilizado para reciclar as vistas, garantindo uma rolagem suave mesmo com listas longas de candidatos ou notícias.
+A exibição de listas eficientes foi conseguida através da implementação de \texttt{RecyclerView.Adapter} personalizados. O padrão \textit{ViewHolder} é utilizado para reciclar as vistas, o que garante um deslize suave mesmo com listas longas de candidatos ou notícias.
 
 \section{Motor de Quiz e Visualização Gráfica} \label{sec:impl_compass}
 A funcionalidade da Bússola Política envolveu o desenvolvimento de um motor de cálculo de pontuação e uma vista personalizada para o gráfico.
 
 \subsection{Modelo de Dados}
-A classe \texttt{Question} encapsula o texto da pergunta, o peso e o eixo a que pertence (Económico ou Social). A classe \texttt{CompassCandidate} estende a informação base de um candidato adicionando as coordenadas (x, y) da sua posição política estimada.
+A classe \texttt{Question} encapsula o texto da pergunta, o peso e o eixo a que pertence (Económico ou Social). A classe \texttt{CompassCandidate} estende a informação base de um candidato e adiciona as coordenadas (x, y) da sua posição política estimada.
 
 \subsection{CompassView}
 Para desenhar o gráfico, foi criada a classe \texttt{CompassView} que estende \texttt{View}.
 \begin{itemize}
     \item \textbf{onDraw()}: Este método é sobrescrito para desenhar os eixos, as quadrículas de fundo, e os pontos que representam o utilizador e os candidatos.
-    \item \textbf{Transformação de Coordenadas}: As coordenadas lógicas (de -10 a +10) são convertidas para coordenadas de ecrã (pixels) tendo em conta a largura e altura da vista, garantindo que o gráfico se adapta a diferentes tamanhos de ecrã.
+    \item \textbf{Transformação de Coordenadas}: As coordenadas lógicas (de -10 a +10) são convertidas para coordenadas de ecrã (pixels) tendo em conta a largura e altura da vista, o que garante que o gráfico se adapta a diferentes tamanhos de ecrã.
 \end{itemize}
 
 \section{Sistema de Petições} \label{sec:impl_peticoes}
-O sistema de petições foi adaptado para consumir a nova API, mantendo a autenticação de utilizadores via Firebase Auth (gerida pelo backend).
+O sistema de petições foi adaptado para consumir a nova API e mantém a autenticação de utilizadores via Firebase Auth (gerida pelo backend).
 
 \subsection{Estrutura de Dados}
 A classe \texttt{Peticao} foi atualizada para mapear os documentos MongoDB.
@@ -69,7 +69,25 @@ Para permitir o upload de imagens nas petições sem custos adicionais de servi�
 \end{itemize}
 
 \subsection{Eliminação de Petições}
-Foi implementada a funcionalidade de eliminação de petições através do método HTTP \texttt{DELETE}. O endpoint \texttt{/api/petitions/:id} permite remover documentos da coleção \texttt{petitions} no MongoDB, garantindo a integridade dos dados. A aplicação Android expõe esta funcionalidade através da classe utilitária \texttt{DatabaseHelper}.
+Foi implementada a funcionalidade de eliminação de petições através do método HTTP \texttt{DELETE}. O endpoint \texttt{/api/petitions/:id} permite remover documentos da coleção \texttt{petitions} no MongoDB, o que garante a integridade dos dados. A aplicação Android expõe esta funcionalidade através da classe utilitária \texttt{DatabaseHelper}.
+
+\section{Segurança e Proteção de Dados} \label{sec:impl_security}
+Nesta fase do desenvolvimento, foi realizada uma auditoria de segurança que resultou na implementação de várias medidas de proteção tanto no backend como na aplicação móvel.
+
+\subsection{Backend (API)}
+Para reforçar a segurança da API Node.js, foram integrados vários middlewares essenciais:
+\begin{itemize}
+    \item \textbf{Helmet}: Configuração de cabeçalhos HTTP seguros para proteção contra vulnerabilidades web conhecidas.
+    \item \textbf{Rate Limiting}: Implementação de limites de taxa de requisições para prevenir ataques de força bruta e negação de serviço (DoS).
+    \item \textbf{Sanitização de Dados}: Utilização do \texttt{express-mongo-sanitize} para prevenir injeção de NoSQL e do \texttt{xss-clean} para mitigar ataques de Cross-Site Scripting (XSS).
+\end{itemize}
+
+\subsection{Aplicação Android}
+No lado do cliente, o foco foi a proteção dos dados sensíveis do utilizador:
+\begin{itemize}
+    \item \textbf{Armazenamento Seguro}: Substituição do \texttt{SharedPreferences} padrão pelo \texttt{Encrypted}\-\texttt{Shared}\-\texttt{Preferences} da biblioteca Android Security Crypto. Isto garante que o token de autenticação (JWT) e os dados do utilizador são armazenados de forma encriptada no dispositivo.
+    \item \textbf{Configuração de Rede}: Definição de uma \texttt{Network Security Config} restritiva que bloqueia tráfego em texto claro (HTTP) para domínios não locais, permitindo apenas exceções para o ambiente de desenvolvimento (\texttt{localhost} e \texttt{10.0.2.2}).
+\end{itemize}
 
 \section{Resolução de Problemas e Otimizações} \label{sec:impl_fixes}
 Durante a fase final de testes e integração, foram identificados e resolvidos três problemas críticos que afetavam a experiência do utilizador e a estabilidade da aplicação.
@@ -85,9 +103,9 @@ Foi detetada uma inconsistência na ligação entre os resultados das sondagens 
 \end{enumerate}
 
 \subsection{Conectividade com API (Render Cold Start)}
-A API, alojada no plano gratuito do serviço Render, entra em modo de suspensão após períodos de inatividade. O tempo de arranque inicial ("cold start") excedia frequentemente o timeout padrão de 1.5 segundos definido no cliente Android, levando a aplicação a falhar silenciosamente para o URL local (\texttt{localhost}).
+A API, alojada no plano gratuito do serviço Render, entra em modo de suspensão após períodos de inatividade. O tempo de arranque inicial ("cold start") excedia frequentemente o timeout padrão de 1.5 segundos definido no cliente Android, o que levava a aplicação a falhar silenciosamente para o URL local (\texttt{localhost}).
 
-\textbf{Solução}: O timeout de conexão e leitura no \texttt{ApiClient} foi aumentado para \textbf{15 segundos}. Isto garante que a aplicação aguarda o tempo suficiente para que o servidor acorde, assegurando uma conexão bem-sucedida mesmo após inatividade.
+\textbf{Solução}: O timeout de conexão e leitura no \texttt{ApiClient} foi aumentado para \textbf{15 segundos}. Isto garante que a aplicação aguarda o tempo suficiente para que o servidor acorde, assegurando assim uma ligação bem-sucedida mesmo após inatividade.
 
 \subsection{Carregamento de Imagens de Perfil}
 Identificou-se que as imagens de perfil dos utilizadores não eram carregadas corretamente em dispositivos físicos. A causa raiz era dupla: o backend guardava URLs absolutos (e.g., \texttt{http://localhost:3000/...}) durante o registo, que são inacessíveis externamente, e os comentários não persistiam a foto do autor.
@@ -95,19 +113,19 @@ Identificou-se que as imagens de perfil dos utilizadores não eram carregadas co
 \textbf{Solução}:
 \begin{itemize}
     \item \textbf{Backend}: O controlador de autenticação foi atualizado para guardar apenas o \textbf{caminho relativo} da imagem (e.g., \texttt{/uploads/profiles/...}). Adicionalmente, a criação de comentários foi corrigida para persistir o URL da foto do autor.
-    \item \textbf{Frontend}: Implementou-se uma lógica de "sanitização" no cliente (\texttt{HomeFragment}, \texttt{ComentarioAdapter}). A aplicação deteta agora URLs legados contendo "localhost" ou "127.0.0.1", converte-os em caminhos relativos e prepõe dinamicamente o URL base correto da API (\texttt{ApiClient.getBaseUrl()}).
+    \item \textbf{Frontend}: Implementou-se uma lógica de validação no cliente (\texttt{HomeFragment}, \texttt{ComentarioAdapter}). A aplicação deteta agora URLs legados que contêm "localhost" ou "127.0.0.1", converte-os em caminhos relativos e prefixa dinamicamente o URL base correto da API (\texttt{ApiClient.getBaseUrl()}).
 \end{itemize}
 
 \subsection{Upload de Imagens em Petições}
-Foi detetado que o upload de imagens falhava em certos dispositivos ou quando a imagem provinha de fontes específicas (como Google Photos), resultando em falhas na obtenção do tipo de ficheiro (MIME type) ou do nome original.
+Foi detetado que o upload de imagens falhava em certos dispositivos ou quando a imagem provinha de fontes específicas (como Google Photos), o que resultava em falhas na obtenção do tipo de ficheiro (MIME type) ou do nome original.
 
 \textbf{Solução}: A lógica de seleção de ficheiros em \texttt{CreatePeticaoActivity} foi reescrita para ser mais robusta.
 \begin{itemize}
     \item \textbf{Resolução de Nomes}: Tenta-se extrair o nome real do ficheiro via \texttt{OpenableColumns} do Content Provider. Se falhar, gera-se um nome seguro.
-    \item \textbf{Tipos de Ficheiro}: Implementou-se um mecanismo de \textit{fallback} que assume o tipo JPEG caso o sistema não consiga determinar o tipo MIME, prevenindo \texttt{NullPointerExceptions}.
+    \item \textbf{Tipos de Ficheiro}: Implementou-se um mecanismo de \textit{fallback} que assume o tipo JPEG caso o sistema não consiga determinar o tipo MIME, o que previne exceções do tipo \texttt{NullPointerException}.
 \end{itemize}
 
 \subsection{Estabilidade na Votação de Debates}
-A funcionalidade de votação em debates apresentava instabilidade (\textit{crashes}) quando os dados de votos continham inconsistências, especificamente quando o ID do candidato votado era nulo (dados corrompidos ou legados).
+A funcionalidade de votação em debates apresentava instabilidade (falhas) quando os dados de votos continham inconsistências, especificamente quando o ID do candidato votado era nulo (dados corrompidos ou legados).
 
-\textbf{Solução}: Adicionaram-se verificações de nulidade explícitas no método \texttt{processVotes} da \texttt{DebateVoteActivity}. O algoritmo ignora agora votos malformados em vez de interromper a execução, garantindo que a aplicação continua funcional mesmo com dados imperfeitos.
+\textbf{Solução}: Adicionaram-se verificações de nulidade explícitas no método \texttt{processVotes} da \texttt{DebateVoteActivity}. O algoritmo ignora agora votos malformados em vez de interromper a execução, o que garante que a aplicação se mantém funcional mesmo com dados imperfeitos.

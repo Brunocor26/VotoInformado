@@ -12,9 +12,13 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.model.LatLng;
 import com.squareup.picasso.Picasso;
 
-import java.text.Normalizer;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
@@ -28,7 +32,9 @@ import pt.ubi.pdm.votoinformado.classes.Candidato;
 import pt.ubi.pdm.votoinformado.classes.Sondagem;
 import pt.ubi.pdm.votoinformado.utils.DatabaseHelper;
 
-public class HomeFragment extends Fragment {
+public class HomeFragment extends Fragment implements OnMapReadyCallback {
+
+    private GoogleMap mMap;
 
     @Nullable
     @Override
@@ -39,12 +45,37 @@ public class HomeFragment extends Fragment {
         loadFirebaseData(view);
         loadLatestNews(view);
 
+        // -------------------------------
+        // ADICIONADO: Inicialização do mapa
+        // -------------------------------
+        SupportMapFragment mapFragment = (SupportMapFragment)
+                getChildFragmentManager().findFragmentById(R.id.mapHome);
+
+        if (mapFragment != null) {
+            mapFragment.getMapAsync(this);
+        }
+        // -------------------------------
+
         return view;
     }
+
+    // ------------------------------------------
+    // ADICIONADO: Método do Google Maps
+    // ------------------------------------------
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        mMap = googleMap;
+
+        // Exemplo: centrar em Lisboa
+        LatLng lisboa = new LatLng(38.736946, -9.142685);
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(lisboa, 12));
+    }
+    // ------------------------------------------
 
     private void updateUI(View view) {
         TextView greetingText = view.findViewById(R.id.greeting_text);
 
+        android.content.SharedPreferences prefs = getActivity().getSharedPreferences("user_session", android.content.Context.MODE_PRIVATE);
         // Get user data from SharedPreferences
         // Get user data from EncryptedSharedPreferences
         android.content.SharedPreferences prefs = null;
@@ -75,10 +106,9 @@ public class HomeFragment extends Fragment {
 
         if (photoUrl != null && !photoUrl.isEmpty()) {
             if (photoUrl.contains("localhost") || photoUrl.contains("127.0.0.1")) {
-                // Fix legacy URLs pointing to localhost
                 String relativePath = photoUrl.replaceAll("http://localhost:\\d+", "")
-                                              .replaceAll("http://127.0.0.1:\\d+", "")
-                                              .replace('\\', '/');
+                        .replaceAll("http://127.0.0.1:\\d+", "")
+                        .replace('\\', '/');
                 if (!relativePath.startsWith("/")) {
                     relativePath = "/" + relativePath;
                 }
@@ -125,7 +155,6 @@ public class HomeFragment extends Fragment {
                                         Candidato candidatoVencedor = null;
                                         String idOuNome = vencedor.idCandidato;
 
-                                        // 1. Try to match by MongoDB ID (_id)
                                         for (Candidato c : candidatesMap.values()) {
                                             if (c.getId() != null && c.getId().equals(idOuNome)) {
                                                 candidatoVencedor = c;
@@ -133,7 +162,6 @@ public class HomeFragment extends Fragment {
                                             }
                                         }
 
-                                        // 2. Try to match by String ID (id)
                                         if (candidatoVencedor == null) {
                                             for (Candidato c : candidatesMap.values()) {
                                                 if (c.getStringId() != null && c.getStringId().equals(idOuNome)) {
@@ -143,7 +171,6 @@ public class HomeFragment extends Fragment {
                                             }
                                         }
 
-                                        // 3. Fallback: Try to match by Name (case-insensitive)
                                         if (candidatoVencedor == null) {
                                             for (Candidato c : candidatesMap.values()) {
                                                 if (c.getNome() != null && c.getNome().trim().equalsIgnoreCase(idOuNome.trim())) {

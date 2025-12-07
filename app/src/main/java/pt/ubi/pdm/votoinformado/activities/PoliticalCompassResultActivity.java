@@ -56,7 +56,7 @@ public class PoliticalCompassResultActivity extends AppCompatActivity {
 
         try {
             java.io.File cachePath = new java.io.File(getCacheDir(), "images");
-            cachePath.mkdirs(); // don't forget to make the directory
+            cachePath.mkdirs();
             java.io.FileOutputStream stream = new java.io.FileOutputStream(cachePath + "/compass_result.png"); // overwrites this image every time
             bitmap.compress(android.graphics.Bitmap.CompressFormat.PNG, 100, stream);
             stream.close();

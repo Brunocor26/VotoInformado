@@ -41,23 +41,24 @@ public class SondagensFragment extends Fragment {
         adapter = new SondagemAdapter(getContext(), new ArrayList<>(), new HashMap<>());
         recyclerView.setAdapter(adapter);
 
-        loadFirebaseData();
+        loadSondagens();
 
         return view;
     }
 
-    private void loadFirebaseData() {
-        DatabaseHelper.getCandidates(getContext(), new DatabaseHelper.DataCallback<Map<String, Candidato>>() {
+    //carrega sondagens da API
+    private void loadSondagens() {
+        DatabaseHelper.getCandidates(getContext(), new DatabaseHelper.DataCallback<>() {
             @Override
             public void onCallback(Map<String, Candidato> candidatesMap) {
-                DatabaseHelper.getSondagens(new DatabaseHelper.DataCallback<List<Sondagem>>() {
+                DatabaseHelper.getSondagens(new DatabaseHelper.DataCallback<>() {
                     @Override
                     public void onCallback(List<Sondagem> sondagens) {
                         List<Sondagem> filteredSondagens = sondagens.stream()
+                                //filtra pela data de fim da sondagem
                                 .filter(s -> s.getDataFimRecolha() != null)
-                                .collect(Collectors.toList());
+                                .sorted(Comparator.comparing(Sondagem::getDataFimRecolha).reversed()).collect(Collectors.toList());
 
-                        filteredSondagens.sort(Comparator.comparing(Sondagem::getDataFimRecolha).reversed());
                         adapter.updateData(filteredSondagens, candidatesMap);
                     }
 

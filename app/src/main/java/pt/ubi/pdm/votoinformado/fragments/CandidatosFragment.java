@@ -32,33 +32,31 @@ public class CandidatosFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_candidatos, container, false);
 
+        //usamos a recyclerview para mostrar cada "card" de candidato
         recyclerView = view.findViewById(R.id.recycler_view_candidatos);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
         candidatoAdapter = new CandidatoAdapter(candidatoList);
         recyclerView.setAdapter(candidatoAdapter);
 
-        loadFirebaseData();
+        carregarCandidatos();
 
         return view;
     }
 
-    private void loadFirebaseData() {
-        DatabaseHelper.getCandidates(getContext(), new DatabaseHelper.DataCallback<Map<String, Candidato>>() {
+    private void carregarCandidatos() {
+        DatabaseHelper.getCandidates(getContext(), new DatabaseHelper.DataCallback<>() {
             @Override
             public void onCallback(Map<String, Candidato> candidatesMap) {
-                candidatoList.clear(); // Ensure list is cleared before adding
+                candidatoList.clear(); //limpa so para ter a certeza antes de adicionar
                 candidatoList.addAll(candidatesMap.values());
                 candidatoAdapter.notifyDataSetChanged();
-                if (getContext() != null) {
-                    Toast.makeText(getContext(), "Loaded " + candidatoList.size() + " candidates", Toast.LENGTH_SHORT).show();
-                }
             }
 
             @Override
             public void onError(String message) {
                 if (getContext() != null) {
-                    Toast.makeText(getContext(), "Failed to load candidates: " + message, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "Erro a carregar candidatos: " + message, Toast.LENGTH_SHORT).show();
                 }
             }
         });

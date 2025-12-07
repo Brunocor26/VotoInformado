@@ -118,7 +118,6 @@
                 android:padding="16dp">
 
                 <TextView
-                    android:id="@+id/noticia_destaque_label"
                     style="@style/TextAppearance.Material3.TitleMedium"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -205,7 +204,6 @@
 
         <!-- Cartão de Destaque do Political Compass -->
         <com.google.android.material.card.MaterialCardView
-            android:id="@+id/political_compass_card"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"

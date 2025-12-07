@@ -167,7 +167,6 @@
                         app:civ_border_color="?attr/colorPrimary"/>
                     
                     <TextView
-                        android:id="@+id/txtNomeCandidato1"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         tools:text="Candidato 1"
@@ -205,8 +204,7 @@
                         app:civ_border_color="?attr/colorPrimary"/>
 
                      <TextView
-                        android:id="@+id/txtNomeCandidato2"
-                        android:layout_width="wrap_content"
+                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         tools:text="Candidato 2"
                         android:textSize="11sp"

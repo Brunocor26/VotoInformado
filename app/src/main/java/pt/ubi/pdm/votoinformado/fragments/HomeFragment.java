@@ -12,10 +12,10 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.squareup.picasso.Picasso;
 
@@ -42,7 +42,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
 
         updateUI(view);
-        loadFirebaseData(view);
+        loadSondagemDados(view);
         loadLatestNews(view);
 
         // -------------------------------
@@ -60,13 +60,13 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
     }
 
     // ------------------------------------------
-    // ADICIONADO: Método do Google Maps
+    // ADICIONADO: Metodo do Google Maps
     // ------------------------------------------
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-        // Exemplo: centrar em Lisboa
+        // centrar em Lisboa
         LatLng lisboa = new LatLng(38.736946, -9.142685);
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(lisboa, 6)); // Zoom out to see more of Portugal
 
@@ -74,7 +74,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
     }
 
     private void loadMapMarkers() {
-        ApiClient.getInstance().getApiService().getDates().enqueue(new retrofit2.Callback<List<pt.ubi.pdm.votoinformado.classes.ImportantDate>>() {
+        ApiClient.getInstance().getApiService().getDates().enqueue(new retrofit2.Callback<>() {
             @Override
             public void onResponse(retrofit2.Call<List<pt.ubi.pdm.votoinformado.classes.ImportantDate>> call, retrofit2.Response<List<pt.ubi.pdm.votoinformado.classes.ImportantDate>> response) {
                 if (response.isSuccessful() && response.body() != null) {
@@ -93,7 +93,6 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
 
             @Override
             public void onFailure(retrofit2.Call<List<pt.ubi.pdm.votoinformado.classes.ImportantDate>> call, Throwable t) {
-                // Fail silently or log error
                 t.printStackTrace();
             }
         });
@@ -104,14 +103,17 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
         TextView greetingText = view.findViewById(R.id.greeting_text);
 
 
-        // Get user data from EncryptedSharedPreferences
+        // ir buscar dados
         android.content.SharedPreferences prefs = null;
         try {
-            String masterKey = androidx.security.crypto.MasterKeys.getOrCreate(androidx.security.crypto.MasterKeys.AES256_GCM_SPEC);
+            androidx.security.crypto.MasterKey masterKey = new androidx.security.crypto.MasterKey.Builder(getActivity())
+                    .setKeyScheme(androidx.security.crypto.MasterKey.KeyScheme.AES256_GCM)
+                    .build();
+
             prefs = androidx.security.crypto.EncryptedSharedPreferences.create(
+                    getActivity(),
                     "user_session_secure",
                     masterKey,
-                    getActivity(),
                     androidx.security.crypto.EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
                     androidx.security.crypto.EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
             );
@@ -121,6 +123,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
             return;
         }
 
+        //dados que tirou das shared prefs
         String userName = prefs.getString("user_name", "Utilizador");
         String photoUrl = prefs.getString("user_photo_url", "");
 
@@ -132,6 +135,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
         profileImage.setOnClickListener(v -> startActivity(new Intent(getActivity(), SettingsActivity.class)));
 
         if (photoUrl != null && !photoUrl.isEmpty()) {
+            //nao deve ser necessario
             if (photoUrl.contains("localhost") || photoUrl.contains("127.0.0.1")) {
                 String relativePath = photoUrl.replaceAll("http://localhost:\\d+", "")
                         .replaceAll("http://127.0.0.1:\\d+", "")
@@ -149,39 +153,51 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
             profileImage.setImageResource(R.drawable.candidato_generico);
         }
 
+        
+        //quiz political compass
         View politicalCompassBtn = view.findViewById(R.id.btn_political_compass);
         if (politicalCompassBtn != null) {
             politicalCompassBtn.setOnClickListener(v -> startActivity(new Intent(getActivity(), pt.ubi.pdm.votoinformado.activities.PoliticalCompassActivity.class)));
         }
     }
 
-    private void loadFirebaseData(View view) {
+
+     //Carrega os dados da sondagem mais recente e mostra o candidato em destaque.
+    private void loadSondagemDados(View view) {
+        // vai buscar elementos do xml
         TextView sondagemDestaqueNome = view.findViewById(R.id.sondagem_destaque_nome);
         TextView sondagemDestaquePercentagem = view.findViewById(R.id.sondagem_destaque_percentagem);
         CircleImageView sondagemDestaqueImage = view.findViewById(R.id.sondagem_destaque_image);
 
-        DatabaseHelper.getCandidates(getContext(), new DatabaseHelper.DataCallback<Map<String, Candidato>>() {
+        // vai buscar os candidatos
+        DatabaseHelper.getCandidates(getContext(), new DatabaseHelper.DataCallback<>() {
             @Override
             public void onCallback(Map<String, Candidato> candidatesMap) {
-                DatabaseHelper.getSondagens(new DatabaseHelper.DataCallback<List<Sondagem>>() {
+                //sondagens
+                DatabaseHelper.getSondagens(new DatabaseHelper.DataCallback<>() {
                     @Override
                     public void onCallback(List<Sondagem> sondagens) {
+                        //ver se foi buscar candidatos e sondagens
                         if (sondagens.isEmpty() || candidatesMap.isEmpty()) {
                             sondagemDestaqueNome.setText("Sem dados de sondagens");
                             sondagemDestaquePercentagem.setText("");
                             return;
                         }
 
+                        // sondagem mais recente
                         sondagens.stream()
                                 .filter(s -> s.getDataFimRecolha() != null)
                                 .max(Comparator.comparing(Sondagem::getDataFimRecolha))
                                 .ifPresent(ultimaSondagem -> {
+                                    // calcula vencedor
                                     Sondagem.ResultadoPrincipal vencedor = ultimaSondagem.getCalculatedResultadoPrincipal();
                                     if (vencedor != null) {
 
+                                        //guarda o candidato vencedor
                                         Candidato candidatoVencedor = null;
                                         String idOuNome = vencedor.idCandidato;
 
+                                        // Procura o candidato vencedor no mapa de candidatos por ID, StringID ou nome.
                                         for (Candidato c : candidatesMap.values()) {
                                             if (c.getId() != null && c.getId().equals(idOuNome)) {
                                                 candidatoVencedor = c;
@@ -208,6 +224,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
                                         }
 
                                         if (candidatoVencedor != null) {
+                                            //atualiza a UI com os dados do candidato vencedor.
                                             sondagemDestaqueNome.setText(candidatoVencedor.getNome());
                                             sondagemDestaquePercentagem.setText(String.format(Locale.US, "%.1f%%", vencedor.percentagem));
 
@@ -226,11 +243,13 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
                                                 sondagemDestaqueImage.setImageResource(R.drawable.candidato_generico);
                                             }
                                         } else {
+                                            // Caso o candidato vencedor não seja encontrado.
                                             sondagemDestaqueNome.setText("Líder não encontrado");
                                             sondagemDestaquePercentagem.setText("");
                                             sondagemDestaqueImage.setImageResource(R.drawable.candidato_generico);
                                         }
                                     } else {
+                                        // Caso não haja um resultado principal calculado.
                                         sondagemDestaqueNome.setText("Resultado indisponível");
                                         sondagemDestaquePercentagem.setText("");
                                         sondagemDestaqueImage.setImageResource(R.drawable.candidato_generico);
@@ -255,7 +274,6 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
             }
         });
     }
-
     private void loadLatestNews(View view) {
         TextView titulo = view.findViewById(R.id.noticia_destaque_titulo);
         TextView data = view.findViewById(R.id.noticia_destaque_data);

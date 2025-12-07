@@ -33,7 +33,7 @@ import pt.ubi.pdm.votoinformado.fragments.NoticiasFragment;
 import pt.ubi.pdm.votoinformado.fragments.PeticoesFragment;
 import pt.ubi.pdm.votoinformado.fragments.SondagensFragment;
 
-public class HomeActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener {
+public class HomeActivity extends AppCompatActivity {
 
     // Launcher para pedir a permissão de notificação
     private final ActivityResultLauncher<String> requestPermissionLauncher = registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
@@ -42,65 +42,94 @@ public class HomeActivity extends AppCompatActivity implements BottomNavigationV
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        // Check if user is logged in via shared preferences
-        // Check if user is logged in via shared preferences
+        
+        // Verificar se utilizador está autenticado
         SharedPreferences prefs = null;
         try {
-            MasterKey masterKey = new MasterKey.Builder(this)
-                    .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
+            MasterKey masterKey = new MasterKey.Builder(this) //criar chave para aceder aos dados
+                    .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)       //tipo de encriptação
                     .build();
 
             prefs = EncryptedSharedPreferences.create(
                     this,
-                    "user_session_secure",
+                    "user_session_secure", //nome do ficheiro
                     masterKey,
                     EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
                     EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
             );
         } catch (Exception e) {
             e.printStackTrace();
-            // Fallback or handle error - for now, if we can't read secure prefs, force login
+            // se nao conseguirmos, volta para o login
             startActivity(new Intent(this, LoginActivity.class));
             finish();
             return;
         }
 
+        //do ficheiro, tentar tirar authtoken
         String token = prefs.getString("auth_token", null);
 
+        //se ele nao existe/está vazio, login
         if (token == null || token.isEmpty()) {
             startActivity(new Intent(this, LoginActivity.class));
             finish();
             return;
         }
 
+        //------------------------------------------------------------------------------------------------------------------------------------------
+        //correu tudo bem, funciona normal
         setContentView(R.layout.activity_home);
 
+        //usamos o xml do bottom navigation
         BottomNavigationView bottomNav = findViewById(R.id.bottom_navigation);
-        bottomNav.setOnNavigationItemSelectedListener(this);
+
+        //caso de cada opcao que pode escolher
+        bottomNav.setOnItemSelectedListener(item -> {
+            Fragment fragment = null;
+
+            int itemId = item.getItemId();
+            if (itemId == R.id.nav_home) {
+                fragment = new HomeFragment();
+            } else if (itemId == R.id.nav_candidatos) {
+                fragment = new CandidatosFragment();
+            } else if (itemId == R.id.nav_eventos) {
+                fragment = new pt.ubi.pdm.votoinformado.fragments.ImportantDatesHostFragment();
+            } else if (itemId == R.id.nav_sondagens) {
+                fragment = new SondagensFragment();
+            } else if (itemId == R.id.nav_noticias) {
+                fragment = new NoticiasFragment();
+            } else if (itemId == R.id.nav_peticoes) {
+                fragment = new PeticoesFragment();
+            }
+
+            return loadFragment(fragment);
+        });
 
         // Load the default fragment
         if (savedInstanceState == null) {
             loadFragment(new HomeFragment());
         }
 
-        // Pede permissão de notificações (para Android 13+)
+        // Pede permissão de notificações
         askNotificationPermission();
-        
-        //funcao que vai tratar das notificacoes mesmo sem a necessidade de ter a aplicacao aberta
+
         //funcao que vai tratar das notificacoes mesmo sem a necessidade de ter a aplicacao aberta
         scheduleDateSync();
 
+        //adiciona botao de desenvolvedor, para poder adicionar um novo candidato, data, sondagem
         com.google.android.material.floatingactionbutton.FloatingActionButton fabDev = findViewById(R.id.fabDev);
+
+        //nas prefs, tentar tirar o role
         String role = prefs.getString("user_role", "user");
         android.util.Log.d("HomeActivity", "User Role from Prefs: " + role);
 
-        if ("admin".equals(role)) {
+        //se é admin, botao visivel
+        if (role.equals("admin")) {
             fabDev.setVisibility(android.view.View.VISIBLE);
             fabDev.setOnClickListener(v -> {
                 startActivity(new Intent(this, DevOptionsActivity.class));
             });
         } else {
+            //se nao é admin, nao aparece o botao
             fabDev.setVisibility(android.view.View.GONE);
         }
     }
@@ -128,6 +157,7 @@ public class HomeActivity extends AppCompatActivity implements BottomNavigationV
                 syncDatesRequest);
     }
 
+    //funcao que carrega o fragmento
     private boolean loadFragment(Fragment fragment) {
         if (fragment != null) {
             getSupportFragmentManager().beginTransaction()
@@ -136,27 +166,5 @@ public class HomeActivity extends AppCompatActivity implements BottomNavigationV
             return true;
         }
         return false;
-    }
-
-    @Override
-    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        Fragment fragment = null;
-
-        int itemId = item.getItemId();
-        if (itemId == R.id.nav_home) {
-            fragment = new HomeFragment();
-        } else if (itemId == R.id.nav_candidatos) {
-            fragment = new CandidatosFragment();
-        } else if (itemId == R.id.nav_eventos) {
-            fragment = new pt.ubi.pdm.votoinformado.fragments.ImportantDatesHostFragment();
-        } else if (itemId == R.id.nav_sondagens) {
-            fragment = new SondagensFragment();
-        } else if (itemId == R.id.nav_noticias) {
-            fragment = new NoticiasFragment();
-        } else if (itemId == R.id.nav_peticoes) {
-            fragment = new PeticoesFragment();
-        }
-
-        return loadFragment(fragment);
     }
 }

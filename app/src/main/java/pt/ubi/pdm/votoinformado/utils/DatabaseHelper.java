@@ -59,7 +59,6 @@ public class DatabaseHelper {
     }
 
     public static void saveCandidate(Candidato candidato, Context context) {
-        // Similar to saveDate, I didn't add createCandidate to ApiService.
         Toast.makeText(context, "Save Candidate not implemented in API yet.", Toast.LENGTH_SHORT).show();
     }
 
